@@ -1,0 +1,439 @@
+---
+title: "Analysis of unemployment"
+# Cache doesn't work with arrow.
+execute:
+    cache: false
+fig-height: 5
+fig-width: 10
+---
+
+
+```{r}
+#| label: setup
+#| cache: false
+
+rm(list = ls())
+gc()
+
+test <- 0
+
+pacman::p_load(tidyverse, here, fixest, gt, gtsummary, duckdb, arrow, labelled, ggpubr)
+
+theme_set(theme_minimal())  
+
+here::i_am("notebooks/unemployment.qmd")
+```
+
+
+```{r}
+#| label: load-data
+#| include: false
+
+unemployment <- here("data/working/rd_unemployment") |> 
+  open_dataset(format = "parquet") 
+
+dict <- here("data/working/rd_unemployment_dictionary.csv") |>
+  read_csv()
+
+ci <- here("data/working/rd_ci") |>
+    open_dataset(format = "parquet") 
+
+# Format with commas
+all_workers <- ci |>
+    pull(CVE_NSS, as_vector = T) |>
+    unique() |>
+    length() |>
+    scales::comma()
+
+all_contracts <- ci |>
+    pull(CVE_NSS, as_vector = T) |>
+    length() |>
+    scales::comma()
+
+workers <- unemployment |>
+    summarise(
+        .by = c(CVE_NSS, female, birth_date, began_working, ever_got_unemployed, interest_worker),
+        unemployment_spells = sum(meets_unemp_days_criterion, na.rm = T)
+    ) |>
+    mutate(
+        unemployment_spells = ifelse(is.na(unemployment_spells), 0, unemployment_spells)
+    ) |>
+    compute()
+
+movements <- ci |>
+  pull(CVE_NSS, as_vector = T) |>
+  length() |>
+  scales::comma()
+
+# if(interactive() | test) {
+
+#     set.seed(123)
+
+#     sample <- ci |>
+#         filter(partition == 1) |>
+#         distinct(CVE_NSS) |>
+#         collect() |>
+#         sample_n(10000)
+
+#     workers <- workers |>
+#         inner_join(sample, copy = T) |>
+#         compute()
+
+#     ci <- ci |>
+#         filter(partition == 1) |>
+#         inner_join(sample, copy = T) |>
+#         compute()
+    
+#     unemployment <- unemployment |>
+#         inner_join(sample, copy = T) |>
+#         compute()
+
+# }
+
+
+# test_arrow <- tibble(
+#   fec_mov_ini = as.Date(c("2014-01-01", "2014-01-01", "2014-01-01")),
+#   fec_mov_fin = as.Date(c("2014-01-03", "2014-01-05", "2014-01-07"))
+#   
+# ) |>
+#   as_arrow_table() |>
+#   mutate(
+#     days = as.numeric(fec_mov_fin) - as.numeric(fec_mov_ini) + 1
+#   ) |>
+#   collect()
+
+
+
+
+```
+
+## Sample Design and Definition of the Running Variable
+
+The data for the RD analysis is constructed from the administrative data set of the *Instituto Mexicano del Seguro Social* (IMSS) that consists of a matched employer-employee panel following the entirety of the formal labor market. Although it does not contain data on unemployment explicitly (i.e. the cause of, the start of or the duration of unemployment), unemployment spells can be inferred from the gaps in the employment data. A gap can be defined as a period of time in which an individual is not formally employed by any firm. Although this does not necessarily mean that the individual is unemployed^[A gap could also be produced by voluntary separation, exit into informality, or involuntary separation.], it is sufficient for the UI authority to consider the individual as unemployed and thus eligible for UI benefits.
+
+Because the administrative data covers *everything, everywhere all at once* I narrowed the analysis sample to workers who entered the formal labor market between January 2014 and December 2016. This assures that workers are all subject to the same Pension Reform (as they all entered after it came into effect in July 1997) and face the same incentives regarding the accumulation of weeks of contribution and individual account balance to the pension-funded UI system. Additionally, the *Retiro Parcial por Desempleo* was widely popular after the 2008 financial crisis.
+
+This renders an analysis universe of `r all_workers` workers that registered `r movements` social security movements^[A social security movement represents a particular labor relation between employee and employer, at some wage for a period o time. At the most granular level, social security movements are represented as rows in the matched employee-employer panel.].
+
+```{r}
+#| label: fig-enrollment
+#| fig-cap: "Enrollment of workers to the formal labor market from 2014 to 2016"
+
+
+workers |>
+  summarise(
+    .by = began_working,
+    n = n()
+  ) |>
+  collect() |>
+  arrange(began_working) |>
+  mutate(
+    n = cumsum(n)
+  ) |>
+  ggplot(aes(began_working, n)) +
+  geom_step() +
+  labs(
+    x = "Enrollment date",
+    y = "Cumulative workers"
+  ) +
+  scale_y_continuous(labels = ~ (.x) |> scales::comma())
+
+```
+
+```{r}
+#| label: fig-enrollment-final
+#| fig-cap: "Enrollment of workers to the formal labor market in the final sample"
+
+
+unemployment |>
+  filter(interest_worker == 1) |>
+  filter(contribution_days <= days_since_account_opened) |>
+  filter(contribution_days < 3 * 365) |>
+  filter(contribution_days > 365) |>
+  summarise(
+    .by = began_working,
+    n = n()
+  ) |>
+  collect() |>
+  arrange(began_working) |>
+  mutate(
+    n = cumsum(n)
+  ) |>
+  ggplot(aes(began_working, n)) +
+  geom_step() +
+  labs(
+    x = "Enrollment date",
+    y = "Cumulative workers"
+  ) +
+  scale_y_continuous(labels = ~ (.x) |> scales::comma())
+
+```
+
+```{r}
+#| label: fig-employment-spells
+#| fig-cap: "Duration of employment spells and gaps"
+
+
+
+
+ci_clean <- ci |>
+  filter(partition == 1) |>
+  filter(year(FEC_MOV_INI) >= 2014) |>
+  filter(year(FEC_MOV_INI) <= 2024) |>
+  collect() |>
+  ungroup() |>
+  mutate(days = as.numeric(FEC_MOV_FIN - FEC_MOV_INI) + 1) 
+
+spells_plot <- ci_clean |>
+  summarise(
+    .by = days,
+    n = n()
+  ) |>
+  collect() |>
+  arrange(days) |>
+  mutate(
+    n = n / sum(n),
+    n = cumsum(n)
+
+  ) |>
+  add_row(days = 0, n = 0) |>
+  ggplot(aes(days, n)) +
+  geom_step() +
+  scale_x_log10(labels = scales::comma,
+                breaks = c(1, 5, 10, 30, 60, 365, 1000)) +
+  labs(
+    x = "Spell duration (days, log scale)",
+    y = "ecdf"
+  )
+
+gaps_plot <- unemployment |>
+  summarise(
+    .by = unemployment_days,
+    n = n()
+  ) |>
+  collect() |>
+  arrange(unemployment_days) |>
+  mutate(
+    n = n / sum(n),
+    n = cumsum(n)
+  ) |>
+  add_row(unemployment_days = 0, n = 0) |>
+  ggplot(aes(unemployment_days, n)) +
+  geom_step() +
+  scale_x_log10(labels = scales::comma,
+                breaks = c(1, 5, 10, 15, 30, 45, 90, 180, 365, 1000)) +
+  geom_vline(xintercept = 45, linetype = "dashed") +
+  labs(
+    x = "Gap duration (days, log scale)",
+    y = "ecdf"
+  ) 
+
+
+ggarrange(spells_plot, gaps_plot, nrow = 1, ncol = 2)
+
+rm(ci_clean)
+
+```
+
+
+
+
+```{r}
+#| label: fig-unemployment
+#| fig-cap: "Unemployment spells > 45 days"
+
+
+start_plot <- unemployment |>
+  filter(meets_unemp_days_criterion == 1) |>
+  select(unemployment_date) |>
+  collect() |>
+  ggplot(aes(unemployment_date)) +
+  geom_density() +
+  labs(
+    title = "Occurrence of unemployment spells",
+    x = "Unemployment date"
+  )
+
+
+workers |> pull(unemployment_spells) |> summary() |> print()
+
+
+
+
+
+unemp_spells <- workers |>
+  ggplot(aes(unemployment_spells)) +
+  stat_ecdf() +
+  labs(
+    title = "Workers by number of unemployment spells",
+    x = "Unemployment spells"
+  ) 
+
+ggarrange(start_plot, unemp_spells, nrow = 1, ncol = 2)
+
+```
+
+
+
+
+```{r}
+#| label: tbl-interest-balance
+#| tbl-cap: "Features of workers included and excluded from the analysis" 
+
+unemployment |>
+  distinct(
+    CVE_NSS,
+    interest_worker, 
+    female,
+    birth_date,
+    began_working
+  ) |>
+  select(-CVE_NSS) |>
+  collect() |>
+  mutate(
+    across(where(is.Date), decimal_date),
+    no_curp = is.na(birth_date),
+    interest_worker = factor(
+      interest_worker,
+      levels = c(0, 1),
+      labels = c("Not of interest", "Interest")
+    )
+  ) |>
+  tbl_summary(
+    by = interest_worker,
+    statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    label = list(
+      female = "Female",
+      birth_date = "Birth date",
+      began_working = "Date began working",
+      no_curp = "No CURP"
+  )
+  )  |>
+  as_gt() 
+
+
+```
+
+
+
+```{r}
+#| label: fig-eligibility
+#| fig-cap: "Eligibility to RPD"
+
+ggplot() +
+    geom_rect(aes(
+        xmin = 3,
+        xmax = 10,
+        ymin = 2,
+        ymax = 10,
+        fill = "A"
+    ), alpha = 0.5) +
+    geom_rect(aes(
+        xmin = 5,
+        xmax = 10,
+        ymin = 0,
+        ymax = 10,
+        fill = "B"
+    ), alpha = 0.5) +
+    geom_polygon(aes(
+        x = c(0, 10, 0),
+        y = c(0, 10, 10),
+        fill = "Not feasible"
+    ), alpha = 1) +
+    labs(
+        x = "Years since account opened",
+        y = "Years of contribution",
+        fill = "Eligibility to RPD"
+    ) +
+    scale_fill_manual(
+        values = c(
+            "A" = "lightgreen",
+            "B" = "lightblue",
+            "Dropped*" = "lightcoral",
+            "Not feasible" = "lightgray"
+        )
+    ) +
+    scale_x_continuous(
+        breaks = seq(0, 8, 1)
+    ) +
+    coord_fixed(
+        xlim = c(0, 6),
+        ylim = c(0, 5)
+    )
+
+```
+
+
+```{r}
+#| label: fig-sample-selection
+#| fig-cap: "Sample selection"
+
+
+
+ggplot() +
+    geom_rect(aes(
+        xmin = 3,
+        xmax = 10,
+        ymin = 2,
+        ymax = 10,
+        fill = "A"
+    ), alpha = 0.5) +
+    geom_rect(aes(
+        xmin = 5,
+        xmax = 10,
+        ymin = 0,
+        ymax = 10,
+        fill = "B"
+    ), alpha = 0.5) +
+    geom_polygon(aes(
+        x = c(0, 10, 0),
+        y = c(0, 10, 10),
+        fill = "Not feasible"
+    ), alpha = 1) +
+
+    # geom_point(
+    #     data = interest_events,
+    #     aes(
+    #         x = days_since_account_opened / 365,
+    #         y = contribution_days / 365,
+    #     ),
+    #     alpha = 0.2
+    # ) +
+    geom_rect(aes(
+      xmin = 3,
+      xmax = 4,
+      ymin = 1,
+      ymax = 3,),
+      fill = "transparent",
+      color = "red"
+    ) +
+    labs(
+        title = "Workers at the start of unemployment spell",
+        subtitle = "selected sample in red rectangle",
+        x = "Years since account opened",
+        y = "Years of contribution",
+        fill = "Eligibility to RPD"
+    ) +
+    scale_fill_manual(
+        values = c(
+            "A" = "lightgreen",
+            "B" = "lightblue",
+            "Dropped*" = "lightcoral",
+            "Not feasible" = "lightgray"
+        )
+    ) +
+    scale_x_continuous(
+        breaks = seq(0, 8, 1)
+    ) +
+    coord_fixed(
+        xlim = c(0, 6),
+        ylim = c(0, 5)
+    )
+
+
+
+```
+
+
+## Covid-19 and Unemployment
+

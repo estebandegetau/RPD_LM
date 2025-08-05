@@ -1,0 +1,409 @@
+---
+title: "Labor market outcomes of an integrated unemployment insurance: Evidence from Mexico"
+subtitle: "New research design"
+author: "Esteban Degetau"
+date: "2025-02-12"
+date-format: long
+fig-height: 5
+fig-width: 8
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
+
+pacman::p_load(tidyverse, here, gt, gtsummary, fixest, arrow, ggpubr)
+
+theme_set(theme_minimal())
+
+```
+
+## Research question 
+
+(Same as last semester)
+
+What are the causal effects of being eligible to the *integrated unemployment insurance* on employment and earnings in Mexico? 
+
+. . . 
+
+- One might expect that eligible workers take longer to find a job, as their search efforts are *attenuated* by the insurance. 
+
+- On the other hand, the insurance might allow workers to search for better jobs, increasing their earnings in the long run.
+
+- Either way, understanding the employment effects of UI is crucial for policy-makers, as it can have a meaningful impact on the actual cost of the program.
+
+## Related literature
+
+@britto2022 shows that a lump-sum UI in Brazil equivalent to 15 days of earnings to workers who earned at most 2 minimum wages: 
+
+1. increased the survival rate out of formal employment by 2 pp after three months from the displacement
+
+2. did not have an impact on the quality of the next job: duration, wage or total earnings
+
+3. over the medium term, total earnings were 4% lower, and that was explained by lower monthly earnings, not by longer unemployment spells (although medium term estimates are not super robust)
+
+
+## Context: Eligibility criteria
+
+```{r}
+
+ggplot() +
+  geom_rect(
+    aes(xmin = 3, xmax = 10, ymin = 2, ymax = 10, fill = "A"),
+    alpha = 0.5
+  ) +
+  geom_rect(
+    aes(xmin = 5, xmax = 10, ymin = 0, ymax = 10, fill = "B"),
+    alpha = 0.5
+  ) +
+
+  geom_polygon(
+    aes(
+      x = c(0, 10, 0),
+      y = c(0, 10, 10),
+      fill = "Not feasible"
+      ),
+      alpha = 1
+  ) +
+  scale_fill_manual(
+    values = c(
+      "A" = "lightgreen", 
+      "B" = "lightblue",
+      "Not feasible" = "lightgray")
+  ) +
+  labs(
+    x = "Years since account creation",
+    y = "Years of contributions to SS",
+        fill = "Eligibility"
+  ) +
+  coord_cartesian(xlim = c(0, 8), ylim = c(0, 5)) +
+  scale_x_continuous(breaks = seq(0, 8, 1)) +
+  scale_y_continuous(breaks = seq(0, 8, 1)) 
+
+
+```
+
+## Empirical strategy
+
+
+```{r}
+ggplot() +
+  geom_rect(aes(
+    xmin = 3,
+    xmax = 10,
+    ymin = 2,
+    ymax = 10,
+    fill = "A"
+  ), alpha = 0.5) +
+  geom_rect(aes(
+    xmin = 5,
+    xmax = 10,
+    ymin = 0,
+    ymax = 10,
+    fill = "B"
+  ), alpha = 0.5) +
+  
+  geom_rect(aes(
+    xmin = 0,
+    xmax = 3,
+    ymin = 0,
+    ymax = 10,
+    fill = "Dropped*"
+  ), alpha = 0.5) +
+  geom_rect(aes(
+    xmin = 4,
+    xmax = 10,
+    ymin = 0,
+    ymax = 10,
+    fill = "Dropped*"
+  ), alpha = 0.5) +
+  geom_polygon(aes(
+    x = c(0, 10, 0),
+    y = c(0, 10, 10),
+    fill = "Not feasible"
+  ), alpha = 1) +
+  scale_fill_manual(
+    values = c(
+      "A" = "lightgreen",
+      "B" = "lightblue",
+      "Dropped*" = "lightcoral",
+      "Not feasible" = "lightgray"
+    )
+  ) +
+  labs(
+    x = "Years since account creation",
+    y = "Years of contributions to SS",
+    fill = "Eligibility",
+    caption = "* Workers dropped by eligibility criteria at start of unemployment",
+  ) +
+  coord_cartesian(xlim = c(0, 8), ylim = c(0, 5)) +
+  scale_x_continuous(breaks = seq(0, 8, 1)) +
+  scale_y_continuous(breaks = seq(0, 8, 1)) 
+```
+
+
+## Empirical strategy
+
+
+I use a regression discontinuity design (RDD) exploiting the eligibility condition of having at least 2 years worth of contributions to the social security system (SS) to receive the *integrated unemployment insurance* (UI). Specifically, I estimate the equation
+
+$$
+Y_{i} = \alpha + \beta D_i + f(C_i - 2) + \epsilon_i \quad \text{where} \quad |C_i - 2| \le h
+$${#eq-rdd}
+
+where $Y_{i}$ is the outcome of interest, $C_i$ is worker $i$'s contributions to SS measured in years, and $D_i$ indicates whether $C_i \ge 2$. $f(\cdot)$ is a polynomial function of $C_i$ and $h$ is the bandwidth around the threshold.
+
+## Data
+
+For this exercise I maximize data around the eligibility threshold. 
+
+I build a dataset using administrative records from the Mexican social security system (IMSS) of non-farm workers whose individual account (i.e. their AFORE) was created  between 3 and 4 years by December 31th 2019.
+
+I then restrict the sample to workers who had exactly one unemployment spell of at least 45 days between January 1st 2020 and December 31th 2020, to make identification more plausible.
+
+My final sample has 260,000 workers, over which I compute the eligibility condition and the outcome variables of interest, following @britto2022.
+
+
+## Density test
+
+```{r}
+
+load(here("results/density_plot.RData"))
+
+
+density_plot$Estplot +
+  labs(
+    x = "Contribution days to eligibility at unemployment date"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") 
+
+```
+
+
+
+```{r}
+#| label: load-results
+#| include: false
+
+load(here("results/rdd.RData"))
+
+here("data/anon/rd_description.RData") |>
+  load()
+
+label_plots <- function(plot, outcome) {
+  
+  plot +
+    labs(title = outcome, 
+         x = "Contribution days to eligibility",
+         y = "") +
+    theme_minimal() 
+  
+}
+
+```
+
+## Continuity test of covariates around eligibility threshold
+
+```{r}
+
+
+plots_b <- b |>
+  left_join(description) |>
+  filter(
+    !str_detect(name, "density|income")
+  ) |>
+  mutate(
+    label = str_remove(label, "\\(.*\\)"),
+    plot = map(rd, "plot"),
+    plot = map2(plot, label, label_plots)
+    ) |>
+  pull(plot) 
+  
+ggarrange(plotlist = plots_b, ncol = 2, nrow = 2)
+
+```
+
+
+## Continuity on pre-displacement labor market outcomes
+
+```{r}
+
+
+
+
+
+plots_a <- a |>
+  mutate(
+    label = case_when(
+      name == "total_income" ~ "Total earnings",
+      name == "monthly_income" ~ "Average monthly earnings",
+      name == "av_daily_wage" ~ "Daily wage",
+      name == "months_worked" ~ "Months worked",
+      name == "density" ~ "Contribution density"),
+    plot = map(rd, "plot"),
+    plot = map2(plot, label, label_plots)) |>
+  pull(plot)
+
+
+ggarrange(plotlist = plots_a, nrow = 2, ncol = 3)
+
+```
+
+
+## Testing continuity around UI eligibility threshold
+
+```{r}
+
+results <- a |>
+  bind_rows(b) |>
+  left_join(description) |>
+  mutate(
+    label = case_when(
+      name == "total_income" ~ "Total earnings (2024 MXN)",
+      name == "monthly_income" ~ "Average monthly earnings (2024 MXN)",
+      name == "av_daily_wage" ~ "Daily wage (2024 MXN)",
+      name == "months_worked" ~ "Months worked",
+      name == "density" ~ "Contribution density (%)",
+      T ~ label),
+      label = str_remove(label, "\\(.*\\)"),
+    result = map(rd, "output"),
+    p_value = map(result, "pv"),
+    p_value = map(p_value, ~ as_tibble(.x, rownames = "Type"))
+  ) |>
+  filter(!str_detect(name, "density_|income_")) |>
+  select(label, p_value) |>
+  unnest(p_value)
+
+
+results  |>
+  select(Covariate = label, Type, matches("P>")) |>
+  pivot_wider(names_from = "Type", values_from = "P>|z|") |>
+  gt() |>
+  fmt_number(decimals = 3)
+```
+
+# Results
+
+## Job search outcomes around UI threshold
+
+```{r}
+
+plots_c <- c |>
+  mutate(
+    months = str_extract(name, "\\d+") |> as.numeric(),
+    label = case_when(
+      str_detect(name, "survival") ~ str_c("Survival - ", months, " months"),
+      str_detect(name, "duration") ~ str_c("Duration - ", months, " months")
+    )
+  ) |>
+  filter(months <= 12, str_detect(name, "survival")) |>
+  arrange(months) |>
+  mutate(
+    plot = map(rd, "plot"),
+    plot = map2(plot, label, label_plots)
+  ) |>
+  pull(plot)
+  
+  
+ggarrange(plotlist = plots_c)
+```
+
+## UI effect on survival in unemployment
+
+```{r}
+res <- c |>
+  filter(str_detect(name, "survival")) |>
+  mutate(
+    months = str_extract(name, "\\d+") |> as.numeric(),
+    rd = map(rd, "output"),
+    point = map(rd, "coef"),
+    ci = map(rd, "ci"),
+    lower = map_dbl(ci, 3),
+    upper = map_dbl(ci, 6),
+    point = map_dbl(point, 3)
+    ) 
+
+survival_plot <- res |>
+  ggplot(aes(months, point)) +
+  geom_pointrange(aes(ymin = lower, ymax = upper)) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous(breaks = seq(from = 6, to = 48, by = 6)) +
+  labs(x = "Months since displacement",
+       y = "Survival Rate")
+
+survival_plot
+```
+
+## UI effect on survival in unemployment
+
+```{r}
+
+
+pluck_stats <- function(x) {
+  x |>
+    mutate(
+      UI = map_dbl(rd, ~ pluck(.x, "output", "coef", 3)) |>
+        format(digits = 2, scientific = F) |>
+        as.character(),
+      SE = map_dbl(rd, ~ pluck(.x, "output", "se", 3)) |>
+        format(digits = 2, scientific = F) |>
+        as.character(),
+      SE = str_c("(", SE, ")"),
+      `Mean at cutoff - ineligible` = map_dbl(rd, ~ pluck(.x, "output", "tau_bc", 1)) |>
+        format(digits = 2, big.mark = ",", scientific = F) |>
+        as.character(),
+      N = (map_dbl(rd, ~ pluck(.x, "output", "N", 2)) +
+        map_dbl(rd, ~ pluck(.x, "output", "N", 1))) |>
+        format(big.mark = ",", scientific = F) |>
+        as.character()
+      
+    )
+  
+}
+
+panel_a <- c |>
+  mutate(months = str_extract(name, "\\d+") |> as.numeric()) |>
+  filter(months <= 12, str_detect(name, "survival")) |>
+  arrange(months) |>
+  mutate(
+    label = case_when(
+      str_detect(name, "survival") ~ str_c("Survival - ", months, " months"),
+      str_detect(name, "duration") ~ str_c("Duration - ", months, " months")
+    )
+
+    ) |>
+  pluck_stats() |>
+  select(!c(rd, months, name)) |>
+  pivot_longer(
+    !c(label,),
+    names_to = "stat"
+  ) |>
+  pivot_wider(
+    id_cols = c(stat),
+    names_from = label
+  ) |>
+  rename(" " = "stat")
+  
+
+panel_a |>
+  gt() |>
+  cols_width(
+    everything() ~ pct(20)
+  )
+
+  
+
+```
+
+## Next steps
+
+See who should be the most affected by the UI program: Test heterogeneous effects by
+
+- Private vs public sector workers
+- Gender
+- Age: proxy for entering formality later in life
+- Previous earnings: proxy for liquidity constraints
+
+## References

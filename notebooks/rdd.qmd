@@ -1,0 +1,741 @@
+---
+<<<<<<< HEAD
+title: "Regression discontinuity"
+execute: 
+  cache: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
+=======
+title: "Regression discontinuity design"
+format: html
+---
+
+```{r}
+>>>>>>> 66a49c9a3f62a155dbe3d2a918d74d823b63435e
+
+rm(list = ls())
+gc()
+
+<<<<<<< HEAD
+pacman::p_load(tidyverse, here, gt, gtsummary, fixest, arrow, ggpubr, rddensity)
+
+theme_set(theme_minimal())
+
+```
+
+
+```{r}
+#| label: load-data
+load(here("data/working/rpd.RData"))
+```
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Summary statistics"
+
+var_groups <- here("results/var_groups.csv") |>
+  read_csv() |>
+  select(name = variable, group, label)
+
+
+summary <- rpd |>
+  mutate(across(where(is.Date), decimal_date)) |>
+  select(any_of(var_groups$name)) |>
+  select(!starts_with("take_up")) |>
+  pivot_longer(
+    !matches("CVE|id|employer_rpd")
+  ) |>
+
+  summarise(
+    .by = name,
+    n = sum(!is.na(value)),
+    Mean = mean(value, na.rm = T),
+    Median = median(value, na.rm = T),
+    Std.Dev. = sd(value, na.rm = T),
+    Min = min(value, na.rm = T),
+    Max = max(value, na.rm = T)
+  ) 
+
+
+summary |>
+  left_join(var_groups, by = "name") |>
+  drop_na(group) |>
+  filter(!str_detect(name, "partition|ever_")) |>
+    mutate(
+    month = case_when(
+      str_detect(label, "Survival|censored|take_up")~ (str_extract(label, "\\d+") |> as.numeric())
+      ),
+    label = case_when(
+      name == "birth_date" ~ "Birth date",
+      T ~ label
+
+    )
+  ) |>
+  filter(is.na(month) | month %in% c(3, 36)) |>
+  select(label, where(is.numeric), group) |>
+  select(!c(month)) |>
+  rename("Variable" = label) |>
+  group_by(group) |>
+  arrange(Variable, .by_group = T) |>
+  gt() |>
+  tab_footnote(
+    md("*Note:* This table shows summary statistics of the variables used in thye analysis. The observations included were the final sample of interest. "),
+  ) |>
+  fmt_number(
+    decimals = 1,
+    drop_trailing_zeros = T
+  ) |>
+  cols_width(
+    where(is.numeric) ~ pct(11.6),
+    everything() ~ pct(30)
+  ) |>
+  tab_options(
+    quarto.disable_processing = T
+  ) 
+
+rm(summary)
+```
+
+## Testing identification assumptions
+
+
+```{r}
+rdd_object <- rddensity(
+  X = rpd$running,
+  c = 0
+)
+
+left <- min(rpd$running)
+right <- max(rpd$running)
+
+density_plot <- rdplotdensity(
+  rdd_object,
+  X = rpd$running,
+
+  histFillCol = "lightgray",
+  histFillShade = 0.8,
+  histBreaks = seq(-250, 200, 7)
+)
+```
+
+```{r}
+#| label: fig-density
+#| fig-cap: "Density test of the running variable"
+
+density_plot$Estplot +
+  labs(
+    x = "Days to eligibility at unemployment date"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") 
+```
+
+```{r}
+#| label: fig-density-wide
+#| fig-cap: "Density test of the running variable"
+#| fig-height: 5
+#| fig-width: 10
+
+
+density_plot$Estplot +
+  labs(
+    x = "Days to eligibility at unemployment date"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") 
+
+
+rm(density_plot)
+```
+
+```{r}
+#| label: fig-covariates-pre
+#| fig-cap: "Pre-displacement employment features around RPD threshold"
+#| fig-height: 12
+#| fig-width: 6
+
+load(here("results/RD/covariates.RData"))
+
+ggarrange(plotlist = covs_plots$plot, nrow = 4, ncol = 2)
+
+```
+
+```{r}
+#| label: fig-covariates-wide
+#| fig-cap: "Pre-displacement employment features around RPD threshold"
+#| fig-height: 5
+#| fig-width: 10
+
+
+ggarrange(plotlist = covs_plots$plot, nrow = 2, ncol = 4)
+=======
+pacman::p_load(tidyverse, here, arrow, duckdb, gt)
+
+
+theme_set(theme_minimal())
+```
+
+```{r}
+
+con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
+
+did_data <- here("data/anon/did") |>
+  open_dataset(format = "parquet") |>
+  to_duckdb(con)
+
+here("data/anon/at_unemployment.RData") |>
+  load()
+
+
+
+outcome_vars <- c("employment", "density", "income", "wage")
+
+at_unemployment <- at_unemployment |>
+  select(!any_of(outcome_vars))
+
+
+str_c(outcome_vars, collapse = "|")
+
+outcomes <- did_data |>
+  mutate(year = year(period)) |>
+  summarise(
+    .by = c(worker_id, year),
+    across(any_of(outcome_vars), ~ mean(.x, na.rm = T))
+  ) |>
+  collect() |>
+  pivot_longer(any_of(outcome_vars)) |>
+  pivot_wider(
+    id_cols = c(worker_id),
+    values_from = "value",
+    names_from = c(name, year),
+    names_sep = "_"
+  )
+
+
+rd_data <-  at_unemployment |>
+  mutate(
+    running = cumulative_days_contributed - (365 * 2),
+    d = running > 0
+  ) |>
+  filter(account_days <= 4 * 365, unemployment_days > 45, unemployment_days < 365)
+
+
+
+```
+
+```{r}
+
+set.seed(20250127)
+
+a_sample <- rd_data |>
+  sample_n(10) |>
+  distinct(worker_id) |>
+  left_join(did_data, copy = T)
+
+
+
+a_sample |>
+  ggplot(aes(account_days, cumulative_days_contributed)) +
+    geom_rect(aes(
+    xmin = 3 * 365,
+    xmax = 10 * 365,
+    ymin = 2 * 365,
+    ymax = 10 * 365,
+    fill = "A"
+  ), alpha = 0.5) +
+  geom_rect(aes(
+    xmin = 5 * 365,
+    xmax = 10 * 365,
+    ymin = 0,
+    ymax = 10 * 365,
+    fill = "B"
+  ), alpha = 0.5) +
+  geom_line(aes(color = factor(worker_id))) +
+  geom_point(
+    data = at_unemployment |> inner_join(a_sample |> distinct(worker_id))
+  ) 
+  
+
+
+```
+
+## No-bunching
+
+```{r}
+
+(at_unemployment$cumulative_days_contributed - (365 * 2)) |> summary()
+
+rd_data |>
+  filter(between(running, -200, 200)) |>
+  ggplot(aes(running)) +
+  geom_histogram(binwidth = 10)
+
+
+```
+
+
+```{r}
+pacman::p_load(rddensity)
+
+
+rdd_object <- rddensity(
+  X = rd_data$running,
+  c = 0
+)
+
+rdplotdensity(rdd_object, X = rd_data$running)
+>>>>>>> 66a49c9a3f62a155dbe3d2a918d74d823b63435e
+
+
+```
+
+<<<<<<< HEAD
+```{r}
+#| label: fig-pre_unemp
+#| fig-cap: "Previous job around RPD threshold"
+#| fig-height: 5
+#| fig-width: 5
+
+
+load(here("results/RD/prev_job.RData"))
+
+
+ggarrange(plotlist = prev_job_plots$plot, ncol = 2, nrow = 2)
+  
+  
+```
+
+```{r}
+#| label: fig-pre_unemp-wide
+#| fig-cap: "Previous job around RPD threshold"
+#| fig-height: 3
+#| fig-width: 12
+
+ggarrange(plotlist = prev_job_plots$plot, ncol = 3, nrow = 1)
+  
+```
+
+
+```{r}
+#| label: tbl-covariates-bal
+#| tbl-cap: "Balance of covariates around RPD threshold"
+ 
+covs_table |>
+    gt() |>
+    sub_missing(
+        columns = everything(),
+        rows = everything(),
+        missing_text = " - "
+    ) |>
+    tab_footnote(
+        md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial. Earnings are expressed in 2024 MXN."),
+    ) |>
+    fmt_number(
+        decimals = 3,
+        drop_trailing_zeros = T
+    ) |>
+    cols_width(
+        # where(is.numeric) ~ pct(15),
+        " " ~ pct(25),
+        everything() ~ pct(18)
+    ) |>
+    tab_options(
+        quarto.use_bootstrap = TRUE
+    )
+
+rm(covs_table, covs_plots, prev_job_plots)
+```
+
+
+
+## Main results
+
+### Effect of RPD eligibility on take up
+
+
+```{r}
+#| label: fig-take-up
+#| fig-cap: "Effect of eligibility on take up"
+
+load(here("results/RD/take_up.RData"))
+
+
+ggarrange(plotlist = take_up_plots$plot, nrow = 2, ncol = 3)
+
+```
+
+```{r}
+#| label: fig-take-up-path
+#| fig-cap: "Dynamic effect of eligibility on take up. 95 percent confidence intervals"
+
+
+take_up_path
+
+
+rm(list = c("take_up_plots", "take_up_path"))
+```
+
+```{r}
+#| label: tbl-take-up
+#| tbl-cap: "Effect of eligibility on take up"
+  
+
+take_up_table |>
+  gt() |>
+  sub_missing(columns = everything(),
+              rows = everything(),
+              missing_text = " - ") |>
+  tab_footnote(
+    md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+  ) |>
+  fmt_number(
+    decimals = 3,
+    drop_trailing_zeros = T
+  ) |>
+  # cols_width(
+  #   # where(is.numeric) ~ pct(15),
+  #   # " " ~ pct(25),
+  #   # everything() ~ pct(18)
+  # ) |>
+  tab_options(
+
+    # table.width = pct(100),
+    quarto.use_bootstrap = TRUE
+  ) 
+
+rm(take_up_table)
+```
+
+### Effect of RPD on job search outcomes
+
+```{r}
+#| label: fig-survival
+#| fig-cap: "Effect of eligibility on survival in unemployment"
+#| fig-height: 10
+#| fig-width: 8
+
+load(here("results/RD/job_search.RData"))
+
+ggarrange(plotlist = survival_plots$plot, ncol = 2, nrow = 3)
+
+```
+
+
+```{r}
+#| label: fig-survival-wide
+#| fig-cap: "Effect of eligibility on survival in unemployment"
+
+ggarrange(plotlist = survival_plots$plot, ncol = 3, nrow = 2)
+
+```
+
+```{r}
+#| label: fig-duration
+#| fig-cap: "Effect of eligibility on duration of unemployment spell"
+#| fig-height: 10
+#| fig-width: 8
+
+
+ggarrange(plotlist = duration_plots$plot, ncol = 2, nrow = 3)
+```
+
+
+
+```{r}
+#| label: fig-survival-path
+#| fig-cap: "Dynamic effect of eligibility on survival in unemployment. 95 percent confidence intervals"
+
+
+survival_path
+
+```
+
+```{r}
+#| label: fig-duration-path
+#| fig-cap: "Dynamic effect of eligibility on duration of unemployment. 95 percent confidence intervals"
+
+duration_path
+
+```
+
+```{r}
+#| label: fig-treat-path
+#| fig-cap: "Dynamic effect of eligibility on survival and duration of unemployment. 95 percent confidence intervals"
+#| fig-height: 8
+#| fig-width: 8
+
+
+ggarrange(survival_path, duration_path, nrow = 2)
+
+
+```
+
+```{r}
+#| label: tbl-effects
+#| tbl-cap: "RPD effect on job search outcomes"
+
+job_search_table |>
+  gt() |>
+  sub_missing(columns = everything(),
+              rows = everything(),
+              missing_text = " - ") |>
+  tab_footnote(
+    md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+  ) |>
+  fmt_number(
+    decimals = 3,
+    drop_trailing_zeros = T
+  ) |>
+  cols_width(
+    # where(is.numeric) ~ pct(15),
+    " " ~ pct(25),
+    everything() ~ pct(18)
+  ) |>
+  tab_options(
+
+    # table.width = pct(100),
+    quarto.use_bootstrap = TRUE
+  ) 
+
+rm(job_search_table, survival_plots, duration_plots, survival_path, duration_path)
+  
+```
+
+### Medium run effects
+
+```{r}
+#| label: tbl-medium
+#| tbl-cap: "RPD Effect: Earnings, Emloyment and Wages over Medium Run"
+
+
+load(here("results/RD/medium_term.RData"))
+
+medium_table |>
+  rename(" " = 1) |>
+  gt() |>
+  fmt_number(decimals = 3, drop_trailing_zeros = T) |>
+  tab_footnote(
+    md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+  ) |>
+  fmt(
+    columns = " ",
+    fns = gt::md
+  ) |>
+  tab_options(
+    quarto.use_bootstrap = TRUE
+  )
+
+
+rm(medium_term)
+=======
+
+## Continuity
+
+
+```{r}
+
+pacman::p_load(rdrobust)
+
+load(here("data/anon/itt_description.RData"))
+
+my_rd <- function(data, outcome, ...) {
+  y <- {{data}} |> pull({{outcome}})
+  
+  if(is.Date(y)) y <- decimal_date(y)
+  
+  output <- rdrobust(y = y,
+                     x = rd_data$running,
+                     c = 0,
+                     ...)
+  
+  plot <- rdplot(y = y, x = rd_data$running, c = 0)
+  
+  plot <- plot |> pluck("rdplot")
+  
+  return(list(output = output,plot = plot))
+  
+}
+
+
+covariates <- tibble(var = names(rd_data)) |>
+  filter(str_detect(
+    var,
+    "female|age|began|first|last|fullweeks_to_elig|periods_worked"
+  )) |>
+  filter(!str_detect(var, "age")) |>
+  mutate(
+    rd = map(var, ~ rd_data |> my_rd(.x)
+  )) |>
+  left_join(description, by = c("var" = "name")) |>
+  mutate(
+    label = case_when(is.na(label) ~ var, T ~ label)
+  )
+
+
+>>>>>>> 66a49c9a3f62a155dbe3d2a918d74d823b63435e
+```
+
+
+```{r}
+<<<<<<< HEAD
+#| label: tbl-medium
+#| tbl-cap: "Effect of Eligibility to RPD: Earnings, Employment and Wages over Medium Term"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|  - "Earnings (2024 MXN)"
+#|  - "Months Worked"
+#|  - "Average Monthly Warnings (2024 MXN)"
+#| include: false
+
+
+medium_table <- tar_read(medium_term) |>
+        mutate(
+            unemp_year = str_extract(name, "\\d+") |> as.numeric(),
+            unemp_year = str_c("Year ", unemp_year),
+            unemp_year = case_when( #   is.na(unemp_year) & str_detect(name, "av_") ~ "Average 3 years",
+                is.na(unemp_year) ~ "Total 3 years", T ~ unemp_year
+            )
+        ) |>
+        mutate(
+            label = case_when(
+                str_detect(name, "av_earnings") ~ "Average monthly earnings",
+                str_detect(name, "earnings") ~ "Earnings",
+                str_detect(name, "months_worked") ~ "Months Worked",
+            )
+        ) |>
+        arrange(label, unemp_year)
+
+
+ medium_table |>
+        filter(label == "Earnings") |>
+        my_medium_table()
+
+medium_table |>
+        filter(label == "Months Worked") |>
+        my_medium_table()
+
+medium_table |>
+        filter(label == "Average monthly earnings") |>
+        my_medium_table() |>
+        footnote(
+            general = str_c(rdd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
+            general_title = "Note:",
+            threeparttable = T,
+            escape = F,
+            footnote_as_chunk = T
+        )
+
+```
+
+```{r}
+#| label: fig-overlap
+#| fig-cap: "Histogram of propensity scores"
+#| include: false
+tar_read(histogram)
+```
+
+```{r}
+#| label: tbl-owate
+#| tbl-cap: "Effect of RPD for Compliers: Dealing With Limited Take Up"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|  - "Optimally Weighted Average Treatment Effect"
+#|  - "Optimal Subpopulation Average Treatment Effect"
+#| include: false
+
+
+results <- tar_read(owate_results) |>
+  clean_hate()
+
+results |>
+ print_hate()
+
+results <- tar_read(osate_results) |>
+  clean_hate()
+
+results |>
+ print_hate() |>
+  footnote(
+    general = str_c(
+        "
+        The table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree localpolynomial. Bias corrected estimates and robust standard errors computed using Cattaneo, Idrobo, and Titiunik (2019). The top panel uses as weights take-up probabilities estimated using a Random Forest trained on the entire labor history of workers prior to displacement. The bottom panel simple restricts the sample to take-up scores between [0.1, 0.9]. See Crump et al. (2009) for details on dealing with limted overlap.
+        "
+        , " Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+```
+=======
+
+
+
+results <- covariates |> mutate(
+  result = map(rd, "output"),
+  p_value = map(result, "pv"),
+  p_value = map(p_value, ~ as_tibble(.x, rownames = "Type"))
+) |>
+  select(label, p_value) |>
+  unnest(p_value)
+
+
+results  |>
+  select(Covariate = label, Type, matches("P>")) |>
+  pivot_wider(names_from = "Type", values_from = "P>|z|") |>
+  gt() |>
+  fmt_number(decimals = 3)
+
+
+
+```
+
+
+
+```{r}
+
+pacman::p_load(ggpubr)
+
+
+label_plots <- function(plot, outcome) {
+  
+  plot +
+    labs(title = outcome, 
+         x = "Weeks to eligibility at unemployment",
+         y = "") 
+  
+  
+}
+
+
+plots <- covariates |>
+  mutate(plot = map(rd, "plot"),
+         plot = map2(plot, label, label_plots)) |>
+  pull(plot)
+
+
+
+ggarrange(plotlist = plots, ncol = 2)
+
+
+```
+
+## Results
+
+```{r}
+
+a <- my_rd(rd_data, unemployment_days)
+
+
+a$output$pv
+
+
+```
+
+
+
+>>>>>>> 66a49c9a3f62a155dbe3d2a918d74d823b63435e

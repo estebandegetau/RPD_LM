@@ -1,0 +1,46 @@
+---
+title: "Labor market outcomes of an integrated unemployment insurance: Evidence from Mexico"
+subtitle: "Data"
+author: "Esteban Degetau"
+date: "2025-03-12"
+date-format: long
+fig-height: 5
+fig-width: 8
+---
+
+## Data strategy
+
+- Employee-employer matched panel from the Mexican Social Security Institute (IMSS).
+- Reduced focus to workers who entered the formal labor market between 2014 and 2016.
+
+## Enrollment
+
+{{< embed ../notebooks/unemployment.qmd#fig-enrollment >}}
+
+## Employment spells and gaps
+
+{{< embed ../notebooks/unemployment.qmd#fig-employment-spells >}}
+
+## Unemployment spells > 45 days
+
+{{< embed ../notebooks/unemployment.qmd#fig-unemployment >}}
+
+## Final sample
+
+{{< embed ../notebooks/unemployment.qmd#fig-sample-selection >}}
+
+## Enrollment of workers in final sample
+
+{{< embed ../notebooks/unemployment.qmd#fig-enrollment-final >}}
+
+## McCreary's test
+
+{{< embed ../notebooks/rdd.qmd#fig-density-wide >}}
+
+## Continuity of covariates around eligibility threshold
+
+{{< embed ../notebooks/rdd.qmd#fig-covariates-wide >}}
+
+## Previous job
+
+{{< embed ../notebooks/rdd.qmd#fig-pre_unemp-wide >}}

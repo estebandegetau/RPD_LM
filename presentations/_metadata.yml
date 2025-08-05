@@ -1,0 +1,17 @@
+execute: 
+  cache: true
+  echo: false
+  warning: false
+  freeze: false
+
+format: 
+  beamer: 
+     # aspectratio: 149
+      fontsize: smaller
+      fig-height: 4
+      fig-width: 7
+      header-includes: |
+         \setbeamertemplate{navigation symbols}{}
+         \setbeamertemplate{footline}[page number]
+
+bibliography: ../references.bib

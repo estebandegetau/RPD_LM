@@ -1,0 +1,718 @@
+---
+title: "The Labor Market Outcomes of (Quasi) Unemployment Insurance"
+subtitle: "Evidence from the *Retiro Parcial por Desempleo* in Mexico"
+author: "Esteban Degetau"
+institute: "Instituto Mexicano del Seguro Social"
+date: today
+date-format: long
+fig-height: 5
+fig-width: 10
+execute:
+    cache: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
+
+pacman::p_load(targets, tidyverse, rdrobust, ggpubr, here, kableExtra, modelsummary)
+
+here::i_am("presentations/english.qmd")
+
+tar_config_set(store = here::here("_targets"))
+
+tar_source(files = here::here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+# Introduction
+
+## Motivation
+
+In Mexico, formal workers can make a partial unemployment withdrawal from their pension accounts (AFORE) — known as *Retiro Parcial por Desempleo*.
+
+This quasi-unemployment insurance is a key income support mechanism in the absence of a formal UI system — yet its labor market effects remain unknown.
+
+Policy relevance:
+
+-   Over 2 million workers per year use this scheme, but we lack causal evidence on how it shapes labor market behavior.
+
+-   It may help smooth income, but could also distort job search incentives or weaken long-term attachment to formal employment.
+
+## Open questions
+
+Despite its scale, little is known about the labor market impacts of this policy:
+
+-   Does access to funds improve job search outcomes?
+
+-   Does it increase informal work or delay re-entry into formal jobs?
+
+-   What are the trade-offs between immediate liquidity and future pension adequacy?
+
+Understanding these effects is crucial for policy design:
+
+-   Should such programs be expanded or restricted?
+
+-   How do they compare with traditional UI or severance pay?
+
+## Research question
+
+What are the labor market outcomes of the retiro parcial por desempleo?
+
+I analyze both short-term job search outcomes:
+
+-   Unemployment duration
+
+-   Quality of the next job
+
+And medium-term labor market effects over 3 years:
+
+-   Total earnings
+
+-   Average monthly earnings
+
+-   Months worked
+
+By leveraging a sharp eligibility cutoff, this research provides credible **causal evidence** on a large-scale but under-studied policy.
+
+# Related literature
+
+## Lump-sum severance and labor market outcomes
+
+@britto2022 — Brazil, RD design: Compares lump-sum severance (FGTS) vs. contingent monthly UI benefits.
+
+Lump-sum severance effects over 3 years after displacement:
+
+-   +1.9 weeks out of formal job.
+
+-   -3.6% in formal labor earnings.
+
+-   \~57% of the differential unemployment spell is spent in informal work.
+
+UI has smaller negative effect on reemployment wages than lump-sum!
+
+-   Unexpected, as UI is thought to be more distortive because it is more generous and its benefits are spread over time.
+
+## Lump-sum severance and consumption smoothing
+
+@gerard2021a — Brazil, Event study / DiD using linked admin + expenditure data (FGTS)
+
+::::: columns
+::: {.column width="40%"}
+-   Lump-sum recipients increase consumption by 35% initially.
+
+-   Later face 14% drop: poor smoothing.
+
+-   Shows risk of present-biased behavior of lump-sum unemployment benefits.
+:::
+
+::: {.column width="60%"}
+![Expenditure profile around displacement](gerard-naritomi.png)
+:::
+:::::
+
+## Incentive alignment effects
+
+@hartley2011 — Chile, UI Savings Accounts (UISA) Design: Natural experiment / DiD
+
+Does integrating UI to pension individual accounts make individuals **internalize** the cost of unemployment and incentivize job search?
+
+-   Although the causal link is ambiguous, as there is selection into UISA, beneficiaries of the *solidarity fund* are less likely to exit unemployment in the early months.
+
+- This is consistent with the idea that the negative effect of UI on unemployment duration is **weaker** as it is funded directly by the worker.
+
+## Gaps in the literature
+
+UI effects are well-studied in high-income countries, often using RD and DiD: UI causes longer unemployment spells consistently, but a waker link on job quality.
+
+-   However, evidence from **developing countries** is still emerging, especially in *high-informality* contexts.
+
+Brazil and Chile offer key case studies on UI and severance systems
+
+-   But Mexico’s AFORE-based quasi-UI (*Retiro Parcial por Desempleo*) remains empirically unexplored.
+
+Studies show informal work as an escape valve during UI [@gerard2021]
+
+-   But we lack causal evidence on how early pension withdrawals affect formal re-employment and job quality.
+
+
+
+# Context: *Retiro Parcial por Desempleo* in Mexico
+
+## Unemployment benefits in Mexico
+
+Mexico is amongst the developing countries that lacks a formal unemployment insurance system.
+
+- Employers are supposed to make a *mandatory severance* payment of 90 days of salary to workers who are laid off without just cause.
+
+As @sadka2024 have shown, the severance system is hindered by weak enforcement:
+
+-  Over 50% of dismissed workers report not receiving severance pay.
+
+- However, only 13% file a claim to the labor courts, as they (correctly) perceive the process ineffective. 
+
+- 30% of lawsuits remain unsolved after 4 years.
+
+- Among plaintiffs who won court judgments, only 20% collected the full amount awarded.
+
+## The *Retiro Parcial por Desempleo*
+
+The *Retiro Parcial por Desempleo* allows workers to withdraw a portion of their individualized pension savings (AFORE) in case of unemployment.
+
+
+
+## Eligibility criteria
+
+A worker who meets the eligibility criteria in @fig-eligibility and has been without a formal job for 46 days can withdraw up to:
+
+::::: columns
+::: {.column width="40%"}
+
+
+
+A.  Ten months of the minimum wage or one month of her most recent wage, whichever is lower.
+
+B.  Three times her monthly wage of 11.5% of her accumulated pension savings, whichever is lower.
+
+
+:::
+
+::: {.column width="60%"}
+```{r}
+#| label: fig-eligibility
+#| fig-cap: "Eligibility criteria for the *Retiro Parcial por Desempleo*"
+#| fig-height: 6
+#| fig-width: 8
+
+tar_read(eligibility_plot)
+
+```
+:::
+:::::
+
+
+Having used the *Retiro Parcial por Desempleo* once, a worker can only withdraw again after 5 years.
+
+
+
+## Usage of *Retiro Parcial por Desempleo*
+
+```{r}
+#| label: fig-rpd
+#| fig-cap: "Cumulative number of withdraws and amount withdrawn"
+#| fig-height: 5
+#| fig-width: 10
+
+tar_read(rpd_usage_plot)
+```
+
+# Emprical strategy
+
+## Intent-to-treat
+
+I leverage the sharp eligibility cutoff of two years of SS contributions to estimate the causal effect of the *Retiro Parcial por Desempleo* on labor market outcomes using a regression discontinuity design (RDD) of the form:
+
+$$
+Y_{i} = \alpha + \beta D_i + f(C_i - 2) + \epsilon_i \quad \text{where} \quad |C_i - 2| \le h
+$$ {#eq-rdd}
+
+
+ - $Y_{i}$ is an outcome of interest,
+
+ - $C_i$ is worker $i$'s contributions to SS measured in years,  
+
+ - $D_i$ indicates i's eligibility status: whether $C_i \ge 2$, and 
+
+ - $f(\cdot)$ is a polynomial function of $C_i$ and $h$ is the bandwidth around the threshold.
+
+## ITT Assumptions
+
+$\beta$ in @eq-rdd represents the estimate of the causal effect of **being eligible** for the *Retiro Parcial por Desempleo* on labor market outcomes if:
+
+i. **No bunching:** workers cannot manipulate their eligibility status, and
+
+i. **Continiuty:** wokrkers' features are smooth around the eligibility threshold.
+
+
+## Treatment-on-the-treated
+
+Using data on take-up, I estimate the treatment-on-the-treated (TOT) effect of the *Retiro Parcial por Desempleo* on labor market outcomes using a **fuzzy** regression discontinuity that can be expressed as a two-stage least squares model:
+
+First stage:
+
+$$
+T_{i} = \alpha + \beta D_i + f(C_i - 2) + \epsilon_i \quad \text{where} \quad |C_i - 2| \le h
+$$ {#eq-1s}
+
+Second stage:
+
+$$
+Y_i = \gamma + \tau \hat T_i + f(C_i - 2) + \epsilon_i \quad \text{where} \quad |C_i - 2| \le h
+$$ {#eq-2s}
+
+- $T_{i}$ is the treatment status of worker $i$ (whether they took the *Retiro Parcial por Desempleo*),
+
+- $\hat T_{i}$ is the predicted value of $T_{i}$ from @eq-1s, and
+
+- $\tau$ represents the estimate of the causal effect of **taking** the *Retiro Parcial por Desempleo* on labor market outcomes.
+
+## TOT Assumptions
+
+In addition to the assumptions for the ITT, the TOT estimate $\tau$ is valid if:
+
+iii. **Monotonicity:** the first stage is strong enough.
+
+# Data
+
+## Data sources
+
+I leverage two confidential administrative datasets from the *Instituto Mexicano del Seguro Social* (IMSS):
+
+i. **Cuenta individual**: Matched employee-employer panel tracking the entire formal labor market in Mexico.
+
+ii. **Retiro Parcial por Desempleo**: Administrative records of all workers who took the *Retiro Parcial por Desempleo* (see @fig-rpd).
+
+
+## Employment contracts and unemployment spells
+
+{{< embed ../notebooks/unemployment.qmd#fig-employment-spells >}}
+
+## Sample selection
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+#| label: fig-sample-selection
+#| fig-cap: "Sample selection"
+#| fig-height: 6
+#| fig-width: 8
+
+
+tar_read(sample_selection_plot)
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| label: fig-density
+#| fig-cap: "Density test of the running variable"
+#| fig-alt: "This figure shows there was no manipulation into eligibility by altering the days of contributions to the social security system at the moment of displacement [@cattaneo2020]."
+#| fig-height: 6
+#| fig-width: 8
+
+tar_read(density_plot)
+
+```
+:::
+:::::
+
+
+## Testing for continuity: worker characteristics
+
+
+```{r}
+#| label: fig-continuity
+#| fig-cap: "Continuity of covariates around the eligibility threshold"
+#| fig-width: 12
+#| fig-height: 6
+
+tar_read(covariates_plots_long)
+
+```
+
+## Testing for continuity: previous employment
+
+```{r}
+#| label: fig-prev-job
+#| fig-cap: "Continuity of previous job characteristics around the eligibility threshold"
+#| fig-width: 12
+#| fig-height: 6
+
+tar_read(prev_job_plots) 
+
+```
+
+
+## Testing for continuity
+
+```{r}
+#| label: tbl-covariates-bal
+#| tbl-cap: "Balance of covariates around the RPD threshold"
+#| cache: false
+
+
+tar_read(all_covariates) |>
+    slice_head(n = 5) |>
+    my_modelsummary() |>
+    kable_styling(latex_options = "scale_down") |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "6em")
+
+tar_read(all_covariates) |>
+    slice_tail(n = 5) |>
+    my_modelsummary() |>
+    kable_styling(latex_options = "scale_down") |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "6em") |>
+    footnote(
+        general = rdd_footnote_beamer,
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+
+```
+
+
+# Results
+
+## Take up
+
+
+```{r}
+#| label: fig-take-up
+#| fig-cap: "Effect of eligibility on RPD take up"
+#| fig-height: 6
+#| fig-width: 12
+
+tar_read(take_up_plots_long)
+
+
+```
+
+
+## Take up
+
+```{r}
+#| label: fig-take-up-path
+#| fig-cap: "Dynamic effect of eligibility on take up. 95 percent confidence intervals"
+#| fig-height: 4
+#| fig-width: 8
+
+
+tar_read(take_up_path)
+
+```
+
+## Take up
+
+```{r}
+#| label: tbl-take-up
+#| tbl-cap: "Effect of eligibility on take up"
+
+take_up_table <- tar_read(take_up) |>
+    filter(str_detect(name, "take_up")) |>
+    filter(!str_detect(name, "censored|days")) |>
+    mutate(
+        months = str_extract(name, "\\d+") |> as.numeric(),
+        label = case_when(
+            str_detect(name, "take_up") ~ str_c("Take up - ", months, " months")
+        )
+    ) |>
+    filter(months %in% c(2, 3, 6, 9, 12)) |>
+    arrange(months)
+
+take_up_table |>
+    my_modelsummary(digits = 3) |>
+    kable_styling(
+        latex_options = "scale_down",
+        full_width = F
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "6em") |>
+    footnote(
+        general = rdd_footnote_beamer,
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+
+```
+
+
+
+
+
+## Job search outcomes
+
+```{r}
+#| label: fig-treat-path
+#| fig-cap: "Dynamic effect of RPD on survival and duration of unemployment for compliers. 95 percent confidence intervals"
+#| fig-height: 7
+#| fig-width: 12
+
+
+tar_read(fuzzy_path)
+
+
+```
+
+## Job search outcomes
+
+
+
+```{r}
+#| label: tbl-fuzzy-job-search
+#| tbl-cap: "Effect of RPD on Job Search Outcomes for Compliers"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|   - "Survival and Duration of Unemployment"
+#|   - "Next Job Quality"
+
+tar_read(survival_iv) |>
+    mutate(months = str_extract(name, "\\d+") |> as.numeric()) |>
+    filter(name %in% c("survival_3", "survival_6", "duration_12", "duration_36")) |>
+    arrange(desc(str_extract(name, "[a:z]")), months) |>
+    mutate(label = case_when(
+        str_detect(name, "survival") ~ str_c("Survival - ", months, " months"),
+        str_detect(name, "duration") ~ str_c("Duration - (wks) ", months, " months")
+    )) |>
+    my_modelsummary() |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "12em") |>
+    column_spec(2:5, width = "8em")
+  
+tar_read(next_job_iv) |>
+    arrange(name) |>
+    mutate(
+        label = case_when(
+            name == "next_job_av_earnings" ~ "Monthly earnings",
+            name == "next_job_cum_earnings" ~ "Total earnings",
+            name == "next_job_duration" ~ "Job duration (wks)",
+            name == "prev_job_av_earnings" ~ "Prev. job earnings",
+        )
+    ) |>
+    my_modelsummary() |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "12em") |>
+    column_spec(2:5, width = "8em") |>
+    footnote(
+        general = str_c(fuzzy_rd_footnote_beamer, " Currencies expressed in 2025 Mexican pesos."),
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+```
+
+
+## Medium-term labor market outcomes
+
+```{r}
+#| label: tbl-medium-fuzzy
+#| tbl-cap: "Effect of RPD for Compliers: Earnings and Employment over Medium Term for compliers"
+#| layout-ncol: 1
+#| tbl-subcap:
+#| - "Earnings (2024 MXN)"
+#| - "Months Worked"
+
+
+medium_table <- tar_read(medium_term_iv) |>
+        mutate(
+            unemp_year = str_extract(name, "\\d+") |> as.numeric(),
+            unemp_year = str_c("Year ", unemp_year),
+            unemp_year = case_when( #   is.na(unemp_year) & str_detect(name, "av_") ~ "Average 3 years",
+                is.na(unemp_year) ~ "Total 3 years", T ~ unemp_year
+            )
+        ) |>
+        mutate(
+            label = case_when(
+                str_detect(name, "av_earnings") ~ "Average monthly earnings",
+                str_detect(name, "earnings") ~ "Earnings",
+                str_detect(name, "months_worked") ~ "Months Worked",
+            )
+        ) |>
+        arrange(label, unemp_year)
+
+
+ medium_table |>
+        filter(label == "Earnings") |>
+        my_medium_table()
+
+medium_table |>
+        filter(label == "Months Worked") |>
+        my_medium_table()
+
+
+```
+
+
+## Medium-term labor market outcomes
+
+```{r}
+#| label: tbl-medium-fuzzy-2
+#| tbl-cap: "Effect of RPD for Compliers: Wages over Medium Term for compliers"
+
+
+
+medium_table |>
+        filter(label == "Average monthly earnings") |>
+        my_medium_table() |>
+        footnote(
+            general = str_c(fuzzy_rd_footnote_beamer, " Currencies are expressed in 2024 Mexican pesos."),
+            general_title = "Note:",
+            threeparttable = T,
+            escape = F,
+            footnote_as_chunk = T
+        )
+```
+
+## Summary of results
+
+1. Though not statistically significant, RPD takers will be unemployed for 9 weeks longer by the end of the first year since displacement.
+
+1. Next job quality is by no menas affected by the RPD.
+
+1. Over the medium term, RPD takers will have earned ~$100,000 pesos less in the formal labor market. This is driven by both intensive and extensive margins:
+    
+    -   They will have worked 5 months less in the formal labor market.
+
+    -   They will have earned $2,400 pesos less per month.
+
+# Treatment heterogeneity
+
+## Income
+
+```{r}
+#| label: tbl-income
+#| tbl-cap: "Effect of RPD for Compliers: Heterogeneity over Wage at Displacement"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "Below Median Wage"
+#|  - "Above Median Wage"
+
+
+results <- tar_read(income_results) |>
+  clean_hate()
+  
+
+results |>
+  filter(split == 1) |>
+  print_hate()
+
+
+results |>
+  filter(split == 2) |>
+  print_hate() |>
+  footnote(
+    general = str_c(fuzzy_rd_footnote_beamer, " Panel A shows the results for the below median wage group ($6,599.3), while panel B shows the results for the above median wage group. Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = T,
+    footnote_as_chunk = T
+  )
+
+```
+
+## Age
+
+```{r}
+#| label: tbl-age
+#| tbl-cap: "Effect of RPD for Compliers: Heterogeneity over Age at Displacement"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "Below Median Age"
+#|  - "Above Median Age"
+
+results <- tar_read(age_results) |>
+  clean_hate()
+
+results |>
+  filter(split == 1) |>
+ print_hate()
+
+results |>
+  filter(split == 2) |>
+  print_hate() |>
+  footnote(
+    general = str_c(fuzzy_rd_footnote_beamer, " Panel A shows the results for the below median age group (23.2 years), while panel B shows the results for the above median age group. Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+```
+
+
+## Covid
+
+```{r}
+#| label: tbl-covid
+#| tbl-cap: "Effect of RPD for Compliers: Heterogeneity over Exposure to Covid-19"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "No Exposure (Displaced before March 2019)"
+#|  - "Full Exposure (Displaced after March 2020)" 
+
+results <- tar_read(covid_results) |>
+  clean_hate()
+
+results |>
+  filter(split == "No Exposure") |>
+  print_hate()
+
+results |>
+  filter(split == "Full Exposure") |>
+  print_hate() |>
+  footnote(
+    general = str_c(fuzzy_rd_footnote_beamer, " Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+
+
+```
+
+
+
+
+
+
+## Summary of results
+
+1. **Income:** The effect on unemployment duration was **way larger** for poorer workers, while the earnings effect was no different across groups.
+
+    - Consistent with the idea that duration is affected by liquidity constraints.
+
+1. **Age:** The effect on unemployment duration was **larger** for younger workers, while the earnings effect was no different across groups.
+
+    - Consistent with the idea that younger workers have less attachment to the formal labor market.
+
+## Summary of results
+
+3. **Covid**: The effect on unemployment duration was almost entirely driven by unemployment displacement that happened before March 2019, and had no exposure to the pandemic.
+
+    - Displaced workers fully exposed to the pandemic (March 2020 or later) did not se a negative effect on unemployment duration!
+
+    - Moreover, exposed workers saw a **positive** effect on earnings!
+
+    - This seems to indicate that the positive effects of UI are indeed larger during employment crises, albeit at the cost of longer unemployment spells during normal times.
+
+## Closing remarks
+
+1. Consistent with the UI literature, the *Retiro Parcial por Desempleo* causes longer unemployment spells, although the effects are **not quite** statistically significant.
+
+1. Contrary to the more optimistic UI literature [@acemoglu1999; @acemoglu2000], the *Retiro Parcial por Desempleo* does not seem to improve job quality or medium-term labor earnings.
+
+1. The low take up and large standard errors may indicate that the *Retiro Parcial por Desempleo* achieves its designed objective of **aligning incentives** for job search, plausibly at the cost of lower consumption smoothing.
+
+1. The design seems to be rather helpful during **employment crises**, as the effect on unemployment duration is null, and the effect on earnings is positive.
+
+
+## References

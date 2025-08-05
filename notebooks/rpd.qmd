@@ -1,0 +1,132 @@
+---
+title: "Partial withdraws"
+execute:
+    cache: false
+---
+
+```{r}
+rm(list = ls())
+gc()
+
+pacman::p_load(tidyverse, arrow, here, duckdb, labelled, ggpubr)
+
+theme_set(theme_minimal())
+```
+
+
+```{r}
+con <- DBI::dbConnect(duckdb::duckdb(),
+                      dbdir = "temp1.duckdb")
+
+
+withdraws <- here("data/temp/withdraws_clean.feather") |>
+    open_dataset(format = "feather") 
+```
+
+
+```{r}
+
+withdraws |>
+    summarise(
+        .by = rpd_date,
+        n = n()
+    ) |>
+    collect() |>
+    arrange(rpd_date) |>
+    mutate(n = cumsum(n)) |>
+    ggplot(aes(x = rpd_date, y = n)) +
+    geom_step() +
+    labs(
+        title = "Cumulative number of withdraws",
+        x = "Date",
+        y = "Number of withdraws"
+    ) +
+    scale_y_continuous(labels = scales::comma) 
+
+withdraws |>
+    summarise(
+        .by = rpd_date,
+        n = sum(amount_withdrawn)
+    ) |>
+    collect() |>
+    arrange(rpd_date) |>
+    mutate(n = cumsum(n)) |>
+    ggplot(aes(x = rpd_date, y = n)) +
+    geom_step() +
+    labs(
+        title = "Cumulative amount withdrawn",
+        x = "Date",
+        y = "Amount withdrawn (Millions MXN 2024)"
+    ) +
+    scale_y_continuous(labels = scales::dollar_format(scale = 1e-6)) 
+
+```
+
+
+
+```{r}
+#| label: fig-rpd
+#| fig-height: 5
+#| fig-width: 10
+
+left <- withdraws |>
+    summarise(
+        .by = rpd_date,
+        n = n()
+    ) |>
+    collect() |>
+    arrange(rpd_date) |>
+    mutate(n = cumsum(n)) |>
+    ggplot(aes(x = rpd_date, y = n)) +
+    geom_step() +
+    labs(
+        title = "Cumulative number of withdraws",
+        x = "Date",
+        y = "Number of withdraws"
+    ) +
+    scale_y_continuous(labels = scales::comma) 
+
+right <- withdraws |>
+    summarise(
+        .by = rpd_date,
+        n = sum(amount_withdrawn)
+    ) |>
+    collect() |>
+    arrange(rpd_date) |>
+    mutate(n = cumsum(n)) |>
+    ggplot(aes(x = rpd_date, y = n)) +
+    geom_step() +
+    labs(
+        title = "Cumulative amount withdrawn",
+        x = "Date",
+        y = "Amount withdrawn (Millions MXN 2024)"
+    ) +
+    scale_y_continuous(labels = scales::dollar_format(scale = 1e-6)) 
+
+
+ggarrange(left, right)
+
+```
+
+```{r}
+
+unemployment <- here("data/working/rd_unemployment_rpd") |>
+    open_dataset(format = "parquet")
+
+glimpse(unemployment)
+
+
+interest_workers <- unemployment |>
+    filter(interest_event == 1) |>
+    mutate(
+        ever_took_up = as.numeric(!is.na(rpd_date))
+    ) |>
+    compute()
+
+
+interest_workers |>
+    pull(ever_took_up, as_vector = T) |>
+    mean()
+
+
+```

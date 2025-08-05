@@ -1,0 +1,172 @@
+---
+title: "Labor market outcomes of an integrated unemployment insurance: Evidence from Mexico"
+subtitle: "Progress"
+author: "Esteban Degetau"
+date: "2025-04-2"
+date-format: long
+fig-height: 5
+fig-width: 10
+---
+
+## Validity of empirical strategy
+
+Recall I showed my empirical strategy was *valid*:
+
+1.  We saw there was no bunching around the eligibility threshold: i.e. workers do not manipulate their way into eligibility. 
+
+2. I showed that covariates (age, gender, previous job, etc.) are continuous around the eligibility threshold.
+
+## Usage of RPD
+
+{{< embed ../notebooks/rpd.qmd#fig-rpd >}}
+
+## First stage: Effect of eligibility on take up
+
+{{< embed ../notebooks/rdd.qmd#fig-take-up >}}
+
+## An alternative to eligibility after 12 months
+
+{{< embed ../notebooks/unemployment.qmd#fig-sample-selection >}}
+
+## First stage: Dynamic effect
+
+{{< embed ../notebooks/rdd.qmd#fig-take-up-path >}}
+
+## Job search outcomes: survival in unemployment
+
+{{< embed ../notebooks/rdd.qmd#fig-survival-wide >}}
+
+## Job search outcomes: survival in unemployment
+
+{{< embed ../notebooks/rdd.qmd#fig-survival-path >}}
+
+## Job search outcomes: duration of unemployment spell
+
+{{< embed ../notebooks/rdd.qmd#fig-duration-path >}}
+
+## Job search outcomes
+
+```{r}
+#| include: false
+
+pacman::p_load(here, gt, tidyverse)
+
+load(here("results/RD/job_search.RData"))
+
+
+temp_file <- tempfile()
+
+job_search_table |>
+ungroup() |>
+slice(1:5) |>
+group_by(panel) |>
+  gt() |>
+  sub_missing(columns = everything(),
+              rows = everything(),
+              missing_text = " - ") |>
+  tab_footnote(
+    md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+  ) |>
+  fmt_number(
+    decimals = 3,
+    drop_trailing_zeros = T
+  ) |>
+  cols_width(
+    # where(is.numeric) ~ pct(15),
+    " " ~ pct(25),
+    everything() ~ pct(18)
+  ) |>
+  tab_options(
+    # table.width = pct(100),
+    quarto.use_bootstrap = TRUE
+  ) |>
+  gtsave(
+    filename = "job_search_table_1.png"
+  )
+
+
+  
+```
+
+![RPD effect on job search outcomes](job_search_table_1.png){#tbl-job-search}
+
+## Job search outcomes
+
+```{r}
+#| include: false
+
+job_search_table |>
+ungroup() |>
+slice(6:10) |>
+    select(!"1") |>
+    group_by(panel) |>
+    gt() |>
+    sub_missing(columns = everything(),
+                rows = everything(),
+                missing_text = " - ") |>
+    tab_footnote(
+        md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+    ) |>
+    fmt_number(
+        decimals = 3,
+        drop_trailing_zeros = T
+    ) |>
+    cols_width(
+        # where(is.numeric) ~ pct(15),
+        " " ~ pct(25),
+        everything() ~ pct(18)
+    ) |>
+    tab_options(
+        # table.width = pct(100),
+        quarto.use_bootstrap = TRUE
+    ) |>
+    gtsave(
+        filename = "job_search_table_2.png"
+    )
+
+rm(list = ls())
+```
+
+![RPD effect on job search outcomes](job_search_table_2.png){#tbl-job-search-2}
+
+## Medium run effects
+
+```{r}
+#| include: false
+
+
+load(here("results/RD/medium_term.RData"))
+
+medium_table |>
+  rename(" " = 1) |>
+  gt() |>
+  fmt_number(decimals = 3, drop_trailing_zeros = T) |>
+  tab_footnote(
+    md("*Note:* This table shows the estimated coefficient of interest in Equation 4.1 using a triangular kernel, optimal bandwidth and a 2nd degree local polynomial."),
+  ) |>
+  fmt(
+    columns = " ",
+    fns = gt::md
+  ) |>
+  tab_options(
+    quarto.use_bootstrap = TRUE
+  ) |>
+    gtsave(
+        filename = "medium_table.png"
+    )
+
+
+rm(medium_term)
+```
+
+![RPD Effect: Earnings, Emloyment and Wages over Medium Run](medium_table.png){#tbl-medium}
+
+## Challenges
+
+- First stage results show my computations are correct. Indeed, the research design is valid.
+
+- However, the take up rate is low: around 7% for those at the right of the cutoff by one year after displacement.
+
+- Using propensity score weights does not increase power, as my covariates do not predict take up.
+
+- Next steps: show that younger and lower income workers see significant labor market outcomes.
