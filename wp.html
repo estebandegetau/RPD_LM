@@ -1,0 +1,2736 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-08-11">
+<meta name="keywords" content="unemployment insurance, income substitution, Mexico, RPD, labor economics">
+
+<title>The Labor Market Outcomes of (Quasi) Unemployment Insurance</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="wp_files/libs/clipboard/clipboard.min.js"></script>
+<script src="wp_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="wp_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="wp_files/libs/quarto-html/popper.min.js"></script>
+<script src="wp_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="wp_files/libs/quarto-html/anchor.min.js"></script>
+<link href="wp_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="wp_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="wp_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="wp_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="wp_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+<script src="wp_files/libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="wp_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The Labor Market Outcomes of (Quasi) Unemployment Insurance</h1>
+            <p class="subtitle lead">Evidence from the <em>Retiro Parcial por Desempleo</em> in Mexico</p>
+                      </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliations</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://estebandegetau.com">Esteban Degetau</a> <a href="mailto:esteban.degetau@imss.gob.mx" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0009-0004-4095-8819" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+    </div>
+    <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              Instituto Mexicano del Seguro Social
+            </p>
+          <p class="affiliation">
+              Instituto Tecnológico Autónomo de México
+            </p>
+        </div>
+    </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 11, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  <div>
+    <div class="abstract">
+      <div class="block-title">Abstract</div>
+      <p>I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by about four percentage points. Leveraging these take-up data, I estimate the average treatment effect on the treated and find that RPD use prolongs unemployment by up to 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Adverse effects are concentrated among younger, lower-income, and female workers, while some higher-income groups see modest earnings gains. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="keywords">
+      <div class="block-title">Keywords</div>
+      <p>unemployment insurance, income substitution, Mexico, RPD, labor economics</p>
+    </div>
+  </div>
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-context" id="toc-sec-context" class="nav-link active" data-scroll-target="#sec-context">Institutional Background</a>
+  <ul class="collapse">
+  <li><a href="#the-partial-withdrawal" id="toc-the-partial-withdrawal" class="nav-link" data-scroll-target="#the-partial-withdrawal">The Partial Withdrawal</a></li>
+  <li><a href="#sec-usage" id="toc-sec-usage" class="nav-link" data-scroll-target="#sec-usage">Usage and Adoption</a></li>
+  <li><a href="#income-substitution-for-the-unemployed-in-mexico" id="toc-income-substitution-for-the-unemployed-in-mexico" class="nav-link" data-scroll-target="#income-substitution-for-the-unemployed-in-mexico">Income Substitution for the Unemployed in Mexico</a></li>
+  </ul></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data">Data</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#sec-sample-selection" id="toc-sec-sample-selection" class="nav-link" data-scroll-target="#sec-sample-selection">Sample Selection</a></li>
+  </ul></li>
+  <li><a href="#sec-empirical-strategy" id="toc-sec-empirical-strategy" class="nav-link" data-scroll-target="#sec-empirical-strategy">Empirical Strategy</a>
+  <ul class="collapse">
+  <li><a href="#sec-assumptions" id="toc-sec-assumptions" class="nav-link" data-scroll-target="#sec-assumptions">Evidence on Design Validity</a></li>
+  </ul></li>
+  <li><a href="#sec-results" id="toc-sec-results" class="nav-link" data-scroll-target="#sec-results">Results</a>
+  <ul class="collapse">
+  <li><a href="#sec-take-up" id="toc-sec-take-up" class="nav-link" data-scroll-target="#sec-take-up">First Stage</a></li>
+  <li><a href="#sec-main-results" id="toc-sec-main-results" class="nav-link" data-scroll-target="#sec-main-results">Job Search Outcomes</a></li>
+  <li><a href="#sec-medium-run" id="toc-sec-medium-run" class="nav-link" data-scroll-target="#sec-medium-run">Medium Term Effects</a></li>
+  <li><a href="#sec-additional-results" id="toc-sec-additional-results" class="nav-link" data-scroll-target="#sec-additional-results">Additional Results: Heterogeneous Treatment Effects</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="wp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>Job loss can cause severe income disruptions, yet in the absence of public intervention, workers must self-insure by borrowing, drawing down savings, or relying on informal support networks. Economists have long argued that such self-insurance is inefficient: when credit markets are incomplete and workers are risk-averse, precautionary strategies often fall short, and the welfare losses from income volatility can be large. Unemployment insurance (UI) programs address this market failure by pooling risk across individuals and time, thereby enabling workers to smooth consumption during periods of joblessness <span class="citation" data-cites="baily1978 gruber1997">(<a href="#ref-baily1978" role="doc-biblioref">Baily 1978</a>; <a href="#ref-gruber1997" role="doc-biblioref">Gruber 1997</a>)</span>. Beyond their insurance function, UI programs may also improve job match quality by reducing the urgency to accept the first available job, leading to higher earnings and long-run productivity <span class="citation" data-cites="acemoglu1999 acemoglu2000">(<a href="#ref-acemoglu1999" role="doc-biblioref">Acemoglu and Shimer 1999</a>, <a href="#ref-acemoglu2000" role="doc-biblioref">2000</a>)</span>.</p>
+<p>These benefits, however, must be balanced against potential moral hazard; generous benefits may reduce the urgency to search for work, prolonging unemployment. In developing countries, where fiscal capacity is limited and informality widespread, traditional UI systems are often unviable. As a result, many governments rely on self-financed alternatives designed to provide limited liquidity while minimizing work disincentives. One such program is Mexico’s <em>Retiro Parcial por Desempleo</em> (RPD), which allows unemployed formal-sector workers to withdraw a portion of their pension savings upon job loss.</p>
+<p>This paper addresses the question: What are the causal labor market effects of access to the RPD program in Mexico? I study the impact of RPD eligibility and take-up on three key outcomes: (i) job search behavior, proxied by unemployment duration and employment survival; (ii) job quality, measured by reemployment wages and job duration; and (iii) medium-term labor market performance, defined as formal earnings and months worked in the three years following displacement. Understanding these effects is critical for assessing whether quasi-UI schemes like RPD enable better job matches or merely delay reemployment, and whether they reinforce or mitigate longer-term income risks.</p>
+<p>A growing body of research has examined the effects of UI on labor market outcomes in both high- and low-income contexts. In advanced economies, natural experiments and regression discontinuity designs show that more generous UI consistently prolongs unemployment spells <span class="citation" data-cites="katz1990 schmieder2012">(e.g., <a href="#ref-katz1990" role="doc-biblioref">Katz and Meyer 1990</a>; <a href="#ref-schmieder2012" role="doc-biblioref">Schmieder, Wachter, and Bender 2012</a>)</span>. Evidence on job quality is more mixed: while some studies report gains in reemployment wages and job stability <span class="citation" data-cites="nekoei2017 centeno2006">(e.g., <a href="#ref-nekoei2017" role="doc-biblioref">Nekoei and Weber 2017</a>; <a href="#ref-centeno2006" role="doc-biblioref">Centeno and Novo 2006</a>)</span>, others find negligible or even adverse effects on earnings <span class="citation" data-cites="schmieder2016 lebarbanchon2016">(e.g., <a href="#ref-schmieder2016" role="doc-biblioref">Schmieder and Wachter 2016</a>; <a href="#ref-lebarbanchon2016" role="doc-biblioref">Le Barbanchon 2016</a>)</span>. In middle-income countries, UI interacts with informality in complex ways. For instance, <span class="citation" data-cites="britto2022">Britto (<a href="#ref-britto2022" role="doc-biblioref">2022</a>)</span> finds that in Brazil, over half of the additional unemployment induced by extended UI is offset by increased informal employment, raising concerns about behavioral leakage and program effectiveness.</p>
+<p>This study contributes to the literature by being the first to estimate the causal impact of Mexico’s RPD program using administrative data and a fuzzy regression discontinuity design. While earlier causal studies <span class="citation" data-cites="velázquezguadarrama2023 carreñogodínez2025">(e.g., <a href="#ref-velázquezguadarrama2023" role="doc-biblioref">Velázquez Guadarrama 2023</a>; <a href="#ref-carreñogodínez2025" role="doc-biblioref">Carreño Godínez 2025</a>)</span> relied on survey data, I leverage high-frequency longitudinal records from the Mexican social security system to construct a clean analytic sample and directly observe eligibility, take-up, and formal labor market trajectories. The RPD’s eligibility threshold—requiring at least two years of social security contributions—offers a compelling quasi-experimental setting. By exploiting this discontinuity and tracking administrative take-up, I estimate local average treatment effects (LATEs) for compliers across a rich set of labor market outcomes. While internal validity is strong, generalizability is limited to younger formal-sector workers near the eligibility threshold.</p>
+<p>The results show that RPD take-up has large and significant effects on unemployment duration: users remain unemployed for approximately 36 additional weeks over a three-year period, from a baseline of 51 weeks for the ineligible, with effects evident within the first three months after displacement. However, these extended unemployment spells do not translate into higher job quality. On average, RPD users do not experience gains in wages, job duration, or cumulative earnings. In fact, most subgroups—particularly lower-income, younger, and female workers—experience substantial earnings losses over the three-year horizon. Although some subgroups, such as higher-income or male workers, see small gains in reemployment earnings, these are not sufficient to offset longer unemployment spells. These findings challenge optimistic models of UI that predict gains in productivity and matching quality <span class="citation" data-cites="acemoglu2000">(<a href="#ref-acemoglu2000" role="doc-biblioref">Acemoglu and Shimer 2000</a>)</span>, and instead suggest that self-financed programs like RPD may distort job search without delivering meaningful returns in terms of labor market outcomes.</p>
+<p>Importantly, heterogeneity analyses reveal that the effects of RPD vary markedly across demographic and macroeconomic conditions. Younger and lower-wage workers face much larger increases in unemployment and sharper earnings losses—suggesting that RPD may exacerbate, rather than alleviate, pre-existing vulnerabilities, and thus renforce inequality. In contrast, workers displaced during the COVID-19 crisis exhibit smaller increases in unemployment and even experience modest gains in cumulative earnings. This points to a potentially countercyclical role for liquidity provision, where temporary support during downturns may cushion income losses and facilitate labor market reintegration.</p>
+<p>These findings offer several policy-relevant insights. First, the structure of the RPD program; being self-financed and actuarially neutral—appears to reduce concerns about fraud and fiscal burden but also limits its redistributive potential. Second, the regressive nature of its benefits—favoring those with more savings and stronger labor market histories—raises concerns about equity and adequacy. Lastly, while the program may be appropriate as a minimal safety net, it does not substitute for the functions of traditional unemployment insurance. The results contribute empirical grounding to policy debates in Mexico and other developing economies over whether to expand self-financed schemes, replace them with publicly funded UI, or design hybrid systems tailored to institutional capacity.</p>
+<p>Nonetheless, the study has limitations. The fuzzy RD design identifies local treatment effects for a narrow group of workers—those displaced in their third year of formal labor market participation—limiting external validity. Moreover, the administrative data do not capture transitions into informal employment or broader welfare outcomes, such as psychological stress or household income dynamics. Finally, the modest first stage—only a 4 percentage point increase in take-up—constrains precision in second-stage estimates and necessitates cautious interpretation.</p>
+<p>The remainder of the paper proceeds as follows. <a href="#sec-context" class="quarto-xref">Section&nbsp;1</a> provides institutional background on the RPD program and Mexico’s broader unemployment protection framework. <a href="#sec-data" class="quarto-xref">Section&nbsp;2</a> describes the data and sample construction. <a href="#sec-empirical-strategy" class="quarto-xref">Section&nbsp;3</a> outlines the empirical strategy. <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> presents the main results, including heterogeneity analysis. I finish with a discussion of the findings and their implications for policy.</p>
+<section id="sec-context" class="level2">
+<h2 class="anchored" data-anchor-id="sec-context">Institutional Background</h2>
+<p>This section provides an overview of the institutional framework surrounding unemployment protection in Mexico, with a focus on the <em>Retiro Parcial por Desempleo</em> (RPD) program. I begin by describing the eligibility conditions and usage rules of the RPD, a mechanism that allows unemployed workers to make partial withdrawals from their individual pension accounts. I then document the evolution of the program’s adoption over time, highlighting its increased relevance during periods of economic crisis. Finally, I situate RPD within the broader context of income substitution in Mexico, where the failure to enforce legally mandated severance pay has rendered employer-based protections largely ineffective. In this setting, RPD emerges as a self-financed, readily accessible—but ultimately limited—alternative for workers facing job loss.</p>
+<section id="the-partial-withdrawal" class="level3">
+<h3 class="anchored" data-anchor-id="the-partial-withdrawal">The Partial Withdrawal</h3>
+<p>The RPD program works as follows. The pension system in Mexico is a standard defined contributions scheme with individual accounts. While working in formality, workers accumulate resources financed in part by themselves, by their employer and by the government.</p>
+<section id="eligibility-criteria" class="level4">
+<h4 class="anchored" data-anchor-id="eligibility-criteria">Eligibility Criteria</h4>
+<p>If a worker faces an unemployment spell of at least 46 days, she may withdraw a fraction of her individual account balance through the RPD. The amount of money a worker can have access to depends on the number of years since her account was opened and the number of weeks she has contributed to social security. The <em>Ley del Seguro Social</em> considers two eligibility schemes, each allowing a worker to withdraw an amount up to:</p>
+<ol type="A">
+<li><p>Ten months of the minimum wage or one month of her most recent wage, whichever is lower, for workers satisfying:</p>
+<ol type="i">
+<li><p>having entered the formal labor market at least three years ago, and</p></li>
+<li><p>having contributed to social security for at least two years.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p></li>
+</ol></li>
+<li><p>Three times her monthly wage or 11.5% of her account balance, whichever is lower, for workers who entered the formal labor market at least three years ago, regardless of contributions to social security.</p></li>
+</ol>
+<p><a href="#fig-eligibility" class="quarto-xref">Figure&nbsp;1</a> provides a visual representation of the eligibility criteria. Note that a worker who became dismissed after four years since she entered the labor market, and with only one year of contributions to social security would not be immediately eligible to withdraw funds from her account. However, if she just waited in unemployment for a year, she would become eligible through Scheme B, without having to make further contributions. Hence, ineligible workers may become eligible by the mere passage of time. This feature of the eligibility structure is important to the construction of the analysis sample, as I show in <a href="#sec-sample-selection" class="quarto-xref">Section&nbsp;2.2</a>.</p>
+<p>Moreover, workers who are eligible through both schemes may choose the one that allows them to withdraw the largest amount. Having used the RPD once, a worker may use it again, only after waiting for five years since her last withdrawal. Importantly, using the RPD not only depletes the worker’s individual pension savings account, but it also reduces proportionally the amount of contributions to social security, which are used to determine and finance the pension at retirement age. This is a key feature of the RPD, as it allows workers to access their savings during unemployment, but it also reduces their future pension benefits.</p>
+<div id="fig-eligibility" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-eligibility-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure conceptualizes eligibility to RPD. The x-axis shows the number of years since entry to the labor market, while the y-axis shows the number of years contributed to social security. The green area represents the eligibility criteria for Scheme A: having entered the formal labor market at least three years before and having contributed to social security for at lest two years. The blue area represents the eligibility criteria for Scheme B: having entered the formal labor market at least three years before, regardless of contributions to social security. The gray area represents the not feasible zone: workers cannot contribute more days to social security than they have been in the formal labor market.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eligibility-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Eligibility Criteria
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-usage" class="level3">
+<h3 class="anchored" data-anchor-id="sec-usage">Usage and Adoption</h3>
+<p><a href="#fig-rpd" class="quarto-xref">Figure&nbsp;2</a> shows the cumulative number of partial withdraws from the individualized pension accounts since it was implemented in 1997. The data comes from a confidential administrative data set from the <em>Instituto Mexicano del Seguro Social</em> (IMSS). The RPD program was first implement in 2009 to give unemployed workers a source of income substitution in the context of the Great Recession. This event can be seen as a sharp increase in the usage of RPD, but also as a change in the trend of the number of withdrawals from the pension system. Accordingly, in the next big employment crisis, the COVID-19 pandemic, another trend increase followed. This shifts in the slope of the cumulative usage of RPD shows that employment crises have a persistent effect on the usage of the program, likely due to the increased salience of the program.</p>
+<p>To put figures into perspective, by the end of 2024, 16,966,851 workers had made 24,598,838 withdrawals from the pension system. By that same moment, IMSS reported a total of 22,238,379 active workers in the formal labor market. Indeed, not all RPD users were active workers by the end of 2024, but this number gives a sense of the magnitude of the usage program.</p>
+<div id="fig-rpd" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rpd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows the cumulative number of partial withdrawals (left) and the cumulative amount withdrawn (right) out of the Mexican individual pension account system (Afore). Source: IMSS.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rpd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Usage and Adoption
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="income-substitution-for-the-unemployed-in-mexico" class="level3">
+<h3 class="anchored" data-anchor-id="income-substitution-for-the-unemployed-in-mexico">Income Substitution for the Unemployed in Mexico</h3>
+<p>In theory, Mexican labor law provides mandatory severance pay (indemnización constitucional) as the main form of income substitution for workers who lose their jobs. Upon unjustified dismissal, employers are required to provide affected workers with three months of salary, plus seniority bonuses and accrued benefits. This legal severance framework reflects the broader Latin American tradition of employer liability systems as a substitute for unemployment insurance. However, in practice, enforcement of these entitlements is weak, uneven, and often illusory—rendering severance rights largely ineffective as a tool for income smoothing during unemployment.</p>
+<p>The core issue lies in the functioning of Mexico’s labor courts. In particular, in Mexico City, workers who wish to claim their legally mandated severance must navigate a judicial process that is slow, opaque, and vulnerable to both corruption and administrative incompetence. <span class="citation" data-cites="degetau2023">Degetau (<a href="#ref-degetau2023" role="doc-biblioref">2023</a>)</span> provides experimental evidence from the Mexico City Local Labor Courts showing that the mere act of serving notification—a basic procedural step that triggers the legal process—is often compromised. The study reveals that notification orders may fail not due to complexity or distance but because of strategic delays enabled by collusion between defendants (employers) and court notifiers.</p>
+<p>Further compounding these problems is the widespread information asymmetry among litigants. <span class="citation" data-cites="sadka2024">Sadka, Seira, and Woodruff (<a href="#ref-sadka2024" role="doc-biblioref">2024</a>)</span> demonstrate that plaintiffs in labor disputes often have unrealistic expectations about the outcomes of their cases, which leads to protracted litigation and missed opportunities for settlement. Their randomized controlled trial shows that providing plaintiffs with predictive information about expected case duration, probability of success, and likely monetary outcomes significantly increases same-day settlement rates and improves short-term financial well-being. However, this intervention also reveals the deep dysfunction of the system: only when plaintiffs are given external tools to navigate uncertainty can they extract meaningful value from the legal process.</p>
+<p>The statistical odds of a dismissed worker successfully enforcing their severance rights are vanishingly low. As <span class="citation" data-cites="sadka2024">Sadka, Seira, and Woodruff (<a href="#ref-sadka2024" role="doc-biblioref">2024</a>)</span> document, more than half of all dismissed workers in Mexico report never receiving severance pay, yet only 13% pursue legal action—a striking indication of the widespread perception that litigation is futile . And with good reason: nearly 30% of lawsuits remain unresolved four years after being filed, leaving workers in legal limbo with no income and no resolution. Even among the rare plaintiffs who persist through the full litigation process and win a favorable judgment, only 20% ever collect the full amount awarded. The practical message is devastatingly clear: in Mexico’s current labor justice system, even winning your case is no guarantee of receiving what the law promises. For the average worker facing dismissal, the path to severance is not just slow and bureaucratic—it is overwhelmingly stacked against them.</p>
+<p>Taken together, these findings paint a troubling picture: while Mexico’s legal framework nominally guarantees severance pay as income support for the unemployed, the institutions tasked with enforcing this right often fail to deliver. Procedural inefficiencies, the potential for corruption, and severe information gaps all contribute to a de facto collapse of enforcement. As a result, many dismissed workers are left without effective legal recourse, and severance pay—despite being codified in law—cannot be relied upon as a real source of income during unemployment.</p>
+<p>In this vacuum, workers may increasingly turn to alternative, self-financed mechanisms such as the RPD program—a partial withdrawal from their individual pension accounts—as their only accessible form of income substitution. Unlike severance pay, RPD is automatic and does not require litigation. However, it also lacks redistributive features, may deplete retirement savings, and provides only modest relief. This shift from legal entitlements to self-funded liquidity illustrates a broader institutional failure: in the absence of credible enforcement, even well-designed labor protections may become functionally irrelevant.</p>
+</section>
+</section>
+<section id="sec-data" class="level2">
+<h2 class="anchored" data-anchor-id="sec-data">Data</h2>
+<section id="data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="data-sources">Data Sources</h3>
+<p>To study the effect of the Retiro Parcial por Desempleo (RPD) on labor market outcomes, I use two confidential administrative data sources. The first is a matched employer-employee panel from the Instituto Mexicano del Seguro Social (IMSS), which tracks the entirety of the formal labor market. From this data set, I construct eligibility criteria and labor market outcomes. I restrict the analysis to workers who first entered the formal labor market between January 2010 and December 2017.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This yields a universe of 14,819,690 workers across 406,813,240 labor contracts.</p>
+<p>Although the IMSS employment data does not directly record unemployment episodes (i.e., the cause, onset, or duration of unemployment), unemployment spells can be inferred from gaps between labor contracts. I define a gap as a period during which an individual is not formally employed by any firm. While such gaps do not necessarily imply unemployment<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, they are sufficient for the RPD authority to consider a worker eligible for benefits.</p>
+<p>The second data source is the administrative registry of partial withdrawals from individual pension accounts. This registry includes every instance of RPD usage and records the date of withdrawal, amount withdrawn, account balance, weeks contributed to social security at that point, the last employer’s ID, and the worker’s unique identifier (Número de Seguridad Social, NSS). Crucially, I use the NSS to match the two data sets, enabling me to track the labor market trajectories of RPD users before and after its use. See <a href="#sec-usage" class="quarto-xref">Section&nbsp;1.2</a> for a detailed overview of the RPD program and its adoption.</p>
+</section>
+<section id="sec-sample-selection" class="level3">
+<h3 class="anchored" data-anchor-id="sec-sample-selection">Sample Selection</h3>
+<p>To estimate the effect of RPD on labor market outcomes, I leverage the eligibility criterion of having at least two years of contributions to social security at the moment of unemployment as s source of quasi-exogenous variation, (See <a href="#sec-context" class="quarto-xref">Section&nbsp;1</a> for context on the eligibility criteria.). Hence, I restrict the analysis sample to workers who (i) faced exactly one unemployment spell of at least 46 days during the third year since they joined the formal labor marked, and who (ii) had accumulated between one and three years worth of contributions to the social security system.</p>
+<p>Additionally, I restricted the analysis sample to workers with (a) ages between 18 and 65 years old, (b) who were registered in the <em>Régimen obligatorio</em> as permanent or eventual workers, (c) were not self-employed, (d) were not registered to an agrarian firm, and (e) were not in the top 1% of the unemployment duration distribution.</p>
+<p>These restrictions yield an analysis sample of of 877,749 workers. <a href="#fig-sample-selection" class="quarto-xref">Figure&nbsp;3</a> shows the sample selection of workers in the eligibility criteria space at the time their unique unemployment spell began. Although the restrictions I impose on the analysis sample render my results non-generalizable to the entire population of workers, they allow me to leverage the institutional characteristics for identification of the effect of eligibility to RPD on labor market outcomes. <a href="#tbl-summary" class="quarto-xref">Table&nbsp;10</a> shows additional summary statistics of the analysis sample.</p>
+<div id="fig-sample-selection" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sample-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: This figure provides a conceptual representation of eligibility for the RPD program. The x-axis denotes years since entry into the formal labor market, and the y-axis indicates years of contributions to social security. The green area corresponds to Scheme A eligibility, which requires at least three years since labor market entry and a minimum of two years of social security contributions. The blue area corresponds to Scheme B eligibility, which requires at least three years since labor market entry, irrespective of contribution history. The red square marks the subsample selected for empirical analysis. The gray area represents an infeasible region, as individuals cannot accumulate more years of social security contributions than years since formal labor market entry.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Sample Selection
+</figcaption>
+</figure>
+</div>
+<p>Within the analysis sample, only those workers who had accumulated at least two years of contributions to the social security system by the time they become displaced are eligible to withdraw funds from their pension account. <a href="#tbl-balance" class="quarto-xref">Table&nbsp;1</a> shows workers’ features across eligibility status at the moment of displacement. Indeed, there is a systematic positive selection of workers to eligibility, as workers who are eligible have contributed more to social security, had higher wages and longer tenures before displacement. Groups show imbalance across other characteristics mainly because the sample size is large, while the magnitude of the difference is not economically significant. Critically for my identification strategy, I show in <a href="#sec-assumptions" class="quarto-xref">Section&nbsp;3.1</a> that these differences across eligibility status are smooth around the eligibility threshold of 2 years of contributions to social security.</p>
+<div class="cell">
+<div id="tbl-balance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-balance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Balance of Outcomes and Covariates by Eligibility Status
+</figcaption>
+<div aria-describedby="tbl-balance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Characteristic</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Eligible<br>
+N = 427,927</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Ineligible<br>
+N = 449,822</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Displacement date</td>
+<td style="text-align: center;">2,018.07 (2.12)</td>
+<td style="text-align: center;">2,018.02 (2.10)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even" data-grouplength="4">
+<td colspan="4" style="text-align: left; border-bottom: 1px solid;"><strong>Outcomes</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Take up - 12 months</td>
+<td style="text-align: center;">37,400 (8.7%)</td>
+<td style="text-align: center;">685 (0.2%)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Survival - 3 months</td>
+<td style="text-align: center;">322,651 (75%)</td>
+<td style="text-align: center;">366,208 (81%)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Unemp. Dur. - Cens. 6 months</td>
+<td style="text-align: center;">20.0 (7.2)</td>
+<td style="text-align: center;">21.2 (6.7)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Unemp. Dur. - Cens. 36 months</td>
+<td style="text-align: center;">50 (48)</td>
+<td style="text-align: center;">56 (50)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="text-align: left; border-bottom: 1px solid;"><strong>Eligibility criteria</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Days since entry to formal labor market</td>
+<td style="text-align: center;">1,264 (104)</td>
+<td style="text-align: center;">1,265 (103)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Days contributed to SS</td>
+<td style="text-align: center;">914 (106)</td>
+<td style="text-align: center;">545 (106)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even" data-grouplength="2">
+<td colspan="4" style="text-align: left; border-bottom: 1px solid;"><strong>Previous job</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Tenure (weeks)</td>
+<td style="text-align: center;">35 (35)</td>
+<td style="text-align: center;">21 (21)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Daily wage (MXN 2024)</td>
+<td style="text-align: center;">283 (199)</td>
+<td style="text-align: center;">248 (151)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="4" style="text-align: left; border-bottom: 1px solid;"><strong>Demographics</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Female</td>
+<td style="text-align: center;">163,078 (38%)</td>
+<td style="text-align: center;">167,778 (37%)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Age at displacement date (years)</td>
+<td style="text-align: center;">24.9 (5.6)</td>
+<td style="text-align: center;">24.5 (5.3)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">No CURP</td>
+<td style="text-align: center;">13,929 (3.3%)</td>
+<td style="text-align: center;">16,106 (3.6%)</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports means and standard deviations (in parentheses) for key characteristics in the analysis sample, disaggregated by eligibility status at the date of displacement. For binary variables—such as *Take-up*, *Survival*, Female, and *No CURP*—the table reports the count and the corresponding percentage (in parentheses). *No CURP* indicates that the worker does not have a unique population identification number (CURP) registered with the IMSS. The p-value column reports the results from hypothesis tests of equality of means across eligible and ineligible groups.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-empirical-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="sec-empirical-strategy">Empirical Strategy</h2>
+<p>To estimate the effect of the <em>Retiro Parcial por Desempleo</em> (RPD) on labor market outcomes I use a regression discontinuity design (RDD) exploiting the eligibility condition of having contributed to social security for at least two years at the moment of displacement. I leverage data on RPD take up to estimate the local average treatment effect (LATE) on compliers using a fuzzy discontinuity design. The fuzzy RDD can be expressed as a two-stage least squares regression, where the first stage estimates the effect of eligibility on take up of the RPD program as in</p>
+<p><span id="eq-1s"><span class="math display">\[
+T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i \quad \text{where} \quad |C_i - 2| \le h
+\tag{1}\]</span></span></p>
+<p>where <span class="math inline">\(T_{i}\)</span> is a dummy indicating worker <span class="math inline">\(i\)</span>’s take up to RPD, <span class="math inline">\(D_i\)</span> indicates whether <span class="math inline">\(i\)</span> is eligible to withdraw funds from her pension account, i.e.&nbsp;<span class="math inline">\(C_i \ge 2\)</span>, where <span class="math inline">\(C_i\)</span> represents <span class="math inline">\(i\)</span>’s contributions to SS measured in years. <span class="math inline">\(f(\cdot)\)</span> is a polynomial function of <span class="math inline">\(C_i\)</span> and <span class="math inline">\(h\)</span> is the bandwidth around the threshold. <span class="math inline">\(\beta\)</span> identifies the causal effect of eligibility on take up of the RPD program.</p>
+<p>Hence, the second stage estimates the effect of taking up RPD on labor market outcomes as in</p>
+<p><span id="eq-2s"><span class="math display">\[
+Y_i = \gamma + \tau \hat T_i + f(C_i - 2) + v_i \quad \text{where} \quad |C_i - 2| \le h
+\tag{2}\]</span></span></p>
+<p>where <span class="math inline">\(Y_{i}\)</span> is an outcome of interest, <span class="math inline">\(\hat T_i\)</span> is the predicted value of the first stage. The main parameter of interest is <span class="math inline">\(\tau\)</span>, which identifies the LATE around the eligibility threshold. I use a local linear polynomial (<span class="math inline">\(p=1\)</span>) with a triangular kernel and the bandwidth selected using the method proposed by <span class="citation" data-cites="calonico2020">Calonico, Cattaneo, and Farrell (<a href="#ref-calonico2020" role="doc-biblioref">2020</a>)</span>. Specifically, I’m interested in the hypothesis test given by <span class="math inline">\(H_0: \tau=0\)</span> vs <span class="math inline">\(H_1: \tau \ne 0\)</span>. For inference, I use heteroskedasticity-robust standard errors with nearest-neighbor variance estimator, as proposed by <span class="citation" data-cites="calonico2014">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2014" role="doc-biblioref">2014</a>)</span>.</p>
+<section id="sec-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="sec-assumptions">Evidence on Design Validity</h3>
+<p>I provide two main tests on the validity of the sharp design in <a href="#eq-1s" class="quarto-xref">Equation&nbsp;1</a> plus an additional test on the validity of the fuzzy design in <a href="#eq-2s" class="quarto-xref">Equation&nbsp;2</a>. First, I show that there is no evidence of manipulation around the eligibility threshold. Second, I show that the covariates are balanced around the eligibility threshold. Finally, I show that the first stage is strong.</p>
+<p>First, <a href="#fig-density" class="quarto-xref">Figure&nbsp;4</a> shows the result of the <span class="citation" data-cites="cattaneo2020">Cattaneo, Jansson, and Ma (<a href="#ref-cattaneo2020" role="doc-biblioref">2020</a>)</span> test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, <a href="#fig-covariates-pre" class="quarto-xref">Figure&nbsp;5</a> and <a href="#fig-pre_unemp" class="quarto-xref">Figure&nbsp;6</a> show the continuity of covariates of workers around the eligibility threshold. Crucially, <a href="#tbl-covariates-bal" class="quarto-xref">Table&nbsp;2</a> shows the estimation and inference of <a href="#eq-1s" class="quarto-xref">Equation&nbsp;1</a>, showing there is no evidence of discontinuity at the threshold for any of the covariates <span class="citation" data-cites="cattaneo2019">(<a href="#ref-cattaneo2019" role="doc-biblioref">Cattaneo, Idrobo, and Titiunik 2019</a>)</span>. Finally, I present evidence on the strength of the first stage in <a href="#sec-take-up" class="quarto-xref">Section&nbsp;4.1</a>.</p>
+<div id="fig-density" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows there was no manipulation into eligibility by altering the days of contributions to social security at the moment of displacement <span class="citation" data-cites="cattaneo2020">(<a href="#ref-cattaneo2020" role="doc-biblioref">Cattaneo, Jansson, and Ma 2020</a>)</span>.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Density of the Running Variable
+</figcaption>
+</figure>
+</div>
+<div id="fig-covariates-pre" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-covariates-pre-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows (<em>i</em>) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (<em>ii</em>) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using <span class="citation" data-cites="calonico2015">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2015" role="doc-biblioref">2015</a>)</span>. The figure shows workers’ covariates do not systematically jump at the eligibility threshold.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-covariates-pre-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Covariates around Eligibility Threshold
+</figcaption>
+</figure>
+</div>
+<div id="fig-pre_unemp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pre_unemp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> his figure shows (<em>i</em>) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (<em>ii</em>) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using <span class="citation" data-cites="calonico2015">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2015" role="doc-biblioref">2015</a>)</span>. The figure shows workers’ previous job outcomes do not systematically jump at the eligibility threshold.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pre_unemp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Previous Job Outcomes around Eligibility Threshold
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div id="tbl-covariates-bal" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-covariates-bal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Eligibility Effect: Balance of Covariates
+</figcaption>
+<div aria-describedby="tbl-covariates-bal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Female</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Birth date</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Began working</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Unemployment date</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">-0.001</td>
+<td style="text-align: center; width: 6em;">-0.143</td>
+<td style="text-align: center; width: 6em;">-0.005</td>
+<td style="text-align: center; width: 6em;">-0.011</td>
+<td style="text-align: center; width: 6em;">0.125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.005)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.059)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.022)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.022)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.051)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">0.374</td>
+<td style="text-align: center; width: 6em;">1,994</td>
+<td style="text-align: center; width: 6em;">2,015</td>
+<td style="text-align: center; width: 6em;">2,018</td>
+<td style="text-align: center; width: 6em;">24.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">847,714</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">847,714</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Days since account opened</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">No CURP</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Prev job duration (weeks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Prev job total earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Prev job av monthly earnings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">-2.124</td>
+<td style="text-align: center; width: 6em;">-0.002</td>
+<td style="text-align: center; width: 6em;">0.424</td>
+<td style="text-align: center; width: 6em;">1634.627</td>
+<td style="text-align: center; width: 6em;">311.151</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1.005)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.002)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.315)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(843.632)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(214.297)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">1,268</td>
+<td style="text-align: center; width: 6em;">0.0343</td>
+<td style="text-align: center; width: 6em;">26.7</td>
+<td style="text-align: center; width: 6em;">50,504</td>
+<td style="text-align: center; width: 6em;">8,997</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.1, obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the procedure of Calonico, Cattaneo, and Titiunik (2014).</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-results" class="level2">
+<h2 class="anchored" data-anchor-id="sec-results">Results</h2>
+<p>This section presents the empirical results of the fuzzy regression discontinuity design (RDD) used to estimate the causal effect of the <em>Retiro Parcial por Desempleo</em> (RPD) program on labor market outcomes. I begin by documenting the first-stage effects of program eligibility on take-up, which justifies the fuzzy RDD strategy. I then estimate the local average treatment effect of RPD take-up on job search behavior and medium-term labor market outcomes. The results are complemented by a heterogeneity analysis that explores how these effects vary by gender, income level, age, and exposure to the COVID-19 pandemic.</p>
+<section id="sec-take-up" class="level3">
+<h3 class="anchored" data-anchor-id="sec-take-up">First Stage</h3>
+<p>This section presents evidence that workers eligible to the RPD program (with at least two years of social security contributions at the time of job displacement) are significantly more likely to take up than ineligible workers. These first-stage results confirm three key points: (i) the running variable has been correctly constructed, (ii) the first stage of the fuzzy regression discontinuity design is strong, and (iii) eligibility has a meaningful, albeit modest, effect on program take-up.</p>
+<p><a href="#fig-first-stage" class="quarto-xref">Figure&nbsp;7</a> shows that displaced workers just above the eligibility threshold are more likely to access the RPD program to withdraw funds from their pension account. Inference from <a href="#fig-first-stage-path" class="quarto-xref">Figure&nbsp;8</a> and <a href="#tbl-take-up" class="quarto-xref">Table&nbsp;3</a> confirms that the take-up discontinuity is statistically significant and stabilizes at around 4 percentage points after twelve months since displacement.</p>
+<p>Interestingly, <a href="#fig-first-stage" class="quarto-xref">Figure&nbsp;7</a> shows that take-up increases among initially ineligible workers after the twelfth month following displacement. This pattern should not be interpreted as conventional non-compliance. Rather, it reflects a change in eligibility status over time. Under Eligibility Mode B, workers become eligible for the RPD program once they accumulate at least five years of participation in the formal labor market, regardless of their contribution history (see <a href="#sec-context" class="quarto-xref">Section&nbsp;1</a> and <a href="#fig-eligibility" class="quarto-xref">Figure&nbsp;1</a>). Given that the analytic sample is restricted to individuals displaced between their third and fourth year in the formal sector, these workers only reach the five-year threshold approximately one year after displacement. Once eligible, they take up the program at rates comparable to the original compliers, which accounts for the observed stabilization in the intent-to-treat (ITT) effect after month 12 (see <a href="#fig-first-stage-path" class="quarto-xref">Figure&nbsp;8</a>).</p>
+<p><a href="#tbl-take-up" class="quarto-xref">Table&nbsp;3</a> confirms that the ITT effect on program take-up is highly statistically significant, albeit small in magnitude. This justifies the use of a fuzzy RDD strategy to estimate the local average treatment effect of RPD on labor market outcomes among compliers. The modest size of the first-stage effect is consistent with the institutional design of the RPD program: unlike traditional unemployment insurance schemes, RPD allows only a partial withdrawal from workers’ own pension accounts. It is, by design, a self-financed benefit that internalizes the cost of unemployment support.</p>
+<div id="fig-first-stage" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-first-stage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: This figure displays (i) sample means calculated within evenly spaced 14-day bins relative to the eligibility threshold, and (ii) the estimated regression function obtained using a local linear polynomial with a triangular kernel and optimal bandwidth selection following the method of <span class="citation" data-cites="calonico2015">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2015" role="doc-biblioref">2015</a>)</span>. The results show a discrete increase in program take-up at the eligibility threshold.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-first-stage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Eligibility Effect on Take Up
+</figcaption>
+</figure>
+</div>
+<div id="fig-first-stage-path" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-first-stage-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: This figure presents the estimated coefficients of interest from <a href="#eq-1s" class="quarto-xref">Equation&nbsp;1</a>. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of <span class="citation" data-cites="calonico2014">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2014" role="doc-biblioref">2014</a>)</span>. Vertical lines across point estimates represent 95% confidence intervals.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-first-stage-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Dynamic Effect of Eligibility on Take Up
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div id="tbl-take-up" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-take-up-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Eligibility Effect: First Stage
+</figcaption>
+<div aria-describedby="tbl-take-up-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Take up - 2 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Take up - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Take up - 6 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Take up - 9 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Take up - 12 months</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 5em;">0.008</td>
+<td style="text-align: center; width: 5em;">0.014</td>
+<td style="text-align: center; width: 5em;">0.027</td>
+<td style="text-align: center; width: 5em;">0.033</td>
+<td style="text-align: center; width: 5em;">0.036</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.001)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.002)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.002)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.003)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.003)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 5em;">0.00174</td>
+<td style="text-align: center; width: 5em;">0.00602</td>
+<td style="text-align: center; width: 5em;">0.0133</td>
+<td style="text-align: center; width: 5em;">0.0187</td>
+<td style="text-align: center; width: 5em;">0.0231</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 5em;">877,749</td>
+<td style="text-align: center; width: 5em;">877,749</td>
+<td style="text-align: center; width: 5em;">877,749</td>
+<td style="text-align: center; width: 5em;">877,749</td>
+<td style="text-align: center; width: 5em;">877,749</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.1, obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the procedure of Calonico, Cattaneo, and Titiunik (2014).</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-main-results" class="level3">
+<h3 class="anchored" data-anchor-id="sec-main-results">Job Search Outcomes</h3>
+<p>I now turn to the effects of RPD take-up on labor market outcomes, estimated using the fuzzy regression discontinuity design described in <a href="#eq-2s" class="quarto-xref">Equation&nbsp;2</a>. <a href="#fig-fuzzy-path" class="quarto-xref">Figure&nbsp;9</a> and <a href="#tbl-fuzzy-job-search-1" class="quarto-xref">Table&nbsp;4 (a)</a> present the dynamic treatment effects on unemployment duration and employment survival. By three months after displacement, taking up RPD increases the probability of remaining unemployed (i.e., survival in unemployment) by 31 percentage points. After 36 months, the cumulative effect on unemployment duration amounts to 36 additional weeks. These effects are statistically significant at the 5% level and align with the broader empirical literature: income support during unemployment typically prolongs joblessness. At the eligibility cutoff, RPD users experience a 70% increase in unemployment duration relative to non-eligible workers after three years. These findings underscore the potential social costs of income-substitution programs such as RPD, particularly through the lens of forgone contributions to the social security system due to extended non-employment spells.</p>
+<p>For completeness, Appendix <a href="#fig-survival" class="quarto-xref">Figure&nbsp;10</a>, <a href="#fig-duration" class="quarto-xref">Figure&nbsp;11</a>, and <a href="#fig-path" class="quarto-xref">Figure&nbsp;12</a>, along with <a href="#tbl-job-search" class="quarto-xref">Table&nbsp;11</a>, present intention-to-treat (ITT) estimates for the same outcomes, as described in <a href="#eq-1s" class="quarto-xref">Equation&nbsp;1</a>, as well as the corresponding RD plots. The ITT estimates show smaller effects than those reported in comparable international settings. For instance, <span class="citation" data-cites="britto2022">Britto (<a href="#ref-britto2022" role="doc-biblioref">2022</a>)</span> finds that a lump-sum unemployment benefit program in Brazil increased employment survival by 1.9 percentage points after three months, whereas the estimated effect of RPD is just 0.7 percentage points over the same period. Similarly, <span class="citation" data-cites="velázquezguadarrama2023">Velázquez Guadarrama (<a href="#ref-velázquezguadarrama2023" role="doc-biblioref">2023</a>)</span>, using ENOE survey data, reports that eligibility to RPD increases unemployment duration by 11.8 weeks (or 82.85 days), while the ITT estimate from this study points to a much smaller increase of just 0.65 weeks over a three-year horizon. Importantly, none of the ITT estimates reported here are statistically significant at the 5% level.</p>
+<p>Turning to employment quality, Table <a href="#tbl-fuzzy-job-search-2" class="quarto-xref">Table&nbsp;4 (b)</a> reports the estimated effects of RPD take-up on post-displacement outcomes such as earnings and job duration. The composition of re-employed workers appears similar around the eligibility threshold in terms of prior earnings (see column 4), suggesting no substantial selection effects. However, there is limited evidence that RPD take-up improves subsequent job quality. While the point estimate for monthly earnings in the next job suggests a sizeable increase—more than a 100% gain relative to pre-displacement wages, or approximately $9,500 MXN—this estimate is only significant at the 10% level. Moreover, the effects on next job cumulative earnings and job duration are statistically indistinguishable from zero.</p>
+<p>When placed in context with the existing literature, these ITT results point to a mixed picture. <span class="citation" data-cites="britto2022">Britto (<a href="#ref-britto2022" role="doc-biblioref">2022</a>)</span> finds a statistically significant 1.7% decline in annual earnings associated with Brazil’s program, while eligibility for RPD is associated with a non-significant 4.6% increase. <span class="citation" data-cites="velázquezguadarrama2023">Velázquez Guadarrama (<a href="#ref-velázquezguadarrama2023" role="doc-biblioref">2023</a>)</span>, using ENOE data, finds a smaller yet statistically significant increase of 2.47% in wage income among eligible workers. Overall, while some point estimates suggest potentially positive effects of RPD on earnings, the lack of statistical significance and the inconsistency with prior studies call for cautious interpretation.</p>
+<div id="fig-fuzzy-path" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fuzzy-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: This figure presents the estimated coefficients of interest from <a href="#eq-2s" class="quarto-xref">Equation&nbsp;2</a>. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of <span class="citation" data-cites="calonico2014">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2014" role="doc-biblioref">2014</a>)</span>. Vertical lines across point estimates represent 95% confidence intervals.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fuzzy-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Dynamic Effect of RPD on Survival and Duration of Unemployment
+</figcaption>
+</figure>
+</div>
+<div id="tbl-fuzzy-job-search" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fuzzy-job-search-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: RPD Effect: Job Search Outcomes
+</figcaption>
+<div aria-describedby="tbl-fuzzy-job-search-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-fuzzy-job-search" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-fuzzy-job-search-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-fuzzy-job-search-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Survival and Duration of Unemployment
+</figcaption>
+<div aria-describedby="tbl-fuzzy-job-search-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-fuzzy-job-search-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 36 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 6 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">0.31</td>
+<td style="text-align: center; width: 6em;">0.06</td>
+<td style="text-align: center; width: 6em;">4.85</td>
+<td style="text-align: center; width: 6em;">36.27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.15)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.07)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2.37)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(15.86)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">0.778</td>
+<td style="text-align: center; width: 6em;">0.106</td>
+<td style="text-align: center; width: 6em;">20.5</td>
+<td style="text-align: center; width: 6em;">51.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-fuzzy-job-search" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-fuzzy-job-search-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-fuzzy-job-search-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Next Job Quality
+</figcaption>
+<div aria-describedby="tbl-fuzzy-job-search-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-fuzzy-job-search-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Total earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (weeks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Prev. job earnings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">9428.61</td>
+<td style="text-align: center; width: 6em;">67095.54</td>
+<td style="text-align: center; width: 6em;">16.49</td>
+<td style="text-align: center; width: 6em;">9626.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(4882.68)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(61137.52)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(14.54)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(6055.86)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">8,327</td>
+<td style="text-align: center; width: 6em;">87,306</td>
+<td style="text-align: center; width: 6em;">35.7</td>
+<td style="text-align: center; width: 6em;">9,005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">873,434</td>
+<td style="text-align: center; width: 6em;">873,434</td>
+<td style="text-align: center; width: 6em;">873,434</td>
+<td style="text-align: center; width: 6em;">873,434</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.2, where treatment is defined as program take-up 12 months after displacement. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024). Currencies are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-medium-run" class="level3">
+<h3 class="anchored" data-anchor-id="sec-medium-run">Medium Term Effects</h3>
+<p>This section examines the medium-term labor market outcomes associated with participation in the RPD program. <a href="#tbl-medium-fuzzy" class="quarto-xref">Table&nbsp;5</a> reports the estimated effects for RPD users, computed using the fuzzy regression discontinuity design described in <a href="#eq-2s" class="quarto-xref">Equation&nbsp;2</a>. Although none of the estimates reach statistical significance at the 5% level, the results suggest a persistent decline in formal labor earnings over the three-year post-displacement period. This decline appears to be driven entirely by the extensive margin, as RPD recipients were employed for fewer months and, on average, reported no wage earnings.</p>
+<p>While most effects are not statistically distinguishable from zero, they may reflect longer-lasting disruptions in formal labor market attachment. Taken together, these findings indicate that the RPD program not only extends the duration of unemployment but also fails to enhance post-displacement job quality or promote higher long-term earnings in the formal sector—contrary to the predictions of the more optimistic unemployment insurance literature <span class="citation" data-cites="acemoglu1999 acemoglu2000">(<a href="#ref-acemoglu1999" role="doc-biblioref">Acemoglu and Shimer 1999</a>, <a href="#ref-acemoglu2000" role="doc-biblioref">2000</a>)</span>.</p>
+<div id="tbl-medium-fuzzy" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-medium-fuzzy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: RPD Effect: Earnings, Employment and Wages over Medium Term
+</figcaption>
+<div aria-describedby="tbl-medium-fuzzy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-medium-fuzzy" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-medium-fuzzy-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-medium-fuzzy-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Earnings
+</figcaption>
+<div aria-describedby="tbl-medium-fuzzy-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-medium-fuzzy-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Year 1</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">-20378.63</td>
+<td style="text-align: center; width: 6em;">-13116.15</td>
+<td style="text-align: center; width: 6em;">-16418.20</td>
+<td style="text-align: center; width: 6em;">-3121.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(44061.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(12983.56)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(17775.58)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(24304.58)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">148,762</td>
+<td style="text-align: center; width: 6em;">31,965</td>
+<td style="text-align: center; width: 6em;">54,471</td>
+<td style="text-align: center; width: 6em;">62,345</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-medium-fuzzy" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-medium-fuzzy-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-medium-fuzzy-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Months Worked
+</figcaption>
+<div aria-describedby="tbl-medium-fuzzy-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-medium-fuzzy-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Year 1</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">-1.41</td>
+<td style="text-align: center; width: 6em;">-1.95</td>
+<td style="text-align: center; width: 6em;">-0.57</td>
+<td style="text-align: center; width: 6em;">-0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2.65)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1.26)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1.12)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1.42)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">15.3</td>
+<td style="text-align: center; width: 6em;">3.8</td>
+<td style="text-align: center; width: 6em;">5.67</td>
+<td style="text-align: center; width: 6em;">5.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+<td style="text-align: center; width: 6em;">877,749</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-medium-fuzzy" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-medium-fuzzy-3" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-medium-fuzzy-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Average Monthly Earnings
+</figcaption>
+<div aria-describedby="tbl-medium-fuzzy-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-medium-fuzzy-3" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Year 1</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Year 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 6em;">903.31</td>
+<td style="text-align: center; width: 6em;">634.12</td>
+<td style="text-align: center; width: 6em;">-1806.90</td>
+<td style="text-align: center; width: 6em;">-259.16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1808.21)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1814.44)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1954.97)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2146.99)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 6em;">8,903</td>
+<td style="text-align: center; width: 6em;">8,012</td>
+<td style="text-align: center; width: 6em;">8,959</td>
+<td style="text-align: center; width: 6em;">9,902</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 6em;">794,688</td>
+<td style="text-align: center; width: 6em;">578,415</td>
+<td style="text-align: center; width: 6em;">650,874</td>
+<td style="text-align: center; width: 6em;">633,586</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.2, where treatment is defined as program take-up 12 months after displacement. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024). Currencies are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-additional-results" class="level3">
+<h3 class="anchored" data-anchor-id="sec-additional-results">Additional Results: Heterogeneous Treatment Effects</h3>
+<p>In this section, I present additional results on the heterogeneity of the effect of the RPD program on labor market outcomes. I explore the heterogeneity of the treatment effect by age, wage, and exposure to COVID-19 in <a href="#tbl-income" class="quarto-xref">Table&nbsp;6</a>, <a href="#tbl-age" class="quarto-xref">Table&nbsp;7</a>, and <a href="#tbl-covid" class="quarto-xref">Table&nbsp;9</a>, respectively.</p>
+<p><strong>Income.</strong> <a href="#tbl-income" class="quarto-xref">Table&nbsp;6</a> explores heterogeneous effects of the RPD program by pre-displacement income, dividing the sample at the median wage in the previous job ($6,669.2 MXN). Take-up rates do not differ significantly between the above- and below-median wage groups, suggesting comparable levels of program engagement across income levels.</p>
+<p>However, the impact on labor market outcomes varies substantially. Among workers earning below the median, the RPD significantly increases the probability of remaining unemployed within the first three months following displacement. Over a 36-month horizon, the effect on unemployment duration for this group is nearly ten times larger than for their higher-income counterparts, indicating a much more pronounced and persistent detachment from formal employment among lower-wage workers.</p>
+<p>In terms of reemployment outcomes, RPD recipients with above-median pre-displacement wages secure jobs that pay approximately 67% more than those obtained by ineligible workers. In contrast, no statistically significant effect is found on the wages of reemployed workers in the below-median group. Over the full three-year horizon, higher-income workers exhibit a positive, albeit imprecise, impact on total earnings. Meanwhile, lower-income workers experience an average earnings loss of approximately $40,000 MXN—driven by prolonged unemployment and the absence of wage gains upon reemployment—although this estimate is not statistically distinguishable from zero.</p>
+<p>These findings highlight the importance of accounting for income heterogeneity in program design. In the case of the RPD, the structure of benefits may inadvertently reinforce existing inequalities—offering greater long-term advantages to relatively better-off workers, while leaving lower-wage workers worse off in both employment duration and earnings trajectories.</p>
+<p><strong>Age.</strong> <a href="#tbl-age" class="quarto-xref">Table&nbsp;7</a> examines heterogeneous effects of the RPD program by age at the time of displacement, dividing the sample at the median age of 22.9 years. As with income, take-up rates do not differ significantly between younger and older workers, indicating comparable engagement with the program across age groups.</p>
+<p>The effects on unemployment duration are not statistically significant for either group over the short (3-month) or medium (36-month) horizons. However, point estimates suggest meaningful differences in magnitude. By three months, younger workers exhibit a 23 percentage point increase in the probability of remaining unemployed, compared to only a 10 percentage point increase for older workers—more than twice the effect. This disparity widens substantially over time: after 36 months, the cumulative increase in unemployment duration is 35 weeks for younger workers, compared to just 3 weeks for older workers—an effect nearly ten times larger.</p>
+<p>In contrast, there is no clear evidence of differential effects on post-displacement job quality. All estimates related to wages and job duration in the next job are statistically indistinguishable from zero for both age groups.</p>
+<p>Over the full three-year horizon, younger workers appear to experience greater earnings losses. On average, they earned approximately $20,000 MXN less than their counterparts who were not eligible for RPD, compared to a $9,000 MXN loss among older workers. These estimates, however, are imprecise and should be interpreted with caution.</p>
+<p>Taken together, these findings suggest that age is an important dimension of heterogeneity in the effects of unemployment assistance programs. In the case of the RPD, younger workers may face more persistent labor market disruptions, with weaker labor market attachement, potentially compounding early-career vulnerabilities.</p>
+<p><strong>Gender.</strong> <a href="#tbl-gender" class="quarto-xref">Table&nbsp;8</a> examines the heterogeneous effects of the RPD program by gender. Panel A presents results for males, while Panel B reports estimates for females. Take-up rates are similar across groups, with no statistically significant gender differences in program participation 12 months after displacement.</p>
+<p>However, the effects on labor market outcomes diverge markedly by gender. Among males, RPD take-up increases the probability of remaining unemployed three months after displacement by 40 percentage points. This effect persists over time, resulting in a cumulative increase in unemployment duration of 49 weeks over the subsequent three years—an effect that is both large and statistically significant. In contrast, female recipients exhibit no significant change in short-term survival or long-term unemployment duration. The point estimate for unemployment duration is actually negative (–8.7 weeks), but imprecisely estimated.</p>
+<p>Differences in earnings outcomes are similarly pronounced. Male RPD recipients experience large, positive effects on monthly earnings in their next job—approximately $11,252 MXN higher than ineligible males—and a cumulative three-year earnings gain of $1,066 MXN. These estimates, while imprecise, suggest a potential improvement in job quality among men. In contrast, female RPD recipients see no significant gain in monthly earnings and suffer an average three-year total earnings loss of $16,126 MXN. This reduction in earnings is likely driven by delayed labor market reentry and the absence of wage gains upon reemployment.</p>
+<p>Interestingly, the margin of adjustment differs across genders. Male recipients work 2.7 fewer months over the three-year period, while female recipients actually work 1.5 months more. Yet, the increase in work months among women does not translate into earnings gains, possibly reflecting reemployment in lower-wage or more precarious jobs.</p>
+<p>Taken together, these findings highlight significant gender disparities in the labor market effects of the RPD program. While male recipients face longer unemployment durations, they appear to recover through access to better-paying jobs. Female recipients, in contrast, do not experience improvements in job quality and incur significant earnings losses. These results underscore the need for gender-sensitive design in unemployment support policies, as uniform benefit structures may yield unequal labor market outcomes.</p>
+<p><strong>Exposure to COVID-19.</strong> <a href="#tbl-covid" class="quarto-xref">Table&nbsp;9</a> explores heterogeneous effects of the RPD program based on whether individuals were displaced before or after the onset of the COVID-19 pandemic. Panel A includes workers who were displaced before March 2019, and thus had at least a full year of unemployment before the pandemic hit in March 2020. These individuals are considered to have no exposure to pandemic-related labor market disruptions during their initial post-displacement period. Panel B, by contrast, focuses on individuals displaced after March 2020, who faced full exposure to the labor market conditions created by the pandemic.</p>
+<p>First-stage estimates show that take-up rates are slightly lower among post-pandemic displacees (3%) than among pre-pandemic ones (4%), although the difference is modest. However, labor market outcomes diverge sharply across cohorts.</p>
+<p>Among workers with no exposure to the pandemic (Panel A), RPD take-up leads to substantial and significant increases in unemployment duration. The probability of remaining unemployed at 3 months rises by 37 percentage points, and cumulative unemployment duration increases by over 52 weeks—essentially one additional year of joblessness. Despite these adverse effects on employment continuity, there is a modest increase in monthly earnings in the next job (12,416 MXN), although total earnings over the three-year horizon fall by 8,539 MXN, suggesting that the gains in job quality do not fully offset the costs of prolonged unemployment.</p>
+<p>In contrast, among workers fully exposed to the COVID-19 crisis (Panel B), RPD take-up is associated with much weaker effects on labor market behavior. The effect on 3-month survival is negligible (1 pp), and the cumulative increase in unemployment duration is only 22 weeks. Strikingly, reemployment outcomes for this group appear worse: RPD recipients experience a decline in job duration (–9.4 weeks) and a relatively small increase in next-job earnings (5,011 MXN). However, despite weaker job quality indicators, total earnings over the three-year period rise by 37,277 MXN—likely due to higher reemployment rates and a labor market rebound post-pandemic.</p>
+<p>These results suggest that the macroeconomic context at the time of displacement plays a crucial role in shaping the effects of unemployment assistance. While RPD recipients displaced before COVID-19 faced steep penalties in terms of extended non-employment and modest earnings gains, those displaced during the pandemic experienced smaller disruptions and more favorable cumulative earnings trajectories. Importantly, this contrast highlights the interaction between individual-level support programs and broader labor market conditions: a well-timed benefit may facilitate recovery in a tightening labor market, while the same benefit in a more stable environment may prolong detachment without improving long-term outcomes.</p>
+<div id="tbl-income" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-income-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: RPD Effect: Heterogeneity over Wage
+</figcaption>
+<div aria-describedby="tbl-income-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-income" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-income-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-income-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Below Median Wage
+</figcaption>
+<div aria-describedby="tbl-income-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-income-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">0.38</td>
+<td style="text-align: center; width: 4.5em;">46.16</td>
+<td style="text-align: center; width: 4.5em;">15.80</td>
+<td style="text-align: center; width: 4.5em;">4737.20</td>
+<td style="text-align: center; width: 4.5em;">-39836.31</td>
+<td style="text-align: center; width: 4.5em;">-3.64</td>
+<td style="text-align: center; width: 4.5em;">-60.70</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.14)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(17.22)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(21.26)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(5196.56)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(38497.50)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3.41)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1467.20)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0121</td>
+<td style="text-align: center; width: 4.5em;">0.797</td>
+<td style="text-align: center; width: 4.5em;">53.8</td>
+<td style="text-align: center; width: 4.5em;">36.2</td>
+<td style="text-align: center; width: 4.5em;">7,269</td>
+<td style="text-align: center; width: 4.5em;">119,239</td>
+<td style="text-align: center; width: 4.5em;">14.6</td>
+<td style="text-align: center; width: 4.5em;">7,617</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">438,875</td>
+<td style="text-align: center; width: 4.5em;">438,875</td>
+<td style="text-align: center; width: 4.5em;">438,875</td>
+<td style="text-align: center; width: 4.5em;">436,925</td>
+<td style="text-align: center; width: 4.5em;">436,925</td>
+<td style="text-align: center; width: 4.5em;">438,875</td>
+<td style="text-align: center; width: 4.5em;">438,875</td>
+<td style="text-align: center; width: 4.5em;">393,137</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-income" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-income-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-income-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Above Median Wage
+</figcaption>
+<div aria-describedby="tbl-income-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-income-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">-0.05</td>
+<td style="text-align: center; width: 4.5em;">-4.67</td>
+<td style="text-align: center; width: 4.5em;">17.05</td>
+<td style="text-align: center; width: 4.5em;">6416.72</td>
+<td style="text-align: center; width: 4.5em;">17516.18</td>
+<td style="text-align: center; width: 4.5em;">0.66</td>
+<td style="text-align: center; width: 4.5em;">2081.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.14)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(15.71)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(21.47)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3044.42)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(73028.49)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(4.21)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2808.53)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.027</td>
+<td style="text-align: center; width: 4.5em;">0.763</td>
+<td style="text-align: center; width: 4.5em;">49.7</td>
+<td style="text-align: center; width: 4.5em;">35.2</td>
+<td style="text-align: center; width: 4.5em;">9,437</td>
+<td style="text-align: center; width: 4.5em;">178,004</td>
+<td style="text-align: center; width: 4.5em;">16</td>
+<td style="text-align: center; width: 4.5em;">10,180</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">438,874</td>
+<td style="text-align: center; width: 4.5em;">438,874</td>
+<td style="text-align: center; width: 4.5em;">438,874</td>
+<td style="text-align: center; width: 4.5em;">436,509</td>
+<td style="text-align: center; width: 4.5em;">436,509</td>
+<td style="text-align: center; width: 4.5em;">438,874</td>
+<td style="text-align: center; width: 4.5em;">438,874</td>
+<td style="text-align: center; width: 4.5em;">401,551</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.1, obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the procedure of Calonico, Cattaneo, and Titiunik (2014). Panel A reports results for individuals whose earnings in their previous job were below the sample median wage ($6,669.2), while Panel B reports results for those above the median. All monetary values are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<div id="tbl-age" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: RPD Effect: Heterogeneity over Age
+</figcaption>
+<div aria-describedby="tbl-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-age" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-age-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-age-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Below Median Age
+</figcaption>
+<div aria-describedby="tbl-age-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-age-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">0.23</td>
+<td style="text-align: center; width: 4.5em;">35.16</td>
+<td style="text-align: center; width: 4.5em;">-4.43</td>
+<td style="text-align: center; width: 4.5em;">60.02</td>
+<td style="text-align: center; width: 4.5em;">-20965.39</td>
+<td style="text-align: center; width: 4.5em;">-2.11</td>
+<td style="text-align: center; width: 4.5em;">357.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.17)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(17.98)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(18.77)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1805.32)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(42939.90)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3.82)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1261.62)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0162</td>
+<td style="text-align: center; width: 4.5em;">0.767</td>
+<td style="text-align: center; width: 4.5em;">47.7</td>
+<td style="text-align: center; width: 4.5em;">33.4</td>
+<td style="text-align: center; width: 4.5em;">7,747</td>
+<td style="text-align: center; width: 4.5em;">141,633</td>
+<td style="text-align: center; width: 4.5em;">15.9</td>
+<td style="text-align: center; width: 4.5em;">8,327</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">422,155</td>
+<td style="text-align: center; width: 4.5em;">422,155</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">388,767</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-age" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-age-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-age-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Above Median Age
+</figcaption>
+<div aria-describedby="tbl-age-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-age-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">0.10</td>
+<td style="text-align: center; width: 4.5em;">3.10</td>
+<td style="text-align: center; width: 4.5em;">28.18</td>
+<td style="text-align: center; width: 4.5em;">9759.34</td>
+<td style="text-align: center; width: 4.5em;">-9224.03</td>
+<td style="text-align: center; width: 4.5em;">-1.35</td>
+<td style="text-align: center; width: 4.5em;">114.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.12)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(16.58)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(19.68)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(6752.33)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(59252.06)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3.75)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2246.94)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0214</td>
+<td style="text-align: center; width: 4.5em;">0.793</td>
+<td style="text-align: center; width: 4.5em;">56.1</td>
+<td style="text-align: center; width: 4.5em;">38.4</td>
+<td style="text-align: center; width: 4.5em;">9,032</td>
+<td style="text-align: center; width: 4.5em;">157,792</td>
+<td style="text-align: center; width: 4.5em;">14.9</td>
+<td style="text-align: center; width: 4.5em;">9,601</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">421,318</td>
+<td style="text-align: center; width: 4.5em;">421,318</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">423,857</td>
+<td style="text-align: center; width: 4.5em;">378,703</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.2, where treatment is defined as program take-up 12 months after displacement. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024). Panel A shows the results for the below median age group (22.3 years), while panel B shows the results for the above median age group. Currencies are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<div id="tbl-gender" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: RPD Effect: Heterogeneity over Gender
+</figcaption>
+<div aria-describedby="tbl-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-gender" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-gender-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-gender-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Males
+</figcaption>
+<div aria-describedby="tbl-gender-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-gender-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">0.40</td>
+<td style="text-align: center; width: 4.5em;">49.08</td>
+<td style="text-align: center; width: 4.5em;">14.55</td>
+<td style="text-align: center; width: 4.5em;">11252.23</td>
+<td style="text-align: center; width: 4.5em;">3074.41</td>
+<td style="text-align: center; width: 4.5em;">-2.73</td>
+<td style="text-align: center; width: 4.5em;">1066.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.14)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(18.27)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(16.88)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(6816.09)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(52415.38)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3.08)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(1827.85)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0136</td>
+<td style="text-align: center; width: 4.5em;">0.753</td>
+<td style="text-align: center; width: 4.5em;">47</td>
+<td style="text-align: center; width: 4.5em;">33.3</td>
+<td style="text-align: center; width: 4.5em;">8,288</td>
+<td style="text-align: center; width: 4.5em;">155,075</td>
+<td style="text-align: center; width: 4.5em;">16</td>
+<td style="text-align: center; width: 4.5em;">8,965</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">546,893</td>
+<td style="text-align: center; width: 4.5em;">546,893</td>
+<td style="text-align: center; width: 4.5em;">546,893</td>
+<td style="text-align: center; width: 4.5em;">544,534</td>
+<td style="text-align: center; width: 4.5em;">544,534</td>
+<td style="text-align: center; width: 4.5em;">546,893</td>
+<td style="text-align: center; width: 4.5em;">546,893</td>
+<td style="text-align: center; width: 4.5em;">502,724</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-gender" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-gender-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-gender-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Females
+</figcaption>
+<div aria-describedby="tbl-gender-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-gender-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">-0.17</td>
+<td style="text-align: center; width: 4.5em;">-8.71</td>
+<td style="text-align: center; width: 4.5em;">15.66</td>
+<td style="text-align: center; width: 4.5em;">1994.00</td>
+<td style="text-align: center; width: 4.5em;">-16126.79</td>
+<td style="text-align: center; width: 4.5em;">1.51</td>
+<td style="text-align: center; width: 4.5em;">1194.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.01)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.14)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(17.36)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(22.98)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2160.69)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(59431.83)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3.68)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2252.93)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0281</td>
+<td style="text-align: center; width: 4.5em;">0.823</td>
+<td style="text-align: center; width: 4.5em;">59.3</td>
+<td style="text-align: center; width: 4.5em;">39.7</td>
+<td style="text-align: center; width: 4.5em;">8,403</td>
+<td style="text-align: center; width: 4.5em;">137,174</td>
+<td style="text-align: center; width: 4.5em;">14.1</td>
+<td style="text-align: center; width: 4.5em;">8,794</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">330,856</td>
+<td style="text-align: center; width: 4.5em;">330,856</td>
+<td style="text-align: center; width: 4.5em;">330,856</td>
+<td style="text-align: center; width: 4.5em;">328,900</td>
+<td style="text-align: center; width: 4.5em;">328,900</td>
+<td style="text-align: center; width: 4.5em;">330,856</td>
+<td style="text-align: center; width: 4.5em;">330,856</td>
+<td style="text-align: center; width: 4.5em;">291,964</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.2, where treatment is defined as program take-up 12 months after displacement. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024). Panel A shows the results for the male group, while panel B shows the results for the female group. Currencies are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<div id="tbl-covid" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-covid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: RPD Effect: Heterogeneity over Exposure to COVID-19
+</figcaption>
+<div aria-describedby="tbl-covid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-covid" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-covid-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-covid-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) No Exposure (Displaced before March 2019)
+</figcaption>
+<div aria-describedby="tbl-covid-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-covid-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.04</td>
+<td style="text-align: center; width: 4.5em;">0.37</td>
+<td style="text-align: center; width: 4.5em;">52.76</td>
+<td style="text-align: center; width: 4.5em;">18.01</td>
+<td style="text-align: center; width: 4.5em;">12416.29</td>
+<td style="text-align: center; width: 4.5em;">-8539.55</td>
+<td style="text-align: center; width: 4.5em;">-2.92</td>
+<td style="text-align: center; width: 4.5em;">1241.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.00)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.19)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(21.75)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(26.88)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(8273.95)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(55380.27)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(4.25)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2301.33)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0113</td>
+<td style="text-align: center; width: 4.5em;">0.775</td>
+<td style="text-align: center; width: 4.5em;">50.7</td>
+<td style="text-align: center; width: 4.5em;">38.3</td>
+<td style="text-align: center; width: 4.5em;">8,003</td>
+<td style="text-align: center; width: 4.5em;">143,580</td>
+<td style="text-align: center; width: 4.5em;">15.5</td>
+<td style="text-align: center; width: 4.5em;">8,497</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">561,937</td>
+<td style="text-align: center; width: 4.5em;">561,937</td>
+<td style="text-align: center; width: 4.5em;">561,937</td>
+<td style="text-align: center; width: 4.5em;">560,491</td>
+<td style="text-align: center; width: 4.5em;">560,491</td>
+<td style="text-align: center; width: 4.5em;">561,937</td>
+<td style="text-align: center; width: 4.5em;">561,937</td>
+<td style="text-align: center; width: 4.5em;">503,428</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-covid" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-covid-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-covid-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Full Exposure (Displaced after March 2020)
+</figcaption>
+<div aria-describedby="tbl-covid-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-covid-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Take up (First stage)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration - 36 months (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (wks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Monthly Earnings</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total Earnings - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Months Worked - 3 years</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly Earnings - 3 years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">RPD</td>
+<td style="text-align: center; width: 4.5em;">0.03</td>
+<td style="text-align: center; width: 4.5em;">0.01</td>
+<td style="text-align: center; width: 4.5em;">21.99</td>
+<td style="text-align: center; width: 4.5em;">-9.39</td>
+<td style="text-align: center; width: 4.5em;">5010.11</td>
+<td style="text-align: center; width: 4.5em;">37277.66</td>
+<td style="text-align: center; width: 4.5em;">-2.31</td>
+<td style="text-align: center; width: 4.5em;">4689.68</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.01)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.20)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(25.68)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(19.50)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2769.82)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(69127.25)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(4.50)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(3634.36)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 4.5em;">0.0491</td>
+<td style="text-align: center; width: 4.5em;">0.78</td>
+<td style="text-align: center; width: 4.5em;">48.4</td>
+<td style="text-align: center; width: 4.5em;">30.1</td>
+<td style="text-align: center; width: 4.5em;">9,004</td>
+<td style="text-align: center; width: 4.5em;">169,405</td>
+<td style="text-align: center; width: 4.5em;">16.1</td>
+<td style="text-align: center; width: 4.5em;">9,879</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em;">Observations</td>
+<td style="text-align: center; width: 4.5em;">156,826</td>
+<td style="text-align: center; width: 4.5em;">156,826</td>
+<td style="text-align: center; width: 4.5em;">156,826</td>
+<td style="text-align: center; width: 4.5em;">155,207</td>
+<td style="text-align: center; width: 4.5em;">155,207</td>
+<td style="text-align: center; width: 4.5em;">156,826</td>
+<td style="text-align: center; width: 4.5em;">156,826</td>
+<td style="text-align: center; width: 4.5em;">148,663</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.2, where treatment is defined as program take-up 12 months after displacement. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024). Currencies are expressed in 2024 Mexican Pesos.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+</section>
+<section id="conclusions" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p>This thesis evaluates the labor market effects of Mexico’s <em>Retiro Parcial por Desempleo</em> (RPD), a policy that allows displaced formal sector workers to make early withdrawals from their pension savings. Leveraging a discontinuity at two years of social security contributions, I implement a fuzzy regression discontinuity design to estimate the local average treatment effect of program take-up on labor market outcomes.</p>
+<p>The results show that RPD take-up substantially increases unemployment duration, with significant effects observable as early as three months after displacement and persisting over a three-year horizon. The increase in non-employment is large and robust, suggesting that liquidity provision through the RPD distorts job search incentives. However, there is no consistent evidence that RPD take-up improves job quality or medium-term formal labor income. While some groups—particularly higher-income or male workers—experience modest earnings gains upon reemployment, these are offset by longer unemployment spells. For lower-income, younger, and female workers, RPD take-up is associated with longer unemployment and cumulative earnings losses, although some of these estimates are imprecise.</p>
+<p>Take-up rates remain low, and the first-stage estimates are small but precise, indicating that the program successfully targets a narrow set of workers. Notably, heterogeneity analysis reveals that labor market context plays a crucial role: among workers displaced during the COVID-19 pandemic, RPD take-up did not extend unemployment duration and is even associated with higher total earnings. These findings suggest that the RPD may serve a countercyclical role, particularly in times of systemic labor market disruption.</p>
+<p>Several limitations of the study should be acknowledged. First, the fuzzy RD design identifies local effects for compliers—those induced to take up the program by marginal eligibility—limiting external validity. Second, the administrative data do not capture informal employment or non-wage welfare outcomes, potentially understating total adjustment margins. Third, despite large point estimates, wide confidence intervals in the second stage warrant cautious interpretation.</p>
+<p>My results underscore the institutional tensions in Mexico’s fragmented income protection system. Severance pay, the de jure main income substitute, is often inaccessible due to weak legal enforcement <span class="citation" data-cites="sadka2024 degetau2023">(<a href="#ref-sadka2024" role="doc-biblioref">Sadka, Seira, and Woodruff 2024</a>; <a href="#ref-degetau2023" role="doc-biblioref">Degetau 2023</a>)</span>. In this context, the RPD emerges as a second-best option: it is self-financed, administratively simple, and unlikely to induce fraud. Yet this model shifts the burden of income protection onto workers themselves—especially those with fewer savings—thereby reinforcing labor market inequalities.</p>
+<p>A more ambitious policy agenda would involve developing a publicly funded unemployment insurance system that ensures risk-sharing beyond individual savings. However, such a system would require overcoming institutional barriers: effective delivery depends not only on eligibility design but also on credible enforcement and administrative capacity.</p>
+<p>The findings point to several promising directions for future research. First, aggregate behavioral effects—such as changes in employer hiring or firing practices—remain an open question. Second, the observed heterogeneity by income, age, gender, and macroeconomic context calls for richer models of household and labor market behavior under liquidity constraints. Finally, the intersection between legal institutions and social protection policy in low-capacity states remains an underexplored but vital area for understanding the design and implementation of unemployment assistance in developing countries.</p>
+</section>
+<section id="appendix" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="appendix">Appendix</h2>
+<div style="page-break-after: always;"></div>
+<div class="cell">
+<div id="tbl-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10: Summary Statistics
+</figcaption>
+<div aria-describedby="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Median</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std.Dev.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Min</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="7">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Covariates</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Age at displacement date</td>
+<td style="text-align: right;">847,714</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">22.9</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">18.0</td>
+<td style="text-align: right;">65.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Birth date</td>
+<td style="text-align: right;">847,714</td>
+<td style="text-align: right;">1,993.4</td>
+<td style="text-align: right;">1,994.6</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">1,948.5</td>
+<td style="text-align: right;">2,003.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Date worker began working</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">2,014.6</td>
+<td style="text-align: right;">2,014.9</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: right;">2,010.0</td>
+<td style="text-align: right;">2,018.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Days since account opened at displacement date</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">1,264.5</td>
+<td style="text-align: right;">1,259.0</td>
+<td style="text-align: right;">103.1</td>
+<td style="text-align: right;">1,095.0</td>
+<td style="text-align: right;">1,460.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Displacement date</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">2,018.0</td>
+<td style="text-align: right;">2,018.3</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: right;">2,013.0</td>
+<td style="text-align: right;">2,022.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Female</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">No CURP</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Previous Job</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Duration of previous job (weeks)</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">27.7</td>
+<td style="text-align: right;">16.4</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">156.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Monthly earnings in previous job (2024 MXN)</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">9,095.4</td>
+<td style="text-align: right;">6,669.2</td>
+<td style="text-align: right;">19,424.5</td>
+<td style="text-align: right;">1,631.2</td>
+<td style="text-align: right;">3,634,843.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Total earnings in previous job (2024 MXN)</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">54,235.8</td>
+<td style="text-align: right;">25,769.4</td>
+<td style="text-align: right;">82,490.9</td>
+<td style="text-align: right;">107.6</td>
+<td style="text-align: right;">2,894,843.6</td>
+</tr>
+<tr class="odd" data-grouplength="4">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Partial Withdrawal (RPD)</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Amount withdrawn (2024 MXN)</td>
+<td style="text-align: right;">62,632</td>
+<td style="text-align: right;">7,690.6</td>
+<td style="text-align: right;">6,637.5</td>
+<td style="text-align: right;">4,365.9</td>
+<td style="text-align: right;">324.2</td>
+<td style="text-align: right;">134,480.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Contributed weeks at take up date</td>
+<td style="text-align: right;">62,632</td>
+<td style="text-align: right;">125.9</td>
+<td style="text-align: right;">130.0</td>
+<td style="text-align: right;">29.1</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1,273.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Days to take up</td>
+<td style="text-align: right;">62,632</td>
+<td style="text-align: right;">440.8</td>
+<td style="text-align: right;">228.0</td>
+<td style="text-align: right;">477.2</td>
+<td style="text-align: right;">46.0</td>
+<td style="text-align: right;">2,892.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Days withdrawn</td>
+<td style="text-align: right;">62,632</td>
+<td style="text-align: right;">318.4</td>
+<td style="text-align: right;">301.0</td>
+<td style="text-align: right;">126.8</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4,075.0</td>
+</tr>
+<tr class="even" data-grouplength="4">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Job Search Outcomes</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Survival out of formal employment after 3 months</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Survival out of formal employment after 36 months</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Weeks out of formal employment censored at 3 months</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">12.1</td>
+<td style="text-align: right;">12.9</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">12.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Weeks out of formal employment censored at 36 months</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">53.1</td>
+<td style="text-align: right;">32.6</td>
+<td style="text-align: right;">49.1</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">154.3</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Next Job Quality</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Duration of next job (weeks)</td>
+<td style="text-align: right;">873,434</td>
+<td style="text-align: right;">36.8</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">59.3</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">611.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Monthly earnings in next job (2024 MXN)</td>
+<td style="text-align: right;">873,434</td>
+<td style="text-align: right;">8,461.7</td>
+<td style="text-align: right;">6,948.8</td>
+<td style="text-align: right;">6,643.8</td>
+<td style="text-align: right;">1,599.3</td>
+<td style="text-align: right;">2,171,267.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Total earnings in next job (2024 MXN)</td>
+<td style="text-align: right;">873,434</td>
+<td style="text-align: right;">91,888.4</td>
+<td style="text-align: right;">23,412.3</td>
+<td style="text-align: right;">245,995.0</td>
+<td style="text-align: right;">105.4</td>
+<td style="text-align: right;">10,500,054.5</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="7" style="border-bottom: 1px solid"><strong>Medium Term Outcomes (Over 3 Years)</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Average monthly earnings after displacement (2024 MXN)</td>
+<td style="text-align: right;">794,688</td>
+<td style="text-align: right;">9,007.6</td>
+<td style="text-align: right;">7,515.1</td>
+<td style="text-align: right;">5,841.1</td>
+<td style="text-align: right;">3,163.5</td>
+<td style="text-align: right;">84,996.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Months worked after displacement</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">15.2</td>
+<td style="text-align: right;">14.1</td>
+<td style="text-align: right;">11.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">89.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">Total earnings after displacement (2024 MXN)</td>
+<td style="text-align: right;">877,749</td>
+<td style="text-align: right;">149,523.5</td>
+<td style="text-align: right;">102,486.9</td>
+<td style="text-align: right;">180,264.6</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4,035,597.8</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="padding: 0"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports summary statistics for the variables used in the analysis. The statistics are based on the final sample used for estimation.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div id="fig-survival" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-survival-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows (<em>i</em>) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (<em>ii</em>) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using <span class="citation" data-cites="calonico2015">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2015" role="doc-biblioref">2015</a>)</span>.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-survival-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Eligibility Effect: Survival in Unemployment
+</figcaption>
+</figure>
+</div>
+<div id="fig-duration" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-duration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows (<em>i</em>) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (<em>ii</em>) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using <span class="citation" data-cites="calonico2015">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2015" role="doc-biblioref">2015</a>)</span>.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-duration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Eligibility Effect: Duration of Unemployment
+</figcaption>
+</figure>
+</div>
+<div id="fig-path" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wp_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>Note:</em> This figure shows the estimated coefficient of interest in <a href="#eq-1s" class="quarto-xref">Equation&nbsp;1</a> . The estimates are obtained using a triangular kernel, optimal bandwidth and a linear local polynomial. Bias corrected estimates and robust standard errors computed using <span class="citation" data-cites="calonico2014">Calonico, Cattaneo, and Titiunik (<a href="#ref-calonico2014" role="doc-biblioref">2014</a>)</span>. 95 percent confidence intervals.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Dynamic Effect of Eligibility on Survival and Duration of Unemployment
+</figcaption>
+</figure>
+</div>
+<div id="tbl-job-search" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-job-search-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;11: Eligibility Effect: Job Search Outcomes
+</figcaption>
+<div aria-describedby="tbl-job-search-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-job-search" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-job-search-1" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-job-search-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Survival and Duration of Unemployment
+</figcaption>
+<div aria-describedby="tbl-job-search-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-job-search-1" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 3 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Survival - 36 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration (wks) - 6 months</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Duration (wks) - 36 months</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 8em;">0.007</td>
+<td style="text-align: center; width: 8em;">0.001</td>
+<td style="text-align: center; width: 8em;">0.085</td>
+<td style="text-align: center; width: 8em;">0.648</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.005)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.003)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.075)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.513)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 8em;">0.78</td>
+<td style="text-align: center; width: 8em;">0.108</td>
+<td style="text-align: center; width: 8em;">20.5</td>
+<td style="text-align: center; width: 8em;">51.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 8em;">877,749</td>
+<td style="text-align: center; width: 8em;">877,749</td>
+<td style="text-align: center; width: 8em;">877,749</td>
+<td style="text-align: center; width: 8em;">877,749</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-job-search" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-job-search-2" class="table do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" style="width: auto !important; margin-left: auto; margin-right: auto; font-size: 8px; margin-left: auto; margin-right: auto;border-bottom: 0;" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-job-search-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Next Job Quality
+</figcaption>
+<div aria-describedby="tbl-job-search-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-job-search-2" class="table do-not-create-environment caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Monthly earnings (2024 MXN)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;Total earnings (2024 MXN)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Job duration (weeks)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Prev. job earnings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">RPD</td>
+<td style="text-align: center; width: 8em;">283.48</td>
+<td style="text-align: center; width: 8em;">1469.40</td>
+<td style="text-align: center; width: 8em;">0.56</td>
+<td style="text-align: center; width: 8em;">276.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5pxwidth;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(163.04)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(2178.74)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(0.62)</td>
+<td style="text-align: center; box-shadow: 0px 1.5pxwidth;">(215.71)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 11em;">Mean at cutoff - ineligible</td>
+<td style="text-align: center; width: 8em;">8,333</td>
+<td style="text-align: center; width: 8em;">87,703</td>
+<td style="text-align: center; width: 8em;">35.7</td>
+<td style="text-align: center; width: 8em;">8,978</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 11em;">Observations</td>
+<td style="text-align: center; width: 8em;">873,434</td>
+<td style="text-align: center; width: 8em;">873,434</td>
+<td style="text-align: center; width: 8em;">873,434</td>
+<td style="text-align: center; width: 8em;">873,434</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note:</span> <sup></sup> This table reports the estimated coefficient of interest from Equation 4.1, obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the procedure of Calonico, Cattaneo, and Titiunik (2014).</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-acemoglu1999" class="csl-entry" role="listitem">
+Acemoglu, Daron, and Robert Shimer. 1999. <span>“Efficient Unemployment Insurance.”</span> <em>Journal of Political Economy</em> 107 (5): 893–928. <a href="https://doi.org/10.1086/250084">https://doi.org/10.1086/250084</a>.
+</div>
+<div id="ref-acemoglu2000" class="csl-entry" role="listitem">
+———. 2000. <span>“Productivity Gains from Unemployment Insurance.”</span> <em>European Economic Review</em> 44 (7): 1195–1224. <a href="https://doi.org/10.1016/S0014-2921(00)00035-0">https://doi.org/10.1016/S0014-2921(00)00035-0</a>.
+</div>
+<div id="ref-baily1978" class="csl-entry" role="listitem">
+Baily, Martin Neil. 1978. <span>“Some Aspects of Optimal Unemployment Insurance.”</span> <em>Journal of Public Economics</em> 10 (3): 379–402.
+</div>
+<div id="ref-britto2022" class="csl-entry" role="listitem">
+Britto, Diogo G. C. 2022. <span>“The Employment Effects of Lump-Sum and Contingent Job Insurance Policies: Evidence from Brazil.”</span> <em>The Review of Economics and Statistics</em> 104 (3): 465–82. <a href="https://doi.org/10.1162/rest_a_00948">https://doi.org/10.1162/rest_a_00948</a>.
+</div>
+<div id="ref-calonico2020" class="csl-entry" role="listitem">
+Calonico, Sebastian, Matias D Cattaneo, and Max H Farrell. 2020. <span>“Optimal Bandwidth Choice for Robust Bias-Corrected Inference in Regression Discontinuity Designs.”</span> <em>The Econometrics Journal</em> 23 (2): 192–210. <a href="https://doi.org/10.1093/ectj/utz022">https://doi.org/10.1093/ectj/utz022</a>.
+</div>
+<div id="ref-calonico2014" class="csl-entry" role="listitem">
+Calonico, Sebastian, Matias D. Cattaneo, and Rocio Titiunik. 2014. <span>“Robust Nonparametric Confidence Intervals for Regression-Discontinuity Designs: Robust Nonparametric Confidence Intervals.”</span> <em>Econometrica</em> 82 (6): 2295–2326. <a href="https://doi.org/10.3982/ECTA11757">https://doi.org/10.3982/ECTA11757</a>.
+</div>
+<div id="ref-calonico2015" class="csl-entry" role="listitem">
+Calonico, Sebastian, Matias D. Cattaneo, and Rocío Titiunik. 2015. <span>“Optimal Data-Driven Regression Discontinuity Plots.”</span> <em>Journal of the American Statistical Association</em> 110 (512): 1753–69. <a href="https://doi.org/10.1080/01621459.2015.1017578">https://doi.org/10.1080/01621459.2015.1017578</a>.
+</div>
+<div id="ref-carreñogodínez2025" class="csl-entry" role="listitem">
+Carreño Godínez, Gabriel. 2025. <span>“Análisis del impacto de los seguros de desempleo en el emprendimiento. Evidencia de México.”</span> Ciudad de México, México: ITAM.
+</div>
+<div id="ref-cattaneo2019" class="csl-entry" role="listitem">
+Cattaneo, Matias D., Nicolás Idrobo, and Rocío Titiunik. 2019. <span>“A Practical Introduction to Regression Discontinuity Designs: Foundations.”</span> <em>Elements in Quantitative and Computational Methods for the Social Sciences</em>, November. <a href="https://doi.org/10.1017/9781108684606">https://doi.org/10.1017/9781108684606</a>.
+</div>
+<div id="ref-cattaneo2020" class="csl-entry" role="listitem">
+Cattaneo, Matias D., Jansson Michael, and Xinwei Ma. 2020. <span>“Simple Local Polynomial Density Estimators.”</span> <em>Journal of the American Statistical Association</em> 115 (531): 1449–55. <a href="https://doi.org/10.1080/01621459.2019.1635480">https://doi.org/10.1080/01621459.2019.1635480</a>.
+</div>
+<div id="ref-centeno2006" class="csl-entry" role="listitem">
+Centeno, Mário, and Álvaro A. Novo. 2006. <span>“The Impact of Unemployment Insurance Generosity on Match Quality Distribution.”</span> <em>Economics Letters</em> 93 (2): 235–41. <a href="https://doi.org/10.1016/j.econlet.2006.05.019">https://doi.org/10.1016/j.econlet.2006.05.019</a>.
+</div>
+<div id="ref-degetau2023" class="csl-entry" role="listitem">
+Degetau, Esteban. 2023. <span>“Corruption or incompetence? Disentangle through learning.”</span> Ciudad de México, México: ITAM.
+</div>
+<div id="ref-gruber1997" class="csl-entry" role="listitem">
+Gruber, Jonathan. 1997. <span>“The Consumption Smoothing Benefits of Unemployment Insurance.”</span> <em>American Economic Review</em> 87 (1): 192–205. <a href="https://ideas.repec.org//a/aea/aecrev/v87y1997i1p192-205.html">https://ideas.repec.org//a/aea/aecrev/v87y1997i1p192-205.html</a>.
+</div>
+<div id="ref-katz1990" class="csl-entry" role="listitem">
+Katz, Lawrence F., and Bruce D. Meyer. 1990. <span>“The Impact of the Potential Duration of Unemployment Benefits on the Duration of Unemployment.”</span> <em>Journal of Public Economics</em> 41 (1): 45–72. <a href="https://doi.org/10.1016/0047-2727(92)90056-L">https://doi.org/10.1016/0047-2727(92)90056-L</a>.
+</div>
+<div id="ref-lebarbanchon2016" class="csl-entry" role="listitem">
+Le Barbanchon, Thomas. 2016. <span>“The Effect of the Potential Duration of Unemployment Benefits on Unemployment Exits to Work and Match Quality in France.”</span> <em>Labour Economics</em> 42 (October): 16–29. <a href="https://doi.org/10.1016/j.labeco.2016.06.003">https://doi.org/10.1016/j.labeco.2016.06.003</a>.
+</div>
+<div id="ref-nekoei2017" class="csl-entry" role="listitem">
+Nekoei, Arash, and Andrea Weber. 2017. <span>“Does Extending Unemployment Benefits Improve Job Quality?”</span> <em>American Economic Review</em> 107 (2): 527–61. <a href="https://doi.org/10.1257/aer.20150528">https://doi.org/10.1257/aer.20150528</a>.
+</div>
+<div id="ref-sadka2024" class="csl-entry" role="listitem">
+Sadka, Joyce, Enrique Seira, and Christopher Woodruff. 2024. <span>“Information and Bargaining Through Agents: Experimental Evidence from Mexico<span>’</span>s Labour Courts.”</span> <em>The Review of Economic Studies</em>, February, rdae003. <a href="https://doi.org/10.1093/restud/rdae003">https://doi.org/10.1093/restud/rdae003</a>.
+</div>
+<div id="ref-schmieder2016" class="csl-entry" role="listitem">
+Schmieder, Johannes F., and Till von Wachter. 2016. <span>“The Effects of Unemployment Insurance Benefits: New Evidence and Interpretation.”</span> <em>Annual Review of Economics</em> 8 (1): 547–81. <a href="https://doi.org/10.1146/annurev-economics-080614-115758">https://doi.org/10.1146/annurev-economics-080614-115758</a>.
+</div>
+<div id="ref-schmieder2012" class="csl-entry" role="listitem">
+Schmieder, Johannes F., Till von Wachter, and Stefan Bender. 2012. <span>“The Long-Term Effects of UI Extensions on Employment.”</span> <em>American Economic Review</em> 102 (3): 514–19. <a href="https://doi.org/10.1257/aer.102.3.514">https://doi.org/10.1257/aer.102.3.514</a>.
+</div>
+<div id="ref-velázquezguadarrama2023" class="csl-entry" role="listitem">
+Velázquez Guadarrama, Francisco. 2023. <span>“Seguro de Desempleo En México : Evidencia Del Programa de Retiros Anticipados Por El Desempleo Del Sistema de Ahorro Para El Retiro.”</span> Ciudad de México, México: ITAM.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Contributions to social security need not be continuous to reach eligibility to RPD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This restriction ensures that all workers are subject to the same pension reform (in effect since July 1997) and thus face uniform incentives regarding the accumulation of weeks of contribution and the use of their individual pension account balance for income substitution during unemployment.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>A gap could result from voluntary separation, a transition into informal work, or involuntary displacement.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
