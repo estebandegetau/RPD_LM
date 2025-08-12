@@ -2,11 +2,36 @@
 date: today
 date-format: long
 abstract: |
- Unemployment insurance (UI) programs aim to protect workers from income loss while they search for new jobs, but they often involve trade-offs: benefits can help workers hold out for better opportunities, yet may also discourage job search and delay re-employment. These dynamics are especially complex in developing countries, where formal UI is rare and informality is widespread. This paper studies Mexico’s *Retiro Parcial por Desempleo* (RPD), which allows unemployed workers to withdraw savings from their individual pension accounts. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I find that eligibility for RPD increases program take-up by approximately four percentage points. RPD take-up significantly prolongs unemployment duration—by up to 36 weeks over a three-year horizon—but does not lead to improvements in reemployment wages, job stability, or cumulative formal earnings. Heterogeneity analyses show that these adverse effects are concentrated among younger, lower-income, and female workers, while some better-off groups experience modest earnings gains. These findings suggest that while the RPD provides short-term liquidity, it does not enhance long-term labor market outcomes and may reinforce existing inequalities. Nonetheless, the program’s self-financed structure and minimal take-up may help limit moral hazard, offering a pragmatic—but limited—approach to unemployment protection in settings with high informality and constrained state capacity.
+  Unemployment insurance (UI) programs aim to protect workers from income loss while they search for new jobs, but they often involve trade-offs: benefits can help workers hold out for better opportunities, yet may also discourage job search and delay re-employment. These dynamics are especially complex in developing countries, where formal UI is rare and informality is widespread. This paper studies Mexico’s *Retiro Parcial por Desempleo* (RPD), which allows unemployed workers to withdraw savings from their individual pension accounts. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I find that eligibility for RPD increases program take-up by approximately four percentage points. RPD take-up significantly prolongs unemployment duration—by up to 36 weeks over a three-year horizon—but does not lead to improvements in reemployment wages, job stability, or cumulative formal earnings. Heterogeneity analyses show that these adverse effects are concentrated among younger, lower-income, and female workers, while some better-off groups experience modest earnings gains. These findings suggest that while the RPD provides short-term liquidity, it does not enhance long-term labor market outcomes and may reinforce existing inequalities. Nonetheless, the program’s self-financed structure and minimal take-up may help limit moral hazard, offering a pragmatic—but limited—approach to unemployment protection in settings with high informality and constrained state capacity.
 thanks: |
-  I am deeply grateful to Adrian Rubli for his guidance throughout the research process that culminated in this work. His generous time and thoughtful discussions undoubtedly improved the quality of this project. I also thank Horacio Larreguy, whose characteristic rigor and persistence were instrumental in strengthening the research. I further benefited from the insightful comments and support of peers in Horacio’s research seminar, whose feedback shaped this project at every stage.
-execute:
-  cache: true
+  I am deeply grateful to Adrián Rubli for his guidance throughout the research process that culminated in this work. His generous time and thoughtful discussions undoubtedly improved the quality of this project. I also thank Horacio Larreguy, whose characteristic rigor and persistence were instrumental in strengthening the research. I am also thankful to Enrique Seira for his thoughtful comments and suggestions. I further benefited from the insightful feedback and support of peers in Horacio’s research seminar, whose input helped shape this project at every stage.
+format: 
+  pdf: 
+    geometry: paperheight=22.5cm,paperwidth=17cm
+    documentclass: report
+    linestretch: 1.25
+    fontfamily: libertinus
+    fontsize: 4pt
+    dpi: 300
+    colorlinks: false
+    include-in-header: 
+      text: |
+        \usepackage{lscape}
+        \newcommand{\blandscape}{\begin{landscape}}
+        \newcommand{\elandscape}{\end{landscape}}
+        \usepackage{amsmath}
+    includes:
+      in_header: 'gt_packages.sty'
+    number-sections: true
+    number-depth: 3
+    shift-heading-level-by: -1
+    toc: true
+    toc-depth: 2
+    lot: true
+    lof: true
+    link-citations: true
+    notebook-links: false
+    fig-cap-location: top
 ---
 
 ```{r}
@@ -31,8 +56,11 @@ pacman::p_load(
   targets
 )
 
+here::i_am("notebooks/thesis.qmd")
 
-tar_source()
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
 
 theme_set(theme_minimal())
 

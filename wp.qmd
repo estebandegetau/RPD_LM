@@ -1,0 +1,60 @@
+---
+title: "The Labor Market Outcomes of (Quasi) Unemployment Insurance"
+subtitle: "Evidence from the *Retiro Parcial por Desempleo* in Mexico"
+authors:
+  - name: Esteban Degetau
+    affiliation: 
+      - Instituto Mexicano del Seguro Social
+      - Instituto Tecnológico Autónomo de México
+    orcid: 0009-0004-4095-8819
+    roles: writing
+    email: esteban.degetau@imss.gob.mx
+    url: https://estebandegetau.com
+    corresponding: true
+date: today
+date-format: long
+abstract: |
+  I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by about four percentage points. Leveraging these take-up data, I estimate the average treatment effect on the treated and find that RPD use prolongs unemployment by up to 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Adverse effects are concentrated among younger, lower-income, and female workers, while some higher-income groups see modest earnings gains. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.
+thanks: |
+  I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy and Enrique Seira for comments and suggestions, and to participants in Horacio’s research seminar for helpful feedback.
+---
+
+{{< include sections/intro.qmd >}}
+
+The remainder of the paper proceeds as follows. @sec-context provides institutional background on the RPD program and Mexico’s broader unemployment protection framework. @sec-data describes the data and sample construction. @sec-empirical-strategy outlines the empirical strategy. @sec-results presents the main results, including heterogeneity analysis. I finish with a discussion of the findings and their implications for policy.
+
+{{< include sections/background.qmd >}}
+
+{{< include sections/data.qmd >}}
+
+## Empirical Strategy {#sec-empirical-strategy}
+
+To estimate the effect of the *Retiro Parcial por Desempleo* (RPD) on labor market outcomes I use a regression discontinuity design (RDD) exploiting the eligibility condition of having contributed to social security for at least two years at the moment of displacement. I leverage data on RPD take up to estimate the local average treatment effect (LATE) on compliers using a fuzzy discontinuity design. The fuzzy RDD can be expressed as a two-stage least squares regression, where the first stage estimates the effect of eligibility on take up of the RPD program as in
+
+$$
+T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i \quad \text{where} \quad |C_i - 2| \le h
+$$ {#eq-1s}
+
+where $T_{i}$ is a dummy indicating worker $i$'s take up to RPD, $D_i$ indicates whether $i$ is eligible to withdraw funds from her pension account, i.e. $C_i \ge 2$, where $C_i$ represents $i$'s contributions to SS measured in years. $f(\cdot)$ is a polynomial function of $C_i$ and $h$ is the bandwidth around the threshold. $\beta$ identifies the causal effect of eligibility on take up of the RPD program.
+
+Hence, the second stage estimates the effect of taking up RPD on labor market outcomes as in
+
+$$
+Y_i = \gamma + \tau \hat T_i + f(C_i - 2) + v_i \quad \text{where} \quad |C_i - 2| \le h
+$$ {#eq-2s}
+
+where $Y_{i}$ is an outcome of interest, $\hat T_i$ is the predicted value of the first stage. The main parameter of interest is $\tau$, which identifies the LATE around the eligibility threshold. I use a local linear polynomial ($p=1$) with a triangular kernel and the bandwidth selected using the method proposed by @calonico2020. Specifically, I'm interested in the hypothesis test given by $H_0: \tau=0$ vs $H_1: \tau \ne 0$. For inference, I use heteroskedasticity-robust standard errors with nearest-neighbor variance estimator, as proposed by @calonico2014.
+
+### Evidence on Design Validity {#sec-assumptions}
+
+I provide two main tests on the validity of the sharp design in @eq-1s plus an additional test on the validity of the fuzzy design in @eq-2s. First, I show that there is no evidence of manipulation around the eligibility threshold. Second, I show that the covariates are balanced around the eligibility threshold. Finally, I show that the first stage is strong.
+
+First, @fig-density shows the result of the @cattaneo2020 test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, @fig-covariates-pre and @fig-pre_unemp show the continuity of covariates of workers around the eligibility threshold. Crucially, @tbl-covariates-bal shows the estimation and inference of @eq-1s, showing there is no evidence of discontinuity at the threshold for any of the covariates [@cattaneo2019]. Finally, I present evidence on the strength of the first stage in @sec-take-up.
+
+{{< include sections/empirical-strategy.qmd >}}
+
+{{< include sections/results.qmd >}}
+
+{{< include sections/conclusion.qmd >}}
+
+{{< include sections/appendix.qmd >}}

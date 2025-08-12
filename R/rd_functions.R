@@ -275,7 +275,7 @@ my_modelsummary <- function(x, digits = 2) {
 
   named_list <- as.list(setNames(models, names))
 
-  y <- modelsummary(
+  y <- modelsummary::modelsummary(
     named_list,
     escape = FALSE,
     fmt = digits,

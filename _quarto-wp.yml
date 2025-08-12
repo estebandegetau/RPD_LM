@@ -1,0 +1,30 @@
+project:
+  render:
+    - wp.qmd
+
+
+format:
+  html:
+    comments:
+      hypothesis: true
+    title-block-banner: true
+    toc: true
+  pdf: 
+    fontfamily: libertinus
+    dpi: 300
+    colorlinks: false
+    include-in-header: 
+      text: |
+        \usepackage{lscape}
+        \newcommand{\blandscape}{\begin{landscape}}
+        \newcommand{\elandscape}{\end{landscape}}
+        \usepackage{amsmath}
+    includes:
+      in_header: 'gt_packages.sty'
+    number-sections: false
+    link-citations: true
+    notebook-links: false
+    fig-cap-location: top
+
+keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
+

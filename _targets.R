@@ -340,7 +340,6 @@ list(
     name = duration_plots_long,
     command = make_duration_plots(rd_data, nrow = 2, ncol = 3)
   ),
-
   tar_quarto(manuscript, quiet = F, execute = T, cache_refresh = T)
   # tar_quarto(
   #   name = presentation,

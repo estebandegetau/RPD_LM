@@ -1,60 +1,22 @@
 project:
-  type: manuscript
+  type: default
+  output-dir: _manuscript
+  # render: 
+  #   - "sections/"
+  # - "notebooks/thesis.qmd"
+    # - "presentations/full_slides.qmd"
 
-  render: 
- #   - "notebooks/"
-    - "index.qmd"
-    # - "presentations/04_final.qmd"
-
-
-manuscript:
-  article: index.qmd
-
-
-title: "The Labor Market Outcomes of (Quasi) Unemployment Insurance"
-subtitle: "Evidence from the *Retiro Parcial por Desempleo* in Mexico"
-authors:
-  - name: Esteban Degetau
-    affiliation: Instituto Mexicano del Seguro Social
-    roles: writing
-    corresponding: true
-
-format:
-  # html:
-  #   comments:
-  #     hypothesis: true
-  # jats: default
-
-  # Thesis format
-  pdf: 
-      geometry: paperheight=22.5cm,paperwidth=17cm
-      documentclass: report
-      linestretch: 1.25
-      fontfamily: libertinus
-      fontsize: 4pt
-      dpi: 300
-      colorlinks: false
-      include-in-header: 
-        text: |
-          \usepackage{lscape}
-          \newcommand{\blandscape}{\begin{landscape}}
-          \newcommand{\elandscape}{\end{landscape}}
-          \usepackage{amsmath}
-      #    \usepackage[font=footnotesize,labelfont={bf,footnotesize}]{caption}
-      includes:
-        in_header: 'gt_packages.sty'
-      number-sections: true
-      number-depth: 3
-      shift-heading-level-by: -1
-      toc: true
-      toc-depth: 2
-      lot: true
-      lof: true
-      link-citations: true
-      notebook-links: false
-      fig-cap-location: top
+# manuscript:
+#   article: index.qmd
 
 execute:
-  freeze: auto
+  freeze: false
+  echo: false
+  warning: false
+  message: false
 
 bibliography: references.bib
+license: "CC BY-NC"
+
+# Add the wp profile
+

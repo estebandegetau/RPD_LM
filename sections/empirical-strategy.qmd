@@ -1,0 +1,105 @@
+
+
+```{r}
+#| include: false
+#| cache: false
+
+rm(list = ls())
+gc()
+
+pacman::p_load(
+  tidyverse,
+  here,
+  gt,
+  gtsummary,
+  fixest,
+  arrow,
+  ggpubr,
+  modelsummary,
+  knitr,
+  kableExtra,
+  targets
+)
+
+here::i_am("sections/empirical-strategy.qmd")
+
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+
+
+::: {#fig-density}
+```{r}
+
+
+tar_read(density_plot)
+
+```
+
+*Note:* This figure shows there was no manipulation into eligibility by altering the days of contributions to social security at the moment of displacement [@cattaneo2020].
+
+Density of the Running Variable
+:::
+
+::: {#fig-covariates-pre}
+```{r}
+#| fig-height: 10
+#| fig-width: 9
+
+tar_read(covariates_plots)
+
+```
+
+*Note:* This figure shows (*i*) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (*ii*) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using @calonico2015. The figure shows workers' covariates do not systematically jump at the eligibility threshold.
+
+Covariates around Eligibility Threshold
+:::
+
+::: {#fig-pre_unemp}
+```{r}
+#| fig-height: 8
+#| fig-width: 9
+
+tar_read(prev_job_plots) 
+
+
+```
+
+*Note:* his figure shows (*i*) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (*ii*) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using @calonico2015. The figure shows workers' previous job outcomes do not systematically jump at the eligibility threshold.
+
+Previous Job Outcomes around Eligibility Threshold
+:::
+
+```{r}
+#| label: tbl-covariates-bal
+#| tbl-cap: "Eligibility Effect: Balance of Covariates"
+#| cache: false
+
+
+tar_read(all_covariates) |>
+    slice_head(n = 5) |>
+    my_modelsummary(digits = 3) |>
+    kable_styling(latex_options = "scale_down") |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "6em")
+
+tar_read(all_covariates) |>
+    slice_tail(n = 5) |>
+    my_modelsummary(digits = 3) |>
+    kable_styling(latex_options = "scale_down") |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "6em") |>
+    footnote(
+        general = rdd_footnote,
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+
+```

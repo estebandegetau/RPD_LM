@@ -1,0 +1,194 @@
+
+```{r}
+#| include: false
+#| cache: false
+
+rm(list = ls())
+gc()
+
+pacman::p_load(
+  tidyverse,
+  here,
+  gt,
+  gtsummary,
+  fixest,
+  arrow,
+  ggpubr,
+  modelsummary,
+  knitr,
+  kableExtra,
+  targets
+)
+
+here::i_am("sections/appendix.qmd")
+
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+## Appendix {.unnumbered}
+
+{{< pagebreak >}}
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Summary Statistics"
+
+summary_table <- tar_read(summary_table)
+summary_table |>
+  distinct(Variable, group) |>
+  view()
+
+summary_table |>
+  ungroup() |>
+  mutate(
+    group = factor(
+      group,
+      labels = c(
+        "Covariates",
+        "Previous job",
+        "RPD",
+        "Survival",
+        "Next job",
+        "Medium term"
+      ),
+      levels = c(
+        "Covariates",
+        "Previous job",
+        "RPD",
+        "Survival",
+        "Next job",
+        "Medium term"
+      )
+    )
+  ) |>
+  arrange(group, Variable) |>
+  select(!c(pos, missing, group)) |>
+  filter(!str_detect(Variable, "Wage \\(RPD")) |>
+  kbl(
+    digits = 1,
+    format.args = list(big.mark = ","),
+    # longtable = T,
+    booktabs = T,
+    full_width = T,
+    position = "h"
+  ) |>
+  kableExtra::kable_styling(latex_options = c("scale_down")) |>
+  pack_rows("Covariates", 1, 7) |>
+  pack_rows("Previous Job", 8, 10) |>
+  pack_rows("Partial Withdrawal (RPD)", 11, 14) |>
+  pack_rows("Job Search Outcomes", 15, 18) |>
+  pack_rows("Next Job Quality", 19, 21) |>
+  pack_rows("Medium Term Outcomes (Over 3 Years)", 22, 24) |>
+  # pack_rows("Take up", 21, 21) |>
+  # column_spec(1, width = "20em") |>
+  # column_spec(2:7, width = "3em") |>
+  kableExtra::footnote(
+    general = "This table reports summary statistics for the variables used in the analysis. The statistics are based on the final sample used for estimation.",
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+  
+```
+
+
+::: {#fig-survival}
+```{r}
+#| fig-height: 10
+#| fig-width: 9
+
+tar_read(survival_plots)
+
+```
+
+*Note:* This figure shows (*i*) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (*ii*) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using @calonico2015.
+
+Eligibility Effect: Survival in Unemployment
+:::
+
+::: {#fig-duration}
+```{r}
+#| fig-height: 10
+#| fig-width: 9
+
+tar_read(duration_plots)
+
+```
+
+*Note:* This figure shows (*i*) sample means for evenly-spaced 14-day bins relative to the eligibility threshold, and (*ii*) the underlying regression function estimated using a triangular kernel, optimal bandwidth and a linear local polynomial using @calonico2015.
+
+Eligibility Effect: Duration of Unemployment
+:::
+
+::: {#fig-path}
+```{r}
+#| fig-height: 4
+#| fig-width: 8
+
+
+tar_read(survival_path)
+
+```
+
+*Note:* This figure shows the estimated coefficient of interest in @eq-1s . The estimates are obtained using a triangular kernel, optimal bandwidth and a linear local polynomial. Bias corrected estimates and robust standard errors computed using @calonico2014. 95 percent confidence intervals.
+
+Dynamic Effect of Eligibility on Survival and Duration of Unemployment
+:::
+
+```{r}
+#| label: tbl-job-search
+#| tbl-cap: "Eligibility Effect: Job Search Outcomes"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|   - "Survival and Duration of Unemployment"
+#|   - "Next Job Quality"
+
+tar_read(survival) |>
+    mutate(months = str_extract(name, "\\d+") |> as.numeric()) |>
+    filter(name %in% c("survival_3", "survival_36", "duration_6", "duration_36")) |>
+    arrange(desc(str_remove(name, "_\\d+")), months) |>
+    mutate(label = case_when(
+        str_detect(name, "survival") ~ str_c("Survival - ", months, " months"),
+        str_detect(name, "duration") ~ str_c("Duration (wks) - ", months, " months")
+    )) |>
+    my_modelsummary(digits = 3) |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:5, width = "8em")
+
+tar_read(next_job) |>
+    arrange(name) |>
+    mutate(
+        label = case_when(
+            name == "next_job_av_earnings" ~ "Monthly earnings (2024 MXN)",
+            name == "next_job_cum_earnings" ~ "Total earnings (2024 MXN)",
+            name == "next_job_duration" ~ "Job duration (weeks)",
+            name == "prev_job_av_earnings" ~ "Prev. job earnings",
+        )
+    ) |>
+    my_modelsummary() |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:5, width = "8em") |>
+    footnote(
+        general = rdd_footnote,
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+
+```
+

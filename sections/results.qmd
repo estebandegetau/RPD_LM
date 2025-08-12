@@ -1,0 +1,424 @@
+
+```{r}
+#| include: false
+#| cache: false
+
+rm(list = ls())
+gc()
+
+pacman::p_load(
+  tidyverse,
+  here,
+  gt,
+  gtsummary,
+  fixest,
+  arrow,
+  ggpubr,
+  modelsummary,
+  knitr,
+  kableExtra,
+  targets
+)
+
+here::i_am("sections/results.qmd")
+
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+## Results {#sec-results}
+
+This section presents the empirical results of the fuzzy regression discontinuity design (RDD) used to estimate the causal effect of the *Retiro Parcial por Desempleo* (RPD) program on labor market outcomes. I begin by documenting the first-stage effects of program eligibility on take-up, which justifies the fuzzy RDD strategy. I then estimate the local average treatment effect of RPD take-up on job search behavior and medium-term labor market outcomes. The results are complemented by a heterogeneity analysis that explores how these effects vary by gender, income level, age, and exposure to the COVID-19 pandemic.
+
+### First Stage {#sec-take-up}
+
+```{r}
+#| label: first-stage
+#| include: false
+#| eval: false
+
+rpd |>
+    feols(
+        take_up_2 ~ elig + running + running^2,
+        vcov = "hc1"
+    ) |>
+    etable(fitstat = ~f)
+
+
+```
+
+This section presents evidence that workers eligible to the RPD program (with at least two years of social security contributions at the time of job displacement) are significantly more likely to take up than ineligible workers. These first-stage results confirm three key points: (i) the running variable has been correctly constructed, (ii) the first stage of the fuzzy regression discontinuity design is strong, and (iii) eligibility has a meaningful, albeit modest, effect on program take-up.
+
+@fig-first-stage shows that displaced workers just above the eligibility threshold are more likely to access the RPD program to withdraw funds from their pension account. Inference from @fig-first-stage-path and @tbl-take-up confirms that the take-up discontinuity is statistically significant and stabilizes at around 4 percentage points after twelve months since displacement.
+
+Interestingly, @fig-first-stage shows that take-up increases among initially ineligible workers after the twelfth month following displacement. This pattern should not be interpreted as conventional non-compliance. Rather, it reflects a change in eligibility status over time. Under Eligibility Mode B, workers become eligible for the RPD program once they accumulate at least five years of participation in the formal labor market, regardless of their contribution history (see @sec-context and @fig-eligibility). Given that the analytic sample is restricted to individuals displaced between their third and fourth year in the formal sector, these workers only reach the five-year threshold approximately one year after displacement. Once eligible, they take up the program at rates comparable to the original compliers, which accounts for the observed stabilization in the intent-to-treat (ITT) effect after month 12 (see @fig-first-stage-path).
+
+@tbl-take-up confirms that the ITT effect on program take-up is highly statistically significant, albeit small in magnitude. This justifies the use of a fuzzy RDD strategy to estimate the local average treatment effect of RPD on labor market outcomes among compliers. The modest size of the first-stage effect is consistent with the institutional design of the RPD program: unlike traditional unemployment insurance schemes, RPD allows only a partial withdrawal from workers’ own pension accounts. It is, by design, a self-financed benefit that internalizes the cost of unemployment support.
+
+::: {#fig-first-stage}
+```{r}
+#| fig-height: 10
+#| fig-width: 9
+
+tar_read(take_up_plots)
+
+
+```
+
+Note: This figure displays (i) sample means calculated within evenly spaced 14-day bins relative to the eligibility threshold, and (ii) the estimated regression function obtained using a local linear polynomial with a triangular kernel and optimal bandwidth selection following the method of @calonico2015. The results show a discrete increase in program take-up at the eligibility threshold.
+
+Eligibility Effect on Take Up
+:::
+
+::: {#fig-first-stage-path}
+```{r}
+#| fig-height: 3
+#| fig-width: 8
+
+
+tar_read(take_up_path)
+
+```
+
+Note: This figure presents the estimated coefficients of interest from @eq-1s. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of @calonico2014. Vertical lines across point estimates represent 95% confidence intervals.
+
+Dynamic Effect of Eligibility on Take Up
+:::
+
+```{r}
+#| label: tbl-take-up
+#| tbl-cap: "Eligibility Effect: First Stage"
+
+take_up_table <- tar_read(take_up) |>
+    filter(str_detect(name, "take_up")) |>
+    filter(!str_detect(name, "censored|days")) |>
+    mutate(
+        months = str_extract(name, "\\d+") |> as.numeric(),
+        label = case_when(
+            str_detect(name, "take_up") ~ str_c("Take up - ", months, " months")
+        )
+    ) |>
+    filter(months %in% c(2, 3, 6, 9, 12)) |>
+    arrange(months)
+
+take_up_table |>
+    my_modelsummary(digits = 3) |>
+    kable_styling(
+        latex_options = "scale_down",
+        full_width = F
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:6, width = "5em") |>
+    footnote(
+        general = rdd_footnote,
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+
+```
+
+### Job Search Outcomes {#sec-main-results}
+
+
+I now turn to the effects of RPD take-up on labor market outcomes, estimated using the fuzzy regression discontinuity design described in @eq-2s. @fig-fuzzy-path and  @tbl-fuzzy-job-search-1 present the dynamic treatment effects on unemployment duration and employment survival. By three months after displacement, taking up RPD increases the probability of remaining unemployed (i.e., survival in unemployment) by 31 percentage points. After 36 months, the cumulative effect on unemployment duration amounts to 36 additional weeks. These effects are statistically significant at the 5% level and align with the broader empirical literature: income support during unemployment typically prolongs joblessness. At the eligibility cutoff, RPD users experience a 70% increase in unemployment duration relative to non-eligible workers after three years. These findings underscore the potential social costs of income-substitution programs such as RPD, particularly through the lens of forgone contributions to the social security system due to extended non-employment spells.
+
+For completeness, Appendix @fig-survival, @fig-duration, and @fig-path, along with @tbl-job-search, present intention-to-treat (ITT) estimates for the same outcomes, as described in @eq-1s, as well as the corresponding RD plots. The ITT estimates show smaller effects than those reported in comparable international settings. For instance, @britto2022 finds that a lump-sum unemployment benefit program in Brazil increased employment survival by 1.9 percentage points after three months, whereas the estimated effect of RPD is just 0.7 percentage points over the same period. Similarly, @velázquezguadarrama2023, using ENOE survey data, reports that eligibility to RPD increases unemployment duration by 11.8 weeks (or 82.85 days), while the ITT estimate from this study points to a much smaller increase of just 0.65 weeks over a three-year horizon. Importantly, none of the ITT estimates reported here are statistically significant at the 5% level.
+
+Turning to employment quality, Table @tbl-fuzzy-job-search-2 reports the estimated effects of RPD take-up on post-displacement outcomes such as earnings and job duration. The composition of re-employed workers appears similar around the eligibility threshold in terms of prior earnings (see column 4), suggesting no substantial selection effects. However, there is limited evidence that RPD take-up improves subsequent job quality. While the point estimate for monthly earnings in the next job suggests a sizeable increase—more than a 100% gain relative to pre-displacement wages, or approximately $9,500 MXN—this estimate is only significant at the 10% level. Moreover, the effects on next job cumulative earnings and job duration are statistically indistinguishable from zero.
+
+When placed in context with the existing literature, these ITT results point to a mixed picture. @britto2022 finds a statistically significant 1.7% decline in annual earnings associated with Brazil’s program, while eligibility for RPD is associated with a non-significant 4.6% increase. @velázquezguadarrama2023, using ENOE data, finds a smaller yet statistically significant increase of 2.47% in wage income among eligible workers. Overall, while some point estimates suggest potentially positive effects of RPD on earnings, the lack of statistical significance and the inconsistency with prior studies call for cautious interpretation.
+
+
+::: {#fig-fuzzy-path}
+```{r}
+#| fig-height: 4
+#| fig-width: 8
+
+tar_read(fuzzy_path)
+
+```
+
+Note: This figure presents the estimated coefficients of interest from @eq-2s. Estimates are obtained using a local linear regression with a triangular kernel and optimal bandwidth selection. Bias-corrected point estimates and robust standard errors are computed following the method of @calonico2014. Vertical lines across point estimates represent 95% confidence intervals.
+
+Dynamic Effect of RPD on Survival and Duration of Unemployment
+:::
+
+```{r}
+#| label: tbl-fuzzy-job-search
+#| tbl-cap: "RPD Effect: Job Search Outcomes"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|   - "Survival and Duration of Unemployment"
+#|   - "Next Job Quality"
+
+tar_read(survival_iv) |>
+    mutate(months = str_extract(name, "\\d+") |> as.numeric()) |>
+    filter(name %in% c("survival_3", "survival_36", "duration_6", "duration_36")) |>
+    arrange(desc(str_remove(name, "_\\d+")), months) |>
+    mutate(label = case_when(
+        str_detect(name, "survival") ~ str_c("Survival - ", months, " months"),
+        str_detect(name, "duration") ~ str_c("Duration (wks) - ", months, " months")
+    )) |>
+    mutate(label = case_when(
+        str_detect(name, "survival") ~ str_c("Survival - ", months, " months "),
+        str_detect(name, "duration") ~ str_c("Duration - ", months, " months (wks)")
+    )) |>
+    my_modelsummary() |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:5, width = "6em")
+  
+tar_read(next_job_iv) |>
+    arrange(name) |>
+    mutate(
+        label = case_when(
+            name == "next_job_av_earnings" ~ "Monthly earnings",
+            name == "next_job_cum_earnings" ~ "Total earnings",
+            name == "next_job_duration" ~ "Job duration (weeks)",
+            name == "prev_job_av_earnings" ~ "Prev. job earnings",
+        )
+    ) |>
+    my_modelsummary() |>
+    kable_styling(
+        latex_options = "scale_down",
+        font_size = 8
+    ) |>
+    column_spec(1, width = "11em") |>
+    column_spec(2:5, width = "6em") |>
+    footnote(
+        general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
+        general_title = "Note:",
+        threeparttable = T,
+        escape = F,
+        footnote_as_chunk = T
+    )
+```
+
+### Medium Term Effects {#sec-medium-run}
+
+This section examines the medium-term labor market outcomes associated with participation in the RPD program.  @tbl-medium-fuzzy reports the estimated effects for RPD users, computed using the fuzzy regression discontinuity design described in @eq-2s. Although none of the estimates reach statistical significance at the 5% level, the results suggest a persistent decline in formal labor earnings over the three-year post-displacement period. This decline appears to be driven entirely by the extensive margin, as RPD recipients were employed for fewer months and, on average, reported no wage earnings.
+
+While most effects are not statistically distinguishable from zero, they may reflect longer-lasting disruptions in formal labor market attachment. Taken together, these findings indicate that the RPD program not only extends the duration of unemployment but also fails to enhance post-displacement job quality or promote higher long-term earnings in the formal sector—contrary to the predictions of the more optimistic unemployment insurance literature [@acemoglu1999; @acemoglu2000].
+
+```{r}
+#| label: tbl-medium-fuzzy
+#| tbl-cap: "RPD Effect: Earnings, Employment and Wages over Medium Term"
+#| layout-ncol: 1
+#| tbl-subcap:
+#| - "Earnings"
+#| - "Months Worked"
+#| - "Average Monthly Earnings"
+
+
+medium_table <- tar_read(medium_term_iv) |>
+        mutate(
+            unemp_year = str_extract(name, "\\d+") |> as.numeric(),
+            unemp_year = str_c("Year ", unemp_year),
+            unemp_year = case_when( #   is.na(unemp_year) & str_detect(name, "av_") ~ "Average 3 years",
+                is.na(unemp_year) ~ "Total 3 years", T ~ unemp_year
+            )
+        ) |>
+        mutate(
+            label = case_when(
+                str_detect(name, "av_earnings") ~ "Average monthly earnings",
+                str_detect(name, "earnings") ~ "Earnings",
+                str_detect(name, "months_worked") ~ "Months Worked",
+            )
+        ) |>
+        arrange(label, unemp_year)
+
+
+ medium_table |>
+        filter(label == "Earnings") |>
+        my_medium_table()
+
+medium_table |>
+        filter(label == "Months Worked") |>
+        my_medium_table()
+
+medium_table |>
+        filter(label == "Average monthly earnings") |>
+        my_medium_table() |>
+        footnote(
+            general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
+            general_title = "Note:",
+            threeparttable = T,
+            escape = F,
+            footnote_as_chunk = T
+        )
+```
+
+
+
+### Additional Results: Heterogeneous Treatment Effects {#sec-additional-results}
+
+In this section, I present additional results on the heterogeneity of the effect of the RPD program on labor market outcomes. I explore the heterogeneity of the treatment effect by age, wage, and exposure to COVID-19 in @tbl-income, @tbl-age, and @tbl-covid, respectively.
+
+**Income.** @tbl-income explores heterogeneous effects of the RPD program by pre-displacement income, dividing the sample at the median wage in the previous job ($6,669.2 MXN). Take-up rates do not differ significantly between the above- and below-median wage groups, suggesting comparable levels of program engagement across income levels.
+
+However, the impact on labor market outcomes varies substantially. Among workers earning below the median, the RPD significantly increases the probability of remaining unemployed within the first three months following displacement. Over a 36-month horizon, the effect on unemployment duration for this group is nearly ten times larger than for their higher-income counterparts, indicating a much more pronounced and persistent detachment from formal employment among lower-wage workers.
+
+In terms of reemployment outcomes, RPD recipients with above-median pre-displacement wages secure jobs that pay approximately 67% more than those obtained by ineligible workers. In contrast, no statistically significant effect is found on the wages of reemployed workers in the below-median group. Over the full three-year horizon, higher-income workers exhibit a positive, albeit imprecise, impact on total earnings. Meanwhile, lower-income workers experience an average earnings loss of approximately $40,000 MXN—driven by prolonged unemployment and the absence of wage gains upon reemployment—although this estimate is not statistically distinguishable from zero.
+
+These findings highlight the importance of accounting for income heterogeneity in program design. In the case of the RPD, the structure of benefits may inadvertently reinforce existing inequalities—offering greater long-term advantages to relatively better-off workers, while leaving lower-wage workers worse off in both employment duration and earnings trajectories.
+
+**Age.** @tbl-age examines heterogeneous effects of the RPD program by age at the time of displacement, dividing the sample at the median age of 22.9 years. As with income, take-up rates do not differ significantly between younger and older workers, indicating comparable engagement with the program across age groups.
+
+The effects on unemployment duration are not statistically significant for either group over the short (3-month) or medium (36-month) horizons. However, point estimates suggest meaningful differences in magnitude. By three months, younger workers exhibit a 23 percentage point increase in the probability of remaining unemployed, compared to only a 10 percentage point increase for older workers—more than twice the effect. This disparity widens substantially over time: after 36 months, the cumulative increase in unemployment duration is 35 weeks for younger workers, compared to just 3 weeks for older workers—an effect nearly ten times larger.
+
+In contrast, there is no clear evidence of differential effects on post-displacement job quality. All estimates related to wages and job duration in the next job are statistically indistinguishable from zero for both age groups.
+
+Over the full three-year horizon, younger workers appear to experience greater earnings losses. On average, they earned approximately $20,000 MXN less than their counterparts who were not eligible for RPD, compared to a $9,000 MXN loss among older workers. These estimates, however, are imprecise and should be interpreted with caution.
+
+Taken together, these findings suggest that age is an important dimension of heterogeneity in the effects of unemployment assistance programs. In the case of the RPD, younger workers may face more persistent labor market disruptions, with weaker labor market attachement, potentially compounding early-career vulnerabilities.
+
+**Gender.** @tbl-gender examines the heterogeneous effects of the RPD program by gender. Panel A presents results for males, while Panel B reports estimates for females. Take-up rates are similar across groups, with no statistically significant gender differences in program participation 12 months after displacement.
+
+However, the effects on labor market outcomes diverge markedly by gender. Among males, RPD take-up increases the probability of remaining unemployed three months after displacement by 40 percentage points. This effect persists over time, resulting in a cumulative increase in unemployment duration of 49 weeks over the subsequent three years—an effect that is both large and statistically significant. In contrast, female recipients exhibit no significant change in short-term survival or long-term unemployment duration. The point estimate for unemployment duration is actually negative (–8.7 weeks), but imprecisely estimated.
+
+Differences in earnings outcomes are similarly pronounced. Male RPD recipients experience large, positive effects on monthly earnings in their next job—approximately $11,252 MXN higher than ineligible males—and a cumulative three-year earnings gain of $1,066 MXN. These estimates, while imprecise, suggest a potential improvement in job quality among men. In contrast, female RPD recipients see no significant gain in monthly earnings and suffer an average three-year total earnings loss of $16,126 MXN. This reduction in earnings is likely driven by delayed labor market reentry and the absence of wage gains upon reemployment.
+
+Interestingly, the margin of adjustment differs across genders. Male recipients work 2.7 fewer months over the three-year period, while female recipients actually work 1.5 months more. Yet, the increase in work months among women does not translate into earnings gains, possibly reflecting reemployment in lower-wage or more precarious jobs.
+
+Taken together, these findings highlight significant gender disparities in the labor market effects of the RPD program. While male recipients face longer unemployment durations, they appear to recover through access to better-paying jobs. Female recipients, in contrast, do not experience improvements in job quality and incur significant earnings losses. These results underscore the need for gender-sensitive design in unemployment support policies, as uniform benefit structures may yield unequal labor market outcomes.
+
+**Exposure to COVID-19.** @tbl-covid explores heterogeneous effects of the RPD program based on whether individuals were displaced before or after the onset of the COVID-19 pandemic. Panel A includes workers who were displaced before March 2019, and thus had at least a full year of unemployment before the pandemic hit in March 2020. These individuals are considered to have no exposure to pandemic-related labor market disruptions during their initial post-displacement period. Panel B, by contrast, focuses on individuals displaced after March 2020, who faced full exposure to the labor market conditions created by the pandemic.
+
+First-stage estimates show that take-up rates are slightly lower among post-pandemic displacees (3%) than among pre-pandemic ones (4%), although the difference is modest. However, labor market outcomes diverge sharply across cohorts.
+
+Among workers with no exposure to the pandemic (Panel A), RPD take-up leads to substantial and significant increases in unemployment duration. The probability of remaining unemployed at 3 months rises by 37 percentage points, and cumulative unemployment duration increases by over 52 weeks—essentially one additional year of joblessness. Despite these adverse effects on employment continuity, there is a modest increase in monthly earnings in the next job (12,416 MXN), although total earnings over the three-year horizon fall by 8,539 MXN, suggesting that the gains in job quality do not fully offset the costs of prolonged unemployment.
+
+In contrast, among workers fully exposed to the COVID-19 crisis (Panel B), RPD take-up is associated with much weaker effects on labor market behavior. The effect on 3-month survival is negligible (1 pp), and the cumulative increase in unemployment duration is only 22 weeks. Strikingly, reemployment outcomes for this group appear worse: RPD recipients experience a decline in job duration (–9.4 weeks) and a relatively small increase in next-job earnings (5,011 MXN). However, despite weaker job quality indicators, total earnings over the three-year period rise by 37,277 MXN—likely due to higher reemployment rates and a labor market rebound post-pandemic.
+
+These results suggest that the macroeconomic context at the time of displacement plays a crucial role in shaping the effects of unemployment assistance. While RPD recipients displaced before COVID-19 faced steep penalties in terms of extended non-employment and modest earnings gains, those displaced during the pandemic experienced smaller disruptions and more favorable cumulative earnings trajectories. Importantly, this contrast highlights the interaction between individual-level support programs and broader labor market conditions: a well-timed benefit may facilitate recovery in a tightening labor market, while the same benefit in a more stable environment may prolong detachment without improving long-term outcomes.
+
+```{r}
+#| label: tbl-income
+#| tbl-cap: "RPD Effect: Heterogeneity over Wage"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "Below Median Wage"
+#|  - "Above Median Wage"
+
+
+results <- tar_read(income_results) |>
+  clean_hate()
+  
+
+results |>
+  filter(split == 1) |>
+  print_hate()
+
+
+results |>
+  filter(split == 2) |>
+  print_hate() |>
+  footnote(
+    general = str_c(rdd_footnote, " Panel A reports results for individuals whose earnings in their previous job were below the sample median wage ($6,669.2), while Panel B reports results for those above the median. All monetary values are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = T,
+    footnote_as_chunk = T
+  )
+
+```
+
+```{r}
+#| label: tbl-age
+#| tbl-cap: "RPD Effect: Heterogeneity over Age"
+#| layout-ncol: 1
+#| tbl-subcap:
+#|  - "Below Median Age"
+#|  - "Above Median Age"
+
+results <- tar_read(age_results) |>
+  clean_hate()
+
+results |>
+  filter(split == 1) |>
+  print_hate()
+
+results |>
+  filter(split == 2) |>
+  print_hate() |>
+  footnote(
+    general = str_c(
+      fuzzy_rd_footnote,
+      " Panel A shows the results for the below median age group (22.3 years), while panel B shows the results for the above median age group. Currencies are expressed in 2024 Mexican Pesos."
+    ),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+```
+
+
+```{r}
+#| label: tbl-gender
+#| tbl-cap: "RPD Effect: Heterogeneity over Gender"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "Males"
+#|  - "Females"
+
+results <- tar_read(gender_results) |>
+  clean_hate()
+
+results |>
+  filter(split == 0) |>
+ print_hate()
+
+results |>
+  filter(split == 1) |>
+  print_hate() |>
+  footnote(
+    general = str_c(fuzzy_rd_footnote, " Panel A shows the results for the male group, while panel B shows the results for the female group. Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+```
+
+```{r}
+#| label: tbl-covid
+#| tbl-cap: "RPD Effect: Heterogeneity over Exposure to COVID-19"
+#| layout-ncol: 1
+#| tbl-subcap: 
+#|  - "No Exposure (Displaced before March 2019)"
+#|  - "Full Exposure (Displaced after March 2020)"
+
+
+results <- tar_read(covid_results) |>
+  clean_hate()
+
+results |>
+  filter(split == "No Exposure") |>
+  print_hate()
+
+
+results |>
+  filter(split == "Full Exposure") |>
+  print_hate() |>
+  footnote(
+    general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+```
+

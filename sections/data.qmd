@@ -1,0 +1,110 @@
+
+```{r}
+#| include: false
+#| cache: false
+
+rm(list = ls())
+gc()
+
+pacman::p_load(
+  tidyverse,
+  here,
+  gt,
+  gtsummary,
+  fixest,
+  arrow,
+  ggpubr,
+  modelsummary,
+  knitr,
+  kableExtra,
+  targets
+)
+
+here::i_am("sections/data.qmd")
+
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+## Data {#sec-data}
+
+### Data Sources
+
+To study the effect of the Retiro Parcial por Desempleo (RPD) on labor market outcomes, I use two confidential administrative data sources. The first is a matched employer-employee panel from the Instituto Mexicano del Seguro Social (IMSS), which tracks the entirety of the formal labor market. From this data set, I construct eligibility criteria and labor market outcomes. I restrict the analysis to workers who first entered the formal labor market between January 2010 and December 2017.[^4] This yields a universe of 14,819,690 workers across 406,813,240 labor contracts.
+
+[^4]: This restriction ensures that all workers are subject to the same pension reform (in effect since July 1997) and thus face uniform incentives regarding the accumulation of weeks of contribution and the use of their individual pension account balance for income substitution during unemployment.
+
+Although the IMSS employment data does not directly record unemployment episodes (i.e., the cause, onset, or duration of unemployment), unemployment spells can be inferred from gaps between labor contracts. I define a gap as a period during which an individual is not formally employed by any firm. While such gaps do not necessarily imply unemployment[^5], they are sufficient for the RPD authority to consider a worker eligible for benefits.
+
+[^5]: A gap could result from voluntary separation, a transition into informal work, or involuntary displacement.
+
+The second data source is the administrative registry of partial withdrawals from individual pension accounts. This registry includes every instance of RPD usage and records the date of withdrawal, amount withdrawn, account balance, weeks contributed to social security at that point, the last employer’s ID, and the worker’s unique identifier (Número de Seguridad Social, NSS). Crucially, I use the NSS to match the two data sets, enabling me to track the labor market trajectories of RPD users before and after its use. See @sec-usage for a detailed overview of the RPD program and its adoption.
+
+### Sample Selection {#sec-sample-selection}
+
+```{r}
+
+
+workers <- tar_read(rpd_data) |>
+  nrow() |>
+  # Format number
+  format(
+    number = TRUE,
+    decimal.mark = ".",
+    big.mark = ",",
+    scientific = FALSE
+  )
+
+```
+
+To estimate the effect of RPD on labor market outcomes, I leverage the eligibility criterion of having at least two years of contributions to social security at the moment of unemployment as s source of quasi-exogenous variation, (See @sec-context for context on the eligibility criteria.). Hence, I restrict the analysis sample to workers who (i) faced exactly one unemployment spell of at least 46 days during the third year since they joined the formal labor marked, and who (ii) had accumulated between one and three years worth of contributions to the social security system.
+
+Additionally, I restricted the analysis sample to workers with (a) ages between 18 and 65 years old, (b) who were registered in the *Régimen obligatorio* as permanent or eventual workers, (c) were not self-employed, (d) were not registered to an agrarian firm, and (e) were not in the top 1% of the unemployment duration distribution.
+
+These restrictions yield an analysis sample of of `r workers` workers. @fig-sample-selection shows the sample selection of workers in the eligibility criteria space at the time their unique unemployment spell began. Although the restrictions I impose on the analysis sample render my results non-generalizable to the entire population of workers, they allow me to leverage the institutional characteristics for identification of the effect of eligibility to RPD on labor market outcomes. @tbl-summary shows additional summary statistics of the analysis sample.
+
+::: {#fig-sample-selection}
+```{r}
+#| fig-height: 5
+#| fig-width: 8
+
+tar_read(sample_selection_plot)
+
+```
+
+Note: This figure provides a conceptual representation of eligibility for the RPD program. The x-axis denotes years since entry into the formal labor market, and the y-axis indicates years of contributions to social security. The green area corresponds to Scheme A eligibility, which requires at least three years since labor market entry and a minimum of two years of social security contributions. The blue area corresponds to Scheme B eligibility, which requires at least three years since labor market entry, irrespective of contribution history. The red square marks the subsample selected for empirical analysis. The gray area represents an infeasible region, as individuals cannot accumulate more years of social security contributions than years since formal labor market entry.
+
+Sample Selection
+:::
+
+Within the analysis sample, only those workers who had accumulated at least two years of contributions to the social security system by the time they become displaced are eligible to withdraw funds from their pension account. @tbl-balance shows workers' features across eligibility status at the moment of displacement. Indeed, there is a systematic positive selection of workers to eligibility, as workers who are eligible have contributed more to social security, had higher wages and longer tenures before displacement. Groups show imbalance across other characteristics mainly because the sample size is large, while the magnitude of the difference is not economically significant. Critically for my identification strategy, I show in @sec-assumptions that these differences across eligibility status are smooth around the eligibility threshold of 2 years of contributions to social security.
+
+```{r}
+#| label: tbl-balance
+#| tbl-cap: "Balance of Outcomes and Covariates by Eligibility Status"
+
+a <- tar_read(balance_table)
+
+a |>
+remove_footnote_header(columns = everything()) |>
+  gtsummary::as_kable_extra(booktabs = T) |>
+  kableExtra::kable_styling(latex_options = c("scale_down")) |>
+  kableExtra::pack_rows("Outcomes", 2, 5) |>
+  kableExtra::pack_rows("Eligibility criteria", 6, 7) |>
+  kableExtra::pack_rows("Previous job", 8, 9) |>
+  kableExtra::pack_rows("Demographics", 10, 12) |>
+  footnote(
+    general = c("
+    This table reports means and standard deviations (in parentheses) for key characteristics in the analysis sample, disaggregated by eligibility status at the date of displacement. For binary variables—such as *Take-up*, *Survival*, Female, and *No CURP*—the table reports the count and the corresponding percentage (in parentheses). *No CURP* indicates that the worker does not have a unique population identification number (CURP) registered with the IMSS. The p-value column reports the results from hypothesis tests of equality of means across eligible and ineligible groups.
+    "),
+    general_title = "Note:",
+    threeparttable = T,
+    escape = F,
+    footnote_as_chunk = T
+  )
+
+```

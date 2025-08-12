@@ -1,0 +1,129 @@
+
+```{r}
+#| include: false
+#| cache: false
+
+rm(list = ls())
+gc()
+
+pacman::p_load(
+  tidyverse,
+  here,
+  gt,
+  gtsummary,
+  fixest,
+  arrow,
+  ggpubr,
+  modelsummary,
+  knitr,
+  kableExtra,
+  targets
+)
+
+here::i_am("sections/background.qmd")
+
+tar_config_set(store = here("_targets"))
+
+tar_source(files = here("R"))
+
+theme_set(theme_minimal())
+
+```
+
+## Institutional Background {#sec-context}
+
+This section provides an overview of the institutional framework surrounding unemployment protection in Mexico, with a focus on the *Retiro Parcial por Desempleo* (RPD) program. I begin by describing the eligibility conditions and usage rules of the RPD, a mechanism that allows unemployed workers to make partial withdrawals from their individual pension accounts. I then document the evolution of the program’s adoption over time, highlighting its increased relevance during periods of economic crisis. Finally, I situate RPD within the broader context of income substitution in Mexico, where the failure to enforce legally mandated severance pay has rendered employer-based protections largely ineffective. In this setting, RPD emerges as a self-financed, readily accessible—but ultimately limited—alternative for workers facing job loss.
+
+### The Partial Withdrawal
+
+The RPD program works as follows. The pension system in Mexico is a standard defined contributions scheme with individual accounts. While working in formality, workers accumulate resources financed in part by themselves, by their employer and by the government.
+
+#### Eligibility Criteria
+
+If a worker faces an unemployment spell of at least 46 days, she may withdraw a fraction of her individual account balance through the RPD. The amount of money a worker can have access to depends on the number of years since her account was opened and the number of weeks she has contributed to social security. The *Ley del Seguro Social* considers two eligibility schemes, each allowing a worker to withdraw an amount up to:
+
+A.  Ten months of the minimum wage or one month of her most recent wage, whichever is lower, for workers satisfying:
+
+    i.  having entered the formal labor market at least three years ago, and
+
+    ii. having contributed to social security for at least two years.[^3]
+
+B.  Three times her monthly wage or 11.5% of her account balance, whichever is lower, for workers who entered the formal labor market at least three years ago, regardless of contributions to social security.
+
+[^3]: Contributions to social security need not be continuous to reach eligibility to RPD.
+
+@fig-eligibility provides a visual representation of the eligibility criteria. Note that a worker who became dismissed after four years since she entered the labor market, and with only one year of contributions to social security would not be immediately eligible to withdraw funds from her account. However, if she just waited in unemployment for a year, she would become eligible through Scheme B, without having to make further contributions. Hence, ineligible workers may become eligible by the mere passage of time. This feature of the eligibility structure is important to the construction of the analysis sample, as I show in @sec-sample-selection.
+
+Moreover, workers who are eligible through both schemes may choose the one that allows them to withdraw the largest amount. Having used the RPD once, a worker may use it again, only after waiting for five years since her last withdrawal. Importantly, using the RPD not only depletes the worker's individual pension savings account, but it also reduces proportionally the amount of contributions to social security, which are used to determine and finance the pension at retirement age. This is a key feature of the RPD, as it allows workers to access their savings during unemployment, but it also reduces their future pension benefits.
+
+
+
+::: {#fig-eligibility}
+```{r}
+#| echo: false
+#| fig-height: 5
+#| fig-width: 8
+
+tar_read(eligibility_plot)
+
+```
+
+*Note:* This figure conceptualizes eligibility to RPD. The x-axis shows the number of years since entry to the labor market, while the y-axis shows the number of years contributed to social security. The green area represents the eligibility criteria for Scheme A: having entered the formal labor market at least three years before and having contributed to social security for at lest two years. The blue area represents the eligibility criteria for Scheme B: having entered the formal labor market at least three years before, regardless of contributions to social security. The gray area represents the not feasible zone: workers cannot contribute more days to social security than they have been in the formal labor market.
+
+Eligibility Criteria
+:::
+
+### Usage and Adoption {#sec-usage}
+
+@fig-rpd shows the cumulative number of partial withdraws from the individualized pension accounts since it was implemented in 1997. The data comes from a confidential administrative data set from the *Instituto Mexicano del Seguro Social* (IMSS). The RPD program was first implement in 2009 to give unemployed workers a source of income substitution in the context of the Great Recession. This event can be seen as a sharp increase in the usage of RPD, but also as a change in the trend of the number of withdrawals from the pension system. Accordingly, in the next big employment crisis, the COVID-19 pandemic, another trend increase followed. This shifts in the slope of the cumulative usage of RPD shows that employment crises have a persistent effect on the usage of the program, likely due to the increased salience of the program.
+
+```{r}
+
+usage <- tar_read(rpd_usage) |> 
+  # Format number
+  format(
+    number = TRUE,
+    decimal.mark = ".",
+    big.mark = ",",
+    scientific = FALSE
+  ) 
+
+users <- tar_read(rpd_users) |> 
+  # Format number
+  format(
+    number = TRUE,
+    decimal.mark = ".",
+    big.mark = ",",
+    scientific = FALSE
+  )
+
+```
+
+To put figures into perspective, by the end of 2024, `r users` workers had made `r usage` withdrawals from the pension system. By that same moment, IMSS reported a total of 22,238,379 active workers in the formal labor market. Indeed, not all RPD users were active workers by the end of 2024, but this number gives a sense of the magnitude of the usage program.
+
+::: {#fig-rpd}
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+tar_read(rpd_usage_plot)
+
+```
+
+*Note:* This figure shows the cumulative number of partial withdrawals (left) and the cumulative amount withdrawn (right) out of the Mexican individual pension account system (Afore). Source: IMSS.
+
+Usage and Adoption
+:::
+
+### Income Substitution for the Unemployed in Mexico
+
+In theory, Mexican labor law provides mandatory severance pay (indemnización constitucional) as the main form of income substitution for workers who lose their jobs. Upon unjustified dismissal, employers are required to provide affected workers with three months of salary, plus seniority bonuses and accrued benefits. This legal severance framework reflects the broader Latin American tradition of employer liability systems as a substitute for unemployment insurance. However, in practice, enforcement of these entitlements is weak, uneven, and often illusory—rendering severance rights largely ineffective as a tool for income smoothing during unemployment.
+
+The core issue lies in the functioning of Mexico’s labor courts. In particular, in Mexico City, workers who wish to claim their legally mandated severance must navigate a judicial process that is slow, opaque, and vulnerable to both corruption and administrative incompetence. @degetau2023 provides experimental evidence from the Mexico City Local Labor Courts showing that the mere act of serving notification—a basic procedural step that triggers the legal process—is often compromised. The study reveals that notification orders may fail not due to complexity or distance but because of strategic delays enabled by collusion between defendants (employers) and court notifiers.
+
+Further compounding these problems is the widespread information asymmetry among litigants. @sadka2024 demonstrate that plaintiffs in labor disputes often have unrealistic expectations about the outcomes of their cases, which leads to protracted litigation and missed opportunities for settlement. Their randomized controlled trial shows that providing plaintiffs with predictive information about expected case duration, probability of success, and likely monetary outcomes significantly increases same-day settlement rates and improves short-term financial well-being. However, this intervention also reveals the deep dysfunction of the system: only when plaintiffs are given external tools to navigate uncertainty can they extract meaningful value from the legal process.
+
+The statistical odds of a dismissed worker successfully enforcing their severance rights are vanishingly low. As @sadka2024 document, more than half of all dismissed workers in Mexico report never receiving severance pay, yet only 13% pursue legal action—a striking indication of the widespread perception that litigation is futile . And with good reason: nearly 30% of lawsuits remain unresolved four years after being filed, leaving workers in legal limbo with no income and no resolution. Even among the rare plaintiffs who persist through the full litigation process and win a favorable judgment, only 20% ever collect the full amount awarded. The practical message is devastatingly clear: in Mexico’s current labor justice system, even winning your case is no guarantee of receiving what the law promises. For the average worker facing dismissal, the path to severance is not just slow and bureaucratic—it is overwhelmingly stacked against them.
+
+Taken together, these findings paint a troubling picture: while Mexico’s legal framework nominally guarantees severance pay as income support for the unemployed, the institutions tasked with enforcing this right often fail to deliver. Procedural inefficiencies, the potential for corruption, and severe information gaps all contribute to a de facto collapse of enforcement. As a result, many dismissed workers are left without effective legal recourse, and severance pay—despite being codified in law—cannot be relied upon as a real source of income during unemployment.
+
+In this vacuum, workers may increasingly turn to alternative, self-financed mechanisms such as the RPD program—a partial withdrawal from their individual pension accounts—as their only accessible form of income substitution. Unlike severance pay, RPD is automatic and does not require litigation. However, it also lacks redistributive features, may deplete retirement savings, and provides only modest relief. This shift from legal entitlements to self-funded liquidity illustrates a broader institutional failure: in the absence of credible enforcement, even well-designed labor protections may become functionally irrelevant.
