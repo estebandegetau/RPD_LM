@@ -65,7 +65,7 @@ To estimate the effect of RPD on labor market outcomes, I leverage the eligibili
 
 Additionally, I restricted the analysis sample to workers with (a) ages between 18 and 65 years old, (b) who were registered in the *Régimen obligatorio* as permanent or eventual workers, (c) were not self-employed, (d) were not registered to an agrarian firm, and (e) were not in the top 1% of the unemployment duration distribution.
 
-These restrictions yield an analysis sample of of `r workers` workers. @fig-sample-selection shows the sample selection of workers in the eligibility criteria space at the time their unique unemployment spell began. Although the restrictions I impose on the analysis sample render my results non-generalizable to the entire population of workers, they allow me to leverage the institutional characteristics for identification of the effect of eligibility to RPD on labor market outcomes. @tbl-summary shows additional summary statistics of the analysis sample.
+These restrictions yield an analysis sample of `r workers` workers. @fig-sample-selection shows the sample selection of workers in the eligibility criteria space at the time their unique unemployment spell began. Although the restrictions I impose on the analysis sample render my results non-generalizable to the entire population of workers, they allow me to leverage the institutional characteristics for identification of the effect of eligibility to RPD on labor market outcomes. @tbl-summary shows additional summary statistics of the analysis sample.
 
 ::: {#fig-sample-selection}
 ```{r}
@@ -76,7 +76,7 @@ tar_read(sample_selection_plot)
 
 ```
 
-Note: This figure provides a conceptual representation of eligibility for the RPD program. The x-axis denotes years since entry into the formal labor market, and the y-axis indicates years of contributions to social security. The green area corresponds to Scheme A eligibility, which requires at least three years since labor market entry and a minimum of two years of social security contributions. The blue area corresponds to Scheme B eligibility, which requires at least three years since labor market entry, irrespective of contribution history. The red square marks the subsample selected for empirical analysis. The gray area represents an infeasible region, as individuals cannot accumulate more years of social security contributions than years since formal labor market entry.
+Note: This figure provides a conceptual representation of eligibility for the RPD program. The x-axis denotes years since entry into the formal labor market, and the y-axis indicates years of contributions to social security. The green area corresponds to Scheme A eligibility, which requires at least three years since labor market entry and a minimum of two years of social security contributions. The blue area corresponds to Scheme B eligibility, which requires at least five years since labor market entry, irrespective of contribution history. The red square marks the subsample selected for empirical analysis. The gray area represents an infeasible region, as individuals cannot accumulate more years of social security contributions than years since formal labor market entry.
 
 Sample Selection
 :::
@@ -99,7 +99,7 @@ remove_footnote_header(columns = everything()) |>
   kableExtra::pack_rows("Demographics", 10, 12) |>
   footnote(
     general = c("
-    This table reports means and standard deviations (in parentheses) for key characteristics in the analysis sample, disaggregated by eligibility status at the date of displacement. For binary variables—such as *Take-up*, *Survival*, Female, and *No CURP*—the table reports the count and the corresponding percentage (in parentheses). *No CURP* indicates that the worker does not have a unique population identification number (CURP) registered with the IMSS. The p-value column reports the results from hypothesis tests of equality of means across eligible and ineligible groups.
+    This table reports means and standard deviations (in parentheses) for key characteristics in the analysis sample, disaggregated by eligibility status at the date of displacement. For binary variables—such as *Take-up*, *Survival*, Female, and *No CURP*—the table reports the count and the corresponding percentage (in parentheses). *No CURP* indicates that the worker does not have a unique population identification number (CURP) registered with the IMSS. The p-value column reports the results from hypothesis tests of individual differences of means across eligible and ineligible groups.
     "),
     general_title = "Note:",
     threeparttable = T,

@@ -48,13 +48,13 @@ A.  Ten months of the minimum wage or one month of her most recent wage, whichev
 
     ii. having contributed to social security for at least two years.[^3]
 
-B.  Three times her monthly wage or 11.5% of her account balance, whichever is lower, for workers who entered the formal labor market at least three years ago, regardless of contributions to social security.
+B.  Three times her monthly wage or 11.5% of her account balance, whichever is lower, for workers who entered the formal labor market at least five years ago, regardless of contributions to social security.
 
 [^3]: Contributions to social security need not be continuous to reach eligibility to RPD.
 
 @fig-eligibility provides a visual representation of the eligibility criteria. Note that a worker who became dismissed after four years since she entered the labor market, and with only one year of contributions to social security would not be immediately eligible to withdraw funds from her account. However, if she just waited in unemployment for a year, she would become eligible through Scheme B, without having to make further contributions. Hence, ineligible workers may become eligible by the mere passage of time. This feature of the eligibility structure is important to the construction of the analysis sample, as I show in @sec-sample-selection.
 
-Moreover, workers who are eligible through both schemes may choose the one that allows them to withdraw the largest amount. Having used the RPD once, a worker may use it again, only after waiting for five years since her last withdrawal. Importantly, using the RPD not only depletes the worker's individual pension savings account, but it also reduces proportionally the amount of contributions to social security, which are used to determine and finance the pension at retirement age. This is a key feature of the RPD, as it allows workers to access their savings during unemployment, but it also reduces their future pension benefits.
+Moreover, workers who are eligible through both schemes may choose the one that allows them to withdraw the largest amount. Having used the RPD once, a worker may use it again, only after waiting for five years since her last withdrawal. Importantly, using the RPD not only depletes the worker's individual pension savings account, but it also reduces proportionally the amount of days contributed to social security, which are used to determine and finance the pension at retirement age. This is a key feature of the RPD, as it allows workers to access their savings during unemployment, but it also reduces their future pension benefits.
 
 
 
@@ -68,7 +68,7 @@ tar_read(eligibility_plot)
 
 ```
 
-*Note:* This figure conceptualizes eligibility to RPD. The x-axis shows the number of years since entry to the labor market, while the y-axis shows the number of years contributed to social security. The green area represents the eligibility criteria for Scheme A: having entered the formal labor market at least three years before and having contributed to social security for at lest two years. The blue area represents the eligibility criteria for Scheme B: having entered the formal labor market at least three years before, regardless of contributions to social security. The gray area represents the not feasible zone: workers cannot contribute more days to social security than they have been in the formal labor market.
+*Note:* This figure conceptualizes eligibility to RPD. The x-axis shows the number of years since entry to the labor market, while the y-axis shows the number of years contributed to social security. The green area represents the eligibility criteria for Scheme A: having entered the formal labor market at least three years before and having contributed to social security for at lest two years. The blue area represents the eligibility criteria for Scheme B: having entered the formal labor market at least five years before, regardless of contributions to social security. The gray area represents the not feasible zone: workers cannot contribute more days to social security than they have been in the formal labor market.
 
 Eligibility Criteria
 :::

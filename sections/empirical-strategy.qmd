@@ -82,6 +82,7 @@ Previous Job Outcomes around Eligibility Threshold
 
 
 tar_read(all_covariates) |>
+    arrange(group, label) |>
     slice_head(n = 5) |>
     my_modelsummary(digits = 3) |>
     kable_styling(latex_options = "scale_down") |>
@@ -89,6 +90,7 @@ tar_read(all_covariates) |>
     column_spec(2:6, width = "6em")
 
 tar_read(all_covariates) |>
+    arrange(group, label) |>
     slice_tail(n = 5) |>
     my_modelsummary(digits = 3) |>
     kable_styling(latex_options = "scale_down") |>

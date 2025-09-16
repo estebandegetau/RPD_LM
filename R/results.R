@@ -166,12 +166,14 @@ make_covariates_plots <- function(x, nrow = 3, ncol = 2) {
         compute_rd_plot()
 
     labeled <- plots |>
+        arrange(label) |>
         mutate(
             plot = map(rd, "plot"),
             plot = map(plot, "rdplot"),
             plot = map2(plot, label, label_plots)
         ) |>
-        select(name, label, plot)
+        select(name, label, plot) 
+       
 
     ggarrange(plotlist = labeled$plot, nrow = nrow, ncol = ncol)
 }
@@ -182,7 +184,7 @@ make_previous_job_plots <- function(x) {
         compute_rd_plot()
 
     labeled <- plots |>
-        arrange(desc(label)) |>
+        arrange(label) |>
         mutate(
             plot = map(rd, "plot"),
             plot = map(plot, "rdplot"),
