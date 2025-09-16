@@ -16,7 +16,7 @@ date-format: long
 abstract: |
   I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by about four percentage points. Leveraging these take-up data, I estimate the average treatment effect on the treated and find that RPD use prolongs unemployment by up to 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Adverse effects are concentrated among younger, lower-income, and female workers, while some higher-income groups see modest earnings gains. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.
 thanks: |
-  I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy and Enrique Seira for comments and suggestions, and to participants in Horacio’s research seminar for helpful feedback.
+  I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy, Enrique Seira, Claudia Aburto and Martha Angélica León Alvarado for comments and suggestions, as well as to participants in Horacio’s research seminar for helpful feedback.
 ---
 
 {{< include sections/intro.qmd >}}
@@ -29,7 +29,7 @@ The remainder of the paper proceeds as follows. @sec-context provides institutio
 
 ## Empirical Strategy {#sec-empirical-strategy}
 
-To estimate the effect of the *Retiro Parcial por Desempleo* (RPD) on labor market outcomes I use a regression discontinuity design (RDD) exploiting the eligibility condition of having contributed to social security for at least two years at the moment of displacement. I leverage data on RPD take up to estimate the local average treatment effect (LATE) on compliers using a fuzzy discontinuity design. The fuzzy RDD can be expressed as a two-stage least squares regression, where the first stage estimates the effect of eligibility on take up of the RPD program as in
+To estimate the causal effect of the *Retiro Parcial por Desempleo* (RPD) on labor market outcomes I use a regression discontinuity design (RDD) exploiting the eligibility condition of having contributed to social security for at least two years at the moment of displacement. I leverage data on RPD take up to estimate the local average treatment effect (LATE) on compliers using a fuzzy discontinuity design. The fuzzy RDD can be expressed as a two-stage least squares regression, where the first stage estimates the effect of eligibility on take up of the RPD program as in
 
 $$
 T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i \quad \text{where} \quad |C_i - 2| \le h
@@ -49,7 +49,7 @@ where $Y_{i}$ is an outcome of interest, $\hat T_i$ is the predicted value of th
 
 I provide two main tests on the validity of the sharp design in @eq-1s plus an additional test on the validity of the fuzzy design in @eq-2s. First, I show that there is no evidence of manipulation around the eligibility threshold. Second, I show that the covariates are balanced around the eligibility threshold. Finally, I show that the first stage is strong.
 
-First, @fig-density shows the result of the @cattaneo2020 test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, @fig-covariates-pre and @fig-pre_unemp show the continuity of covariates of workers around the eligibility threshold. Crucially, @tbl-covariates-bal shows the estimation and inference of @eq-1s, showing there is no evidence of discontinuity at the threshold for any of the covariates [@cattaneo2019]. Finally, I present evidence on the strength of the first stage in @sec-take-up.
+First, @fig-density shows the result of the @cattaneo2020 test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, @fig-covariates-pre, @fig-pre_unemp show the continuity of covariates of workers around the eligibility threshold. Crucially, @tbl-covariates-bal shows the estimation and inference of @eq-1s, showing the covariates do not jump across the eligibility threshold systematically [@cattaneo2019]. Finally, I present evidence on the strength of the first stage in @sec-take-up.
 
 {{< include sections/empirical-strategy.qmd >}}
 
@@ -57,4 +57,12 @@ First, @fig-density shows the result of the @cattaneo2020 test for manipulation 
 
 {{< include sections/conclusion.qmd >}}
 
+## References {.unnumbered}
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
 {{< include sections/appendix.qmd >}}
+

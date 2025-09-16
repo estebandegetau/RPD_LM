@@ -340,7 +340,20 @@ list(
     name = duration_plots_long,
     command = make_duration_plots(rd_data, nrow = 2, ncol = 3)
   ),
-  tar_quarto(manuscript, quiet = F, execute = T, cache_refresh = T)
+  tar_quarto(
+    thesis,
+    quiet = F,
+    execute = T,
+    cache_refresh = T,
+    profile = "thesis"
+    ),
+  tar_quarto(
+    wp,
+    quiet = F,
+    execute = T,
+    cache_refresh = T,
+    profile = "wp"
+  )
   # tar_quarto(
   #   name = presentation,
   #   path = "presentations/04_final.qmd",

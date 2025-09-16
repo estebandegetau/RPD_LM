@@ -9,6 +9,11 @@ format:
       hypothesis: true
     title-block-banner: true
     toc: true
+    code-links: 
+      - icon: github
+        text: Source Code
+        href: https://github.com/estebandegetau/RPD_LM
+    fig-cap-location: top
   pdf: 
     fontfamily: libertinus
     dpi: 300
@@ -25,6 +30,8 @@ format:
     link-citations: true
     notebook-links: false
     fig-cap-location: top
+
+
 
 keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
 
