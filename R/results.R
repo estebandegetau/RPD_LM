@@ -11,7 +11,7 @@ fuzzy_rd_footnote <- "This table reports the estimated coefficient of interest f
 fuzzy_rd_footnote_beamer <- "This table presents the estimated coefficient of interest from Equation 3, using program take-up at 12 months after displacement as the treatment variable. Estimates are obtained using a local linear regression with a triangular kernel, optimal bandwidth selection, and a linear polynomial. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024)."
 
 make_eligibility_plot <- function() {
-    ggplot() +
+    a <- ggplot() +
         geom_rect(aes(
             xmin = 3,
             xmax = 10,
@@ -51,9 +51,10 @@ make_eligibility_plot <- function() {
             xlim = c(0, 7),
             ylim = c(0, 5)
         )
+    return(a)
 }
 make_sample_selection_plot <- function() {
-    ggplot() +
+    a <- ggplot() +
         geom_rect(aes(
             xmin = 3,
             xmax = 10,
@@ -114,6 +115,7 @@ make_sample_selection_plot <- function() {
             xlim = c(0, 6),
             ylim = c(0, 5)
         )
+    return(a)
 }
 
 
@@ -223,7 +225,8 @@ make_take_up_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(name, label, plot)
 
-    ggarrange(plotlist = labeled$plot, nrow = nrow, ncol = ncol)
+    res <- ggarrange(plotlist = labeled$plot, nrow = nrow, ncol = ncol)
+    return(res)
 }
 
 make_take_up_path <- function(x) {
@@ -240,7 +243,7 @@ make_take_up_path <- function(x) {
             point = map_dbl(point, 3)
         )
 
-    res |>
+    a <- res |>
         ggplot(aes(months, point)) +
         geom_pointrange(aes(ymin = lower, ymax = upper)) +
         geom_hline(yintercept = 0) +
@@ -249,6 +252,7 @@ make_take_up_path <- function(x) {
             x = "Months since displacement",
             y = "Take Up Rate"
         )
+    return(a)
 }
 
 
@@ -274,7 +278,8 @@ make_survival_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(plot, months, label)
 
-    ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow) 
+    a <- ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow) 
+    return(a)
 }
 
 make_duration_plots <- function(x, nrow = 3, ncol = 2) {
@@ -299,7 +304,8 @@ make_duration_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(plot, months, label)
 
-    ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow)
+    a <- ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow)
+    return(a)
 }
 
 make_survival_path <- function(x) {
@@ -351,7 +357,8 @@ make_survival_path <- function(x) {
             y = "Censored duration (weeks)"
         )
 
-    ggarrange(survival_path, duration_path, nrow = 2)
+    a <- ggarrange(survival_path, duration_path, nrow = 2)
+    return(a)
 }
 
 
@@ -403,7 +410,8 @@ make_fuzzy_path <- function(x) {
             y = "Censored duration (weeks)"
         )
 
-    ggarrange(survival_path, duration_path, nrow = 2)
+    a <- ggarrange(survival_path, duration_path, nrow = 2)
+    return(a)
 }
 
 

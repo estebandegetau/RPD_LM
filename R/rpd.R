@@ -38,7 +38,8 @@ plot_rpd_usage <- function(path) {
         scale_y_continuous(labels = scales::dollar_format(scale = 1e-6))
 
 
-    ggarrange(left, right)
+    a <- ggarrange(left, right)
+   return(a)
 }
 
 

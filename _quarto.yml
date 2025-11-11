@@ -9,17 +9,15 @@ project:
 # manuscript:
 #   article: index.qmd
 
+profile:
+  default: wp
+
 execute:
   freeze: false
   echo: false
   warning: false
   message: false
 
-bibliography: references.bib
-license: "CC BY-NC"
 
-references: references.bib
-citeproc: true
-csl: https://www.zotero.org/styles/begell-house-chicago-author-date
 # Add the wp profile
 

@@ -36,8 +36,12 @@ theme_set(theme_minimal())
 ::: {#fig-density}
 ```{r}
 
+density_plot <- tar_read(density_plot)
 
-tar_read(density_plot)
+
+# Display plot
+density_plot  
+
 
 ```
 

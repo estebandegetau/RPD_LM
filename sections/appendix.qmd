@@ -39,9 +39,6 @@ theme_set(theme_minimal())
 #| tbl-cap: "Summary Statistics"
 
 summary_table <- tar_read(summary_table)
-summary_table |>
-  distinct(Variable, group) |>
-  view()
 
 summary_table |>
   ungroup() |>

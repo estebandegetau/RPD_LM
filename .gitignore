@@ -28,3 +28,4 @@ site_libs/
 Rodrigo/
 *.sas
 *.docx
+**/*.quarto_ipynb

@@ -11,12 +11,15 @@ authors:
     email: esteban.degetau@imss.gob.mx
     url: https://estebandegetau.com
     corresponding: true
+citation:
+  url: https://www.estebandegetau.com/RPD_LM/
+  type: article
 date: today
 date-format: long
 abstract: |
-  I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by about four percentage points. Leveraging these take-up data, I estimate the average treatment effect on the treated and find that RPD use prolongs unemployment by up to 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Adverse effects are concentrated among younger, lower-income, and female workers, while some higher-income groups see modest earnings gains. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.
+  I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by about four percentage points. Leveraging these take-up data, I estimate the average treatment effect on the treated and find that RPD use prolongs unemployment by up to 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Adverse effects are concentrated among younger and lower-income, while some higher-income groups see modest earnings gains. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.
 thanks: |
-  I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy, Enrique Seira, Claudia Aburto and Martha Angélica León Alvarado for comments and suggestions, as well as to participants in Horacio’s research seminar for helpful feedback.
+  This paper is part of my dissertation at the Instituto Tecnológico Autónomo de México for the MS in Applied Economics. I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy, Enrique Seira, Claudia Aburto and Martha Angélica León Alvarado for comments and suggestions, as well as to participants in Horacio’s research seminar for helpful feedback.
 ---
 
 {{< include sections/intro.qmd >}}

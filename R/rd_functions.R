@@ -16,13 +16,14 @@ make_density_plot <- function(data) {
     histBreaks = seq(-250, 200, 7)
   )
 
-  density_plot$Estplot +
+  a <- density_plot$Estplot +
     labs(
       x = "Contribution days to eligibility"
     ) +
     theme_minimal() +
     theme(legend.position = "none") +
     coord_cartesian(xlim = c(-200, 200))
+  return(a)
 }
 
 group_outcomes <- function(data) {
