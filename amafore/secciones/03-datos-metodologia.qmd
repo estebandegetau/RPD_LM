@@ -10,29 +10,33 @@ La estrategia de identificación (@sec-identificacion) exige que los trabajadore
 
 ### Estrategia empírica: discontinuidad de regresión difusa {#sec-identificacion}
 
-La regla de elegibilidad ofrece una discontinuidad nítida y verificable: solo los trabajadores con al menos dos años (730 días) de cotización al Seguro Social al momento del despido son elegibles por el Esquema A. Como la elegibilidad no obliga al uso —el uso efectivo del programa dentro de los primeros doce meses pasa de 0.2% entre los no elegibles a 8.7% entre los elegibles (@sec-resultados)—, se combina esta discontinuidad con los datos de uso observado mediante un diseño de regresión discontinua difusa, equivalente a variables instrumentales en dos etapas. La primera etapa estima el efecto de la elegibilidad sobre el uso del programa:
+La regla de elegibilidad ofrece una discontinuidad nítida y verificable: solo los trabajadores con al menos dos años (730 días) de cotización al Seguro Social al momento del despido son elegibles por el Esquema A. La elegibilidad, sin embargo, no obliga al uso. Lejos del umbral, la diferencia cruda en el uso del programa dentro de los primeros doce meses es amplia —0.2% entre los no elegibles contra 8.7% entre los elegibles—, pero esa comparación mezcla el efecto de la regla con las diferencias de composición entre ambos grupos; la comparación relevante para la identificación es el salto *local* justo en el umbral, que la @sec-resultados estima en 3.6 puntos porcentuales. Se combina esta discontinuidad con los datos de uso observado mediante un diseño de regresión discontinua difusa, equivalente a variables instrumentales en dos etapas. La primera etapa estima el efecto de la elegibilidad sobre el uso del programa:
 
 $$
 T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i, \qquad |C_i - 2| \le h
-$$
+$$ {#eq-primera-etapa}
 
 donde $T_i$ indica si el trabajador $i$ usó el RPD, $D_i$ indica si $i$ es elegible (es decir, $C_i \ge 2$, con $C_i$ los años cotizados al Seguro Social), $f(\cdot)$ es una función polinomial local de la variable de asignación y $h$ es el ancho de banda óptimo alrededor del umbral. La segunda etapa estima el efecto del uso efectivo del RPD sobre los resultados laborales de interés:
 
 $$
 Y_{i} = \gamma + \tau \hat{T}_i + f(C_i - 2) + v_i, \qquad |C_i - 2| \le h
-$$
+$$ {#eq-segunda-etapa}
 
 donde $\hat{T}_i$ es el valor predicho de la primera etapa. El parámetro $\tau$ identifica el efecto causal local promedio (LATE) del uso del RPD entre los trabajadores cuyo comportamiento responde al cruce del umbral de elegibilidad ("cumplidores"). Se utiliza un polinomio local lineal, kernel triangular, ancho de banda óptimo siguiendo a Calonico et al. [-@calonico2020], y errores estándar robustos con estimador de varianza de vecino más cercano y corrección de sesgo [@calonico2014; @cattaneo2024].
 
 ### Validez del diseño
 
-La validez del diseño descansa en que los trabajadores no puedan manipular su posición respecto al umbral de elegibilidad y en que las características observables no salten discontinuamente en ese punto. La @fig-densidad muestra la prueba de manipulación de la variable de asignación de Cattaneo et al. [-@cattaneo2020]: no se observa acumulación anómala (*bunching*) alrededor del umbral, consistente con la ausencia de manipulación —un resultado esperable, dado que el trabajador no controla directamente la fecha de su despido—. Adicionalmente, un conjunto amplio de covariables (sexo, edad, fecha de nacimiento, antigüedad y salario en el empleo previo) no presenta saltos estadísticamente significativos en el umbral, y la primera etapa —la relación entre elegibilidad y uso— es fuerte y precisa (@sec-resultados).
+La validez del diseño descansa en que los trabajadores no puedan manipular su posición respecto al umbral de elegibilidad y en que las características observables no salten discontinuamente en ese punto. La @fig-densidad muestra la prueba de manipulación de la variable de asignación de Cattaneo et al. [-@cattaneo2020]: no se observa acumulación anómala (*bunching*) alrededor del umbral, consistente con la ausencia de manipulación —un resultado esperable, dado que el trabajador no controla directamente la fecha de su despido—.
+
+La @tbl-balance del Apéndice reporta las pruebas formales de continuidad para diez covariables predeterminadas (sexo, edad, fechas de nacimiento, de inicio laboral y de despido, antigüedad de la cuenta, y características del empleo previo), junto con las gráficas de discontinuidad correspondientes (@fig-covariables). Ninguna covariable presenta una discontinuidad económicamente relevante: la única detectable estadísticamente es una diferencia de edad de aproximadamente 0.13 años —un mes y medio, sobre una media de 25 años— que se refleja, por construcción, también en la fecha de nacimiento, y que es del orden de lo esperable al realizar diez pruebas simultáneas. El Apéndice examina, además, la sensibilidad de los efectos principales al ancho de banda (@tbl-sensibilidad). La primera etapa —la relación entre elegibilidad y uso— es fuerte y precisa (@sec-resultados).
 
 ```{r}
 #| label: fig-densidad
 #| fig-cap: "Prueba de manipulación de la variable de asignación (días de cotización respecto al umbral de elegibilidad)."
-#| out-width: "70%"
+#| fig-width: 6.5
+#| fig-height: 3.8
+#| out-width: "75%"
 #| fig-align: center
 
-knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-9-1.pdf")
+tr("density_plot_esp")
 ```

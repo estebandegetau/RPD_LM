@@ -31,7 +31,11 @@ kbl(df_elegibilidad, format = "latex", booktabs = TRUE, escape = TRUE,
   column_spec(3, width = "6cm")
 ```
 
-Un trabajador elegible por ambos esquemas puede elegir el que le permita retirar el monto mayor. Tras usar el programa, solo puede volver a hacerlo después de esperar cinco años. El punto central para efectos de este análisis —y del diseño empírico que se describe en la @sec-datos— es que el retiro no solo reduce el saldo de la cuenta individual: reduce también, de manera proporcional, las semanas de cotización reconocidas para el cálculo de la pensión de retiro. Es decir, el RPD tiene un doble costo para la pensión futura del trabajador: reduce el saldo acumulado *y* las semanas de cotización que determinan el derecho y el monto de la pensión.
+Un trabajador elegible por ambos esquemas puede elegir el que le permita retirar el monto mayor. Tras usar el programa, solo puede volver a hacerlo después de esperar cinco años. El punto central para efectos de este análisis —y del diseño empírico que se describe en la @sec-datos— es que el retiro no solo reduce el saldo de la cuenta individual: reduce también, de manera proporcional, las semanas de cotización reconocidas para el cálculo de la pensión de retiro (Art. 198 de la Ley del Seguro Social). Es decir, el RPD tiene un doble costo para la pensión futura del trabajador: reduce el saldo acumulado *y* las semanas de cotización que determinan el derecho y el monto de la pensión. El mismo artículo prevé, desde su reforma de 2009, que el trabajador pueda reintegrar total o parcialmente los recursos retirados y recuperar proporcionalmente las semanas descontadas [@lss2026]; sin embargo, la reposición depende de una gestión enteramente voluntaria, sin incentivos económicos ni visibilidad en el proceso de reincorporación laboral —un punto al que se regresa en la propuesta 3 de la @sec-propuesta—.
+
+### El contexto de la reforma de 2020
+
+La reforma al sistema de pensiones aprobada en diciembre de 2020 [@dof2020] modificó dos parámetros que amplifican la relevancia del RPD para la suficiencia pensionaria. Primero, la aportación total a la subcuenta de Retiro, Cesantía en Edad Avanzada y Vejez (RCV) aumenta gradualmente de 6.5% a alrededor de 15% del salario base entre 2023 y 2030, con cargo principalmente a la cuota patronal: cada semana no cotizada por un desempleo prolongado costará, hacia 2030, más del doble de lo que cuesta hoy en términos de ahorro no acumulado. Segundo, el requisito de semanas de cotización para acceder a una pensión —incluida la pensión garantizada— se fijó en 750 semanas en 2021 y aumenta 25 semanas por año hasta alcanzar 1,000 en 2031. En este nuevo marco, las semanas que el RPD descuenta no son un costo abstracto: pueden ser la diferencia entre alcanzar o no el umbral que da derecho a la pensión garantizada, sobre todo para trabajadores de baja densidad de cotización —precisamente los de menor ingreso, en quienes, como se muestra en la @sec-resultados, se concentra el costo del programa—.
 
 ### Uso y crecimiento del programa
 
@@ -39,13 +43,13 @@ El RPD se implementó en 1997 pero su uso permaneció marginal hasta 2009, cuand
 
 ```{r}
 #| label: fig-uso
-#| fig-cap: "Uso acumulado del RPD, 1997–2024. Fuente: registro administrativo del IMSS."
-#| out-width: "95%"
+#| fig-cap: "Uso acumulado del RPD, 1997–2024. Fuente: elaboración propia con el registro administrativo del IMSS. Montos en pesos constantes de diciembre de 2024."
+#| fig-width: 9
+#| fig-height: 3.6
+#| out-width: "100%"
 
-knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-4-1.pdf")
+tr("rpd_usage_plot_esp")
 ```
-
-*Nota: los ejes originales del gráfico administrativo están en inglés ("Number of withdraws" = número de retiros acumulados; "Amount withdrawn" = monto acumulado retirado, en millones de pesos de 2024; "Date" = fecha).*
 
 Para dimensionar la magnitud del programa: al cierre de 2024, 16,966,851 trabajadores habían realizado 24,598,838 retiros acumulados —más retiros que trabajadores activos reportados por el IMSS en ese mismo corte (22,238,379)— por un monto acumulado cercano a los \$300,000 millones de pesos de 2024. El RPD no es, entonces, un mecanismo marginal: es, en términos de cobertura, el instrumento de sustitución de ingreso por desempleo de mayor alcance en México.
 

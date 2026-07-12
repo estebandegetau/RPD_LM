@@ -1,14 +1,32 @@
 ---
 title: "El costo pensionario de un colchón de liquidez"
 subtitle: "Evidencia causal del *Retiro Parcial por Desempleo* y una agenda de mejora para el Sistema de Ahorro para el Retiro en México"
-author:
-  - name: Esteban Degetau
 date: today
 date-format: long
 abstract: |
-  El *Retiro Parcial por Desempleo* (RPD) permite a los trabajadores formales mexicanos retirar parte de su cuenta individual de Afore al quedar desempleados, y se ha convertido, ante la ausencia de un seguro de desempleo público y el fracaso práctico de la indemnización legal, en el instrumento de sustitución de ingreso de mayor alcance del país. Con datos administrativos del IMSS y un diseño de discontinuidad de regresión difusa que explota el umbral legal de dos años de cotización, este trabajo estima que el uso del RPD incrementa la duración del desempleo en 36 semanas sobre un horizonte de tres años, sin generar mejoras sistemáticas en el salario, la estabilidad o los ingresos del siguiente empleo. El costo se concentra en los trabajadores de menor ingreso y más jóvenes. Un ejercicio de costeo pensionario traduce este hallazgo laboral a su efecto sobre el ahorro para el retiro: bajo supuestos conservadores, la pérdida de saldo acumulado al retiro para el usuario promedio es varias veces mayor al monto nominal que retiró —un costo invisible en el momento de la decisión y a la escala de casi 17 millones de usuarios históricos—. El trabajo concluye con seis propuestas concretas de mejora al diseño del programa, derivadas directamente de la evidencia: un aviso obligatorio de impacto pensionario, un componente solidario, un mecanismo de reposición de semanas cotizadas, activación contracíclica de sus parámetros, vinculación con búsqueda activa de empleo, y respaldo a la reforma de la justicia laboral.
+  El *Retiro Parcial por Desempleo* (RPD) permite a los trabajadores formales mexicanos retirar parte de su cuenta individual de Afore al quedar desempleados, y se ha convertido, ante la ausencia de un seguro de desempleo público y el fracaso práctico de la indemnización legal, en el instrumento de sustitución de ingreso de mayor alcance del país. Con datos administrativos del IMSS y un diseño de discontinuidad de regresión difusa que explota el umbral legal de dos años de cotización, este trabajo estima que el uso del RPD incrementa la duración del desempleo en 36 semanas sobre un horizonte de tres años, sin generar mejoras sistemáticas en el salario, la estabilidad o los ingresos del siguiente empleo. El costo se concentra en los trabajadores de menor ingreso y más jóvenes. Un ejercicio de costeo pensionario traduce este hallazgo laboral a su efecto sobre el ahorro para el retiro: bajo supuestos conservadores, la pérdida de saldo acumulado al retiro para el usuario promedio es varias veces mayor al monto nominal que retiró —un costo invisible en el momento de la decisión—. A escala del sistema, el acervo retirado desde 1997 —\$305 mil millones de pesos de 2024— equivale ya, capitalizado al presente, a más de \$415 mil millones, y proyectado a la jubilación de sus usuarios se mide en cientos de miles de millones adicionales. El trabajo concluye con seis propuestas concretas de mejora al diseño del programa, derivadas directamente de la evidencia: un aviso obligatorio de impacto pensionario, un componente solidario, el fortalecimiento del mecanismo de reposición de semanas que ya prevé la ley, activación contracíclica de sus parámetros, vinculación con búsqueda activa de empleo, y respaldo a la reforma de la justicia laboral.
 keywords: [pensiones, SAR, Afore, seguro de desempleo, retiro parcial por desempleo, discontinuidad de regresión, México]
 ---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(targets)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(scales)
+library(ggplot2)
+
+# Los resultados se leen del almacén de targets del proyecto raíz (solo lectura).
+.store <- normalizePath(file.path("..", "_targets"))
+tr <- function(name) tar_read_raw(name, store = .store)
+
+fmt_mmdp <- function(x) dollar(x / 1e9, accuracy = 1, big.mark = ",")
+```
 
 {{< include secciones/01-introduccion.qmd >}}
 
@@ -28,3 +46,5 @@ keywords: [pensiones, SAR, Afore, seguro de desempleo, retiro parcial por desemp
 
 ::: {#refs}
 :::
+
+{{< include secciones/08-apendice.qmd >}}

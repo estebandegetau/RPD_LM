@@ -353,11 +353,98 @@ list(
     execute = T,
     cache_refresh = T,
     profile = "wp"
-  )
+  ),
   # tar_quarto(
   #   name = presentation,
   #   path = "presentations/04_final.qmd",
   #   quiet = F,
   #   cache_refresh = T
   # )
+
+  # AMAFORE (español) -----------------------------------------------------------------
+  # Targets *_esp para la postulación al Premio AMAFORE/ITAM 2026 (amafore/).
+  # Solo consumen targets existentes; funciones en R/amafore_esp.R.
+  tar_target(
+    name = rpd_usage_plot_esp,
+    command = plot_rpd_usage_esp(rpd_data_path)
+  ),
+  tar_target(
+    name = density_plot_esp,
+    command = make_density_plot_esp(density_plot)
+  ),
+  tar_target(
+    name = take_up_path_esp,
+    command = make_take_up_path_esp(take_up)
+  ),
+  tar_target(
+    name = fuzzy_path_esp,
+    command = make_fuzzy_path_esp(survival_iv)
+  ),
+  tar_target(
+    name = rd_take_up_plot_esp,
+    command = make_rd_take_up_plot_esp(rd_data)
+  ),
+  tar_target(
+    name = rd_outcome_plot_esp,
+    command = make_rd_outcome_plot_esp(rd_data)
+  ),
+  tar_target(
+    name = cov_plot_female_esp,
+    command = make_covariate_plot_esp(rd_data, "female")
+  ),
+  tar_target(
+    name = cov_plot_birth_esp,
+    command = make_covariate_plot_esp(rd_data, "birth_date")
+  ),
+  tar_target(
+    name = cov_plot_began_esp,
+    command = make_covariate_plot_esp(rd_data, "began_working")
+  ),
+  tar_target(
+    name = cov_plot_age_esp,
+    command = make_covariate_plot_esp(rd_data, "age")
+  ),
+  tar_target(
+    name = cov_plot_account_esp,
+    command = make_covariate_plot_esp(rd_data, "days_since_account_opened")
+  ),
+  tar_target(
+    name = cov_plot_curp_esp,
+    command = make_covariate_plot_esp(rd_data, "no_curp")
+  ),
+  tar_target(
+    name = covariates_plots_esp,
+    command = arrange_covariates_plots_esp(list(
+      cov_plot_female_esp, cov_plot_birth_esp, cov_plot_began_esp,
+      cov_plot_age_esp, cov_plot_account_esp, cov_plot_curp_esp
+    ))
+  ),
+  tar_target(
+    name = balance_table_esp,
+    command = make_balance_table_esp(all_covariates)
+  ),
+  tar_target(
+    name = primera_etapa_esp,
+    command = primera_etapa_stats_esp(take_up)
+  ),
+  tar_target(
+    name = itt_table_esp,
+    command = make_itt_table_esp(take_up, survival, next_job, medium_term)
+  ),
+  tar_target(
+    name = bw_sensitivity_esp,
+    command = make_bw_sensitivity_esp(rd_data)
+  ),
+  tar_target(
+    name = retiros_capitalizados_esp,
+    command = compute_retiros_capitalizados_esp(rpd_data_path)
+  ),
+  tar_target(
+    name = retiro_saldo_shares_esp,
+    command = compute_retiro_saldo_shares_esp(rpd_data_path)
+  ),
+  tar_target(
+    name = fig_retiro_saldo_esp,
+    command = make_fig_retiro_saldo_esp(retiro_saldo_shares_esp)
+  )
 )

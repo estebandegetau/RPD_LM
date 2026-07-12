@@ -1,0 +1,5 @@
+# Perfil "anonimo": versión sin nombre del autor ni referencias que lo
+# identifiquen o lo relacionen con alguna institución (requisito de las bases).
+# Renderizar con: quarto render --profile anonimo
+project:
+  output-dir: _output/anonimo

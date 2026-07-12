@@ -1,0 +1,141 @@
+## Apéndice: validez y robustez {.unnumbered #sec-apendice}
+
+### Balance de covariables en el umbral {.unnumbered}
+
+```{r}
+#| label: tbl-balance
+#| tbl-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad"
+
+unidades <- c(
+  "Mujer"                                = "Mujer (proporción)",
+  "Fecha de nacimiento"                  = "Fecha de nacimiento (años)",
+  "Inicio de vida laboral formal"        = "Inicio de vida laboral formal (años)",
+  "Fecha de despido"                     = "Fecha de despido (años)",
+  "Edad"                                 = "Edad (años)",
+  "Días desde apertura de la cuenta"     = "Días desde apertura de la cuenta (días)",
+  "Sin CURP"                             = "Sin CURP (proporción)",
+  "Duración del empleo previo (semanas)" = "Duración del empleo previo (semanas)",
+  "Ingresos totales, empleo previo"      = "Ingresos totales, empleo previo (MXN 2024)",
+  "Salario mensual, empleo previo"       = "Salario mensual, empleo previo (MXN 2024)"
+)
+
+fmt_num <- function(x) {
+  vapply(x, function(v) format(signif(v, 3), big.mark = ",", scientific = FALSE),
+         character(1))
+}
+
+tr("balance_table_esp") |>
+  mutate(
+    covariable = unidades[covariable],
+    across(c(coef, se), fmt_num),
+    pv = ifelse(pv < 0.001, "$<$0.001", format(round(pv, 3), nsmall = 3)),
+    n_efectivo = format(n_efectivo, big.mark = ","),
+    h = round(h)
+  ) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE,
+      col.names = c("Covariable", "Efecto (RD)", "Error est.", "Valor $p$",
+                    "N efectivo", "$h$ (días)"),
+      align = c("l", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
+  column_spec(1, width = "6.2cm") |>
+  footnote(
+    general = "Estimaciones de RD nítida (forma reducida) para cada covariable predeterminada, con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. La discontinuidad en edad (y su reflejo mecánico en la fecha de nacimiento) equivale a ~1.5 meses sobre una media de 25 años: estadísticamente detectable, pero económicamente menor y del orden esperable al realizar diez pruebas simultáneas.",
+    general_title = "Nota: ",
+    footnote_as_chunk = TRUE,
+    threeparttable = TRUE
+  )
+```
+
+```{r}
+#| label: fig-covariables
+#| fig-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad. Cada punto es el promedio dentro de un bin de la variable de asignación."
+#| fig-width: 8
+#| fig-height: 9
+#| out-width: "92%"
+#| fig-align: center
+#| fig-pos: "p"
+
+tr("covariates_plots_esp")
+```
+
+### Estimaciones de forma reducida (efecto de la elegibilidad) {.unnumbered}
+
+La @tbl-itt reporta el efecto de la *elegibilidad* (forma reducida o intención de tratar, @eq-primera-etapa aplicada a cada resultado) junto a la primera etapa. Ningún efecto de forma reducida sobre resultados laborales es significativo al 5%, lo cual es consistente con una primera etapa de 3.6 puntos porcentuales: un efecto de 36 semanas sobre los usuarios (@tbl-resultados-principales) se diluye a menos de una semana al promediarse sobre toda la población cercana al umbral, mayoritariamente no usuaria. Cabe señalar que el cociente entre forma reducida y primera etapa no reproduce exactamente el LATE de la @tbl-resultados-principales porque cada estimación difusa selecciona su propio ancho de banda óptimo y aplica corrección de sesgo; la estabilidad del LATE ante variaciones del ancho de banda se examina en la @tbl-sensibilidad.
+
+```{r}
+#| label: tbl-itt
+#| tbl-cap: "Efecto de la elegibilidad al RPD (forma reducida) sobre los resultados principales"
+
+labs_itt <- c(
+  take_up_12           = "Uso del RPD a 12 meses (primera etapa, pp)",
+  survival_3           = "Supervivencia en desempleo a 3 meses (pp)",
+  duration_36          = "Duración del desempleo a 36 meses (semanas)",
+  next_job_av_earnings = "Salario mensual, siguiente empleo (MXN 2024)",
+  next_job_duration    = "Duración del siguiente empleo (semanas)",
+  earnings_total       = "Ingresos totales acumulados a 3 años (MXN 2024)",
+  months_worked_total  = "Meses trabajados a 3 años"
+)
+
+tr("itt_table_esp") |>
+  mutate(
+    resultado = labs_itt[name],
+    across(c(coef, se), ~ ifelse(name %in% c("take_up_12", "survival_3"), .x * 100, .x)),
+    across(c(coef, se), fmt_num),
+    pv = ifelse(pv < 0.001, "$<$0.001", format(round(pv, 3), nsmall = 3)),
+    n_efectivo = format(n_efectivo, big.mark = ","),
+    h = round(h)
+  ) |>
+  select(resultado, coef, se, pv, n_efectivo, h) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE,
+      col.names = c("Resultado", "Efecto (ITT)", "Error est.", "Valor $p$",
+                    "N efectivo", "$h$ (días)"),
+      align = c("l", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
+  column_spec(1, width = "7.2cm") |>
+  footnote(
+    general = "Estimaciones de RD nítida (elegibilidad, no uso) con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. Cifras monetarias en pesos de 2024.",
+    general_title = "Nota: ",
+    footnote_as_chunk = TRUE,
+    threeparttable = TRUE
+  )
+```
+
+### Sensibilidad al ancho de banda {.unnumbered}
+
+La @tbl-sensibilidad re-estima los dos efectos principales fijando el ancho de banda en múltiplos del óptimo. Los puntos estimados son positivos en todo el rango y de magnitud comparable entre la mitad y una vez el ancho óptimo; a anchos muy amplios (1.5–2 veces el óptimo) se atenúan, como es esperable cuando la aproximación polinomial local incorpora observaciones cada vez más lejanas al umbral. La significancia estadística al 5% se concentra alrededor del ancho de banda óptimo, lo que refleja el equilibrio usual entre sesgo y varianza en este tipo de diseños.
+
+```{r}
+#| label: tbl-sensibilidad
+#| tbl-cap: "Sensibilidad de los efectos principales (LATE) al ancho de banda"
+
+bw <- tr("bw_sensitivity_esp") |>
+  mutate(
+    across(c(coef, se), ~ ifelse(name == "survival_3", .x * 100, .x)),
+    multiplo_lab = ifelse(multiplo == 1,
+                          "$h$ óptimo",
+                          paste0(multiplo, " $\\times$ $h$")),
+    across(c(coef, se), fmt_num),
+    pv = ifelse(pv < 0.001, "$<$0.001", format(round(pv, 3), nsmall = 3)),
+    n_efectivo = format(n_efectivo, big.mark = ","),
+    h = round(h)
+  )
+
+n_surv <- sum(bw$name == "survival_3")
+
+bw |>
+  select(multiplo_lab, h, coef, se, pv, n_efectivo) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE,
+      col.names = c("Ancho de banda", "$h$ (días)", "Efecto (LATE)", "Error est.",
+                    "Valor $p$", "N efectivo"),
+      align = c("l", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
+  pack_rows("Supervivencia en desempleo a 3 meses (pp)", 1, n_surv) |>
+  pack_rows("Duración del desempleo a 36 meses (semanas)", n_surv + 1, nrow(bw)) |>
+  footnote(
+    general = "Estimaciones de RDD difuso re-estimadas fijando el ancho de banda en múltiplos del óptimo (y escalando en la misma proporción el ancho de banda de la corrección de sesgo). Valores p robustos con corrección de sesgo. El renglón del ancho óptimo puede diferir marginalmente de la Tabla 2 porque el ancho de banda se fija de manera explícita en lugar de seleccionarse internamente.",
+    general_title = "Nota: ",
+    footnote_as_chunk = TRUE,
+    threeparttable = TRUE,
+    escape = FALSE
+  )
+```

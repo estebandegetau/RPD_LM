@@ -1,0 +1,7 @@
+# Perfil "firmado": versión con datos personales del autor.
+# Renderizar con: quarto render --profile firmado
+project:
+  output-dir: _output/con-datos-personales
+
+author:
+  - name: Esteban Degetau

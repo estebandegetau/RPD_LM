@@ -29,3 +29,5 @@ Rodrigo/
 *.sas
 *.docx
 **/*.quarto_ipynb
+*.tex
+*.html

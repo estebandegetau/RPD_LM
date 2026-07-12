@@ -5,6 +5,9 @@ project:
     - resumen.qmd
   output-dir: _output
 
+profile:
+  default: firmado
+
 lang: es
 
 format:
@@ -27,6 +30,8 @@ format:
         \usepackage{array}
         \usepackage{caption}
         \captionsetup{font=small,labelfont=bf}
+        \usepackage{float}
+        \floatplacement{table}{H}
 
 bibliography: referencias.bib
 csl: apa.csl
