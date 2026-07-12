@@ -1,0 +1,56 @@
+## Marco institucional {#sec-antecedentes}
+
+### Reglas de operación del RPD
+
+El sistema de pensiones mexicano opera bajo un esquema de contribución definida con cuentas individuales (Afores). Durante su vida laboral formal, el trabajador acumula recursos financiados por él mismo, su patrón y el Gobierno Federal. La Ley del Seguro Social contempla dos esquemas bajo los cuales un trabajador desempleado —con al menos 46 días sin relación laboral vigente— puede retirar parte del saldo de su cuenta individual (@tbl-elegibilidad).
+
+```{r}
+#| label: tbl-elegibilidad
+#| tbl-cap: "Esquemas de elegibilidad al RPD"
+
+library(knitr)
+library(kableExtra)
+
+df_elegibilidad <- data.frame(
+  Esquema = c("A", "B"),
+  Requisitos = c(
+    "Al menos 3 años de antigüedad en el mercado laboral formal y al menos 2 años (no necesariamente continuos) de cotización al Seguro Social.",
+    "Al menos 5 años de antigüedad en el mercado laboral formal, sin requisito de cotización mínima."
+  ),
+  Monto = c(
+    "10 meses de salario mínimo, o 1 mes del último salario, lo que sea menor.",
+    "3 veces el salario mensual, o 11.5% del saldo de la cuenta, lo que sea menor."
+  )
+)
+
+kbl(df_elegibilidad, format = "latex", booktabs = TRUE, escape = TRUE,
+    col.names = c("Esquema", "Requisitos de elegibilidad", "Monto máximo retirable")) |>
+  kable_styling(font_size = 9, latex_options = c("hold_position")) |>
+  column_spec(1, width = "1.2cm") |>
+  column_spec(2, width = "6cm") |>
+  column_spec(3, width = "6cm")
+```
+
+Un trabajador elegible por ambos esquemas puede elegir el que le permita retirar el monto mayor. Tras usar el programa, solo puede volver a hacerlo después de esperar cinco años. El punto central para efectos de este análisis —y del diseño empírico que se describe en la @sec-datos— es que el retiro no solo reduce el saldo de la cuenta individual: reduce también, de manera proporcional, las semanas de cotización reconocidas para el cálculo de la pensión de retiro. Es decir, el RPD tiene un doble costo para la pensión futura del trabajador: reduce el saldo acumulado *y* las semanas de cotización que determinan el derecho y el monto de la pensión.
+
+### Uso y crecimiento del programa
+
+El RPD se implementó en 1997 pero su uso permaneció marginal hasta 2009, cuando —en el contexto de la Gran Recesión— se convirtió en una fuente relevante de sustitución de ingreso para los trabajadores desempleados. La crisis de empleo derivada de la pandemia de COVID-19 produjo un segundo salto en su adopción. Ambos episodios muestran que las crisis de empleo dejan un efecto permanente sobre el uso del programa, probablemente por la mayor difusión y conocimiento que adquiere durante esos periodos (@fig-uso).
+
+```{r}
+#| label: fig-uso
+#| fig-cap: "Uso acumulado del RPD, 1997–2024. Fuente: registro administrativo del IMSS."
+#| out-width: "95%"
+
+knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-4-1.pdf")
+```
+
+*Nota: los ejes originales del gráfico administrativo están en inglés ("Number of withdraws" = número de retiros acumulados; "Amount withdrawn" = monto acumulado retirado, en millones de pesos de 2024; "Date" = fecha).*
+
+Para dimensionar la magnitud del programa: al cierre de 2024, 16,966,851 trabajadores habían realizado 24,598,838 retiros acumulados —más retiros que trabajadores activos reportados por el IMSS en ese mismo corte (22,238,379)— por un monto acumulado cercano a los \$300,000 millones de pesos de 2024. El RPD no es, entonces, un mecanismo marginal: es, en términos de cobertura, el instrumento de sustitución de ingreso por desempleo de mayor alcance en México.
+
+### Por qué el RPD domina como sustituto de ingreso
+
+En teoría, la Ley Federal del Trabajo prevé la indemnización constitucional —tres meses de salario más prestaciones devengadas— como la principal protección de ingreso ante un despido injustificado. En la práctica, la evidencia experimental sobre los juzgados laborales de la Ciudad de México muestra que esta protección es, en gran medida, ilusoria: fallas estratégicas en la notificación procesal, habilitadas por colusión entre demandados y notificadores, retrasan sistemáticamente el proceso [@degetau2023], y la asimetría de información sobre la duración y probabilidad de éxito del litigio lleva a los trabajadores a litigar cuando no conviene y a no litigar cuando sí convendría [@sadka2024]. El resultado: más de la mitad de los despedidos nunca cobra su indemnización, solo 13% litiga, 30% de las demandas sigue sin resolverse cuatro años después, y únicamente uno de cada cinco litigantes que gana su caso cobra el monto íntegro [@sadka2024].
+
+Ante este vacío de facto, el RPD emerge como la alternativa realista: es automático, no depende de un litigio, y no requiere que el patrón cumpla voluntariamente con la ley. Pero, a diferencia de la indemnización, el RPD no es un costo para el patrón ni para el erario: es financiado enteramente por el propio trabajador, con cargo a su ahorro para el retiro.

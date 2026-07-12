@@ -1,0 +1,30 @@
+---
+title: "El costo pensionario de un colchón de liquidez"
+subtitle: "Evidencia causal del *Retiro Parcial por Desempleo* y una agenda de mejora para el Sistema de Ahorro para el Retiro en México"
+author:
+  - name: Esteban Degetau
+date: today
+date-format: long
+abstract: |
+  El *Retiro Parcial por Desempleo* (RPD) permite a los trabajadores formales mexicanos retirar parte de su cuenta individual de Afore al quedar desempleados, y se ha convertido, ante la ausencia de un seguro de desempleo público y el fracaso práctico de la indemnización legal, en el instrumento de sustitución de ingreso de mayor alcance del país. Con datos administrativos del IMSS y un diseño de discontinuidad de regresión difusa que explota el umbral legal de dos años de cotización, este trabajo estima que el uso del RPD incrementa la duración del desempleo en 36 semanas sobre un horizonte de tres años, sin generar mejoras sistemáticas en el salario, la estabilidad o los ingresos del siguiente empleo. El costo se concentra en los trabajadores de menor ingreso y más jóvenes. Un ejercicio de costeo pensionario traduce este hallazgo laboral a su efecto sobre el ahorro para el retiro: bajo supuestos conservadores, la pérdida de saldo acumulado al retiro para el usuario promedio es varias veces mayor al monto nominal que retiró —un costo invisible en el momento de la decisión y a la escala de casi 17 millones de usuarios históricos—. El trabajo concluye con seis propuestas concretas de mejora al diseño del programa, derivadas directamente de la evidencia: un aviso obligatorio de impacto pensionario, un componente solidario, un mecanismo de reposición de semanas cotizadas, activación contracíclica de sus parámetros, vinculación con búsqueda activa de empleo, y respaldo a la reforma de la justicia laboral.
+keywords: [pensiones, SAR, Afore, seguro de desempleo, retiro parcial por desempleo, discontinuidad de regresión, México]
+---
+
+{{< include secciones/01-introduccion.qmd >}}
+
+{{< include secciones/02-antecedentes.qmd >}}
+
+{{< include secciones/03-datos-metodologia.qmd >}}
+
+{{< include secciones/04-resultados.qmd >}}
+
+{{< include secciones/05-implicaciones-pensiones.qmd >}}
+
+{{< include secciones/06-propuesta.qmd >}}
+
+{{< include secciones/07-conclusiones.qmd >}}
+
+## Referencias {.unnumbered}
+
+::: {#refs}
+:::

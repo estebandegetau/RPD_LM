@@ -1,0 +1,38 @@
+project:
+  type: default
+  render:
+    - propuesta.qmd
+    - resumen.qmd
+  output-dir: _output
+
+lang: es
+
+format:
+  pdf:
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 11pt
+    linestretch: 1.15
+    number-sections: true
+    number-depth: 3
+    toc: false
+    fig-cap-location: top
+    colorlinks: true
+    link-citations: true
+    include-in-header:
+      text: |
+        \usepackage{amsmath}
+        \usepackage{booktabs}
+        \usepackage{longtable}
+        \usepackage{array}
+        \usepackage{caption}
+        \captionsetup{font=small,labelfont=bf}
+
+bibliography: referencias.bib
+csl: apa.csl
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: false

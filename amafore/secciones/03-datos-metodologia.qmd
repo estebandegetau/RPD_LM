@@ -1,0 +1,38 @@
+## Datos y metodología {#sec-datos}
+
+### Fuentes de datos
+
+Se utilizan dos fuentes administrativas confidenciales del IMSS. La primera es el panel patrón-trabajador, que permite reconstruir la trayectoria laboral formal completa de cada trabajador. Se restringe el análisis a trabajadores que ingresaron por primera vez al mercado laboral formal entre enero de 2010 y diciembre de 2017 —para que todos estén sujetos al mismo régimen de pensiones vigente desde 1997—, lo que arroja un universo de 14,819,690 trabajadores y 406,813,240 contratos laborales. Aunque esta base no registra directamente los episodios de desempleo, estos se infieren de los huecos entre contratos laborales formales; dichos huecos son, precisamente, el criterio que la autoridad usa para determinar la elegibilidad al RPD. La segunda fuente es el registro administrativo de retiros parciales, que documenta cada uso del programa —fecha, monto, saldo de la cuenta, semanas cotizadas y patrón previo— y se empalma con la primera mediante el número de seguridad social del trabajador.
+
+### Muestra de análisis
+
+La estrategia de identificación (@sec-identificacion) exige que los trabajadores de la muestra puedan volverse elegibles al RPD exclusivamente por acumular semanas de cotización —no por antigüedad en el mercado laboral—. Por ello, se restringe la muestra a trabajadores que (i) enfrentaron exactamente un episodio de desempleo de al menos 46 días durante su tercer año en el mercado laboral formal, y (ii) habían acumulado entre uno y tres años de cotización al Seguro Social al momento del despido. Se añaden restricciones estándar de edad (18–65 años), régimen de aseguramiento y exclusión del 1% superior de la distribución de duración del desempleo. La muestra final comprende 877,749 trabajadores. Estas restricciones —necesarias para aislar la discontinuidad de interés— implican que los resultados identifican el efecto para un grupo específico de trabajadores jóvenes en etapas tempranas de su vida laboral formal, no para el universo de usuarios del RPD.
+
+### Estrategia empírica: discontinuidad de regresión difusa {#sec-identificacion}
+
+La regla de elegibilidad ofrece una discontinuidad nítida y verificable: solo los trabajadores con al menos dos años (730 días) de cotización al Seguro Social al momento del despido son elegibles por el Esquema A. Como la elegibilidad no obliga al uso —el uso efectivo del programa dentro de los primeros doce meses pasa de 0.2% entre los no elegibles a 8.7% entre los elegibles (@sec-resultados)—, se combina esta discontinuidad con los datos de uso observado mediante un diseño de regresión discontinua difusa, equivalente a variables instrumentales en dos etapas. La primera etapa estima el efecto de la elegibilidad sobre el uso del programa:
+
+$$
+T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i, \qquad |C_i - 2| \le h
+$$
+
+donde $T_i$ indica si el trabajador $i$ usó el RPD, $D_i$ indica si $i$ es elegible (es decir, $C_i \ge 2$, con $C_i$ los años cotizados al Seguro Social), $f(\cdot)$ es una función polinomial local de la variable de asignación y $h$ es el ancho de banda óptimo alrededor del umbral. La segunda etapa estima el efecto del uso efectivo del RPD sobre los resultados laborales de interés:
+
+$$
+Y_{i} = \gamma + \tau \hat{T}_i + f(C_i - 2) + v_i, \qquad |C_i - 2| \le h
+$$
+
+donde $\hat{T}_i$ es el valor predicho de la primera etapa. El parámetro $\tau$ identifica el efecto causal local promedio (LATE) del uso del RPD entre los trabajadores cuyo comportamiento responde al cruce del umbral de elegibilidad ("cumplidores"). Se utiliza un polinomio local lineal, kernel triangular, ancho de banda óptimo siguiendo a Calonico et al. [-@calonico2020], y errores estándar robustos con estimador de varianza de vecino más cercano y corrección de sesgo [@calonico2014; @cattaneo2024].
+
+### Validez del diseño
+
+La validez del diseño descansa en que los trabajadores no puedan manipular su posición respecto al umbral de elegibilidad y en que las características observables no salten discontinuamente en ese punto. La @fig-densidad muestra la prueba de manipulación de la variable de asignación de Cattaneo et al. [-@cattaneo2020]: no se observa acumulación anómala (*bunching*) alrededor del umbral, consistente con la ausencia de manipulación —un resultado esperable, dado que el trabajador no controla directamente la fecha de su despido—. Adicionalmente, un conjunto amplio de covariables (sexo, edad, fecha de nacimiento, antigüedad y salario en el empleo previo) no presenta saltos estadísticamente significativos en el umbral, y la primera etapa —la relación entre elegibilidad y uso— es fuerte y precisa (@sec-resultados).
+
+```{r}
+#| label: fig-densidad
+#| fig-cap: "Prueba de manipulación de la variable de asignación (días de cotización respecto al umbral de elegibilidad)."
+#| out-width: "70%"
+#| fig-align: center
+
+knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-9-1.pdf")
+```

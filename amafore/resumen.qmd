@@ -1,0 +1,27 @@
+---
+title: "Resumen de candidatura"
+subtitle: "El costo pensionario del *Retiro Parcial por Desempleo*: evidencia causal y una agenda de mejora para el SAR"
+lang: es
+format:
+  pdf:
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 11pt
+    linestretch: 1.2
+    number-sections: false
+    colorlinks: true
+---
+
+## Contribución científica
+
+Este trabajo estima el efecto causal del *Retiro Parcial por Desempleo* (RPD) —el mecanismo que permite a los trabajadores formales mexicanos retirar anticipadamente parte de su cuenta individual de Afore al quedar desempleados— sobre sus trayectorias laborales de mediano plazo. Es, hasta donde se tiene conocimiento, el primer estudio sobre el RPD que utiliza datos administrativos del Instituto Mexicano del Seguro Social (IMSS) —un panel patrón-trabajador que cubre la totalidad del mercado laboral formal, empalmado con el registro individual de retiros— en lugar de encuestas de hogares, y el primero en identificar el efecto mediante un diseño de discontinuidad de regresión difusa (*fuzzy RDD*) que explota la regla legal de elegibilidad (dos años de cotización al Seguro Social), con las pruebas de validez correspondientes (ausencia de manipulación de la variable de asignación, continuidad de covariables, primera etapa robusta).
+
+Más allá de la estimación laboral, el trabajo aporta un ejercicio original que traduce los efectos estimados a su costo en pesos sobre la pensión futura del trabajador —un ejercicio de dos canales (depleción de capital y cotizaciones no realizadas) construido con los propios parámetros del estudio— y una agenda de seis propuestas de mejora al diseño del programa, cada una derivada directamente de un hallazgo específico de la investigación.
+
+## Relevancia e impacto
+
+México no cuenta con un seguro de desempleo público de cobertura nacional, y la evidencia experimental disponible muestra que la indemnización constitucional —la protección que la ley prevé como principal— es, en la práctica, inaccesible para la mayoría de los trabajadores despedidos. En ese vacío, el RPD se ha convertido en el instrumento de sustitución de ingreso de mayor alcance del país: a fines de 2024, 16.97 millones de trabajadores habían realizado 24.6 millones de retiros por casi \$300,000 millones de pesos, más usuarios que trabajadores activos reportados por el IMSS en ese corte. Este trabajo muestra que ese programa, tal como está diseñado hoy, extiende el desempleo en 36 semanas adicionales sobre un horizonte de tres años sin mejorar sistemáticamente el reempleo, que ese costo se concentra en los trabajadores de menor ingreso y más jóvenes, y que —bajo supuestos conservadores de rendimiento real— implica una pérdida de saldo acumulado al retiro varias veces mayor al monto nominal retirado. Se trata, por tanto, de evidencia directamente aplicable al objetivo central de esta convocatoria: identificar mejoras concretas al Sistema de Ahorro para el Retiro y a los sistemas de pensiones en México, en un programa que hoy utiliza casi uno de cada dos trabajadores formales del país en algún momento de su vida laboral.
+
+## Otros elementos de la candidatura
+
+La versión extensa de esta investigación —de la cual el presente trabajo es una adaptación enfocada en su implicación pensionaria y su propuesta de política— fue presentada como tesis de maestría ante un jurado del Instituto Tecnológico Autónomo de México (ITAM) y recibió mención honorífica. El autor combina formación en economía aplicada con experiencia profesional directa en el IMSS, la institución que produce y administra los datos utilizados en el estudio, lo que permite anclar las propuestas de política en el conocimiento operativo del programa evaluado.

@@ -1,0 +1,97 @@
+## Resultados {#sec-resultados}
+
+### Primera etapa: la elegibilidad sí predice el uso, pero de forma modesta
+
+Los trabajadores que cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. El efecto de intención de tratar (elegibilidad → uso) crece de 0.8 puntos porcentuales a los dos meses de desplazamiento a 3.6 puntos porcentuales a los doce meses (error estándar 0.3 pp), y se estabiliza alrededor de 4 puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este efecto, aunque estadísticamente muy preciso, es modesto en magnitud —consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado—.
+
+```{r}
+#| label: fig-primera-etapa
+#| fig-cap: "Efecto dinámico de la elegibilidad sobre el uso del RPD, por meses desde el despido."
+#| out-width: "65%"
+#| fig-align: center
+
+knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-14-1.pdf")
+```
+
+### El RPD prolonga el desempleo sin mejorar la calidad del reempleo
+
+```{r}
+#| label: tbl-resultados-principales
+#| tbl-cap: "Efecto del uso del RPD sobre resultados laborales"
+
+library(knitr); library(kableExtra)
+
+df_resultados <- data.frame(
+  Resultado = c(
+    "Supervivencia en desempleo a 3 meses (pp)",
+    "Duración del desempleo a 36 meses (semanas)",
+    "Salario mensual, siguiente empleo (MXN 2024)",
+    "Ingresos totales, siguiente empleo (MXN 2024)",
+    "Duración del siguiente empleo (semanas)",
+    "Ingresos totales acumulados a 3 años (MXN 2024)",
+    "Meses trabajados a 3 años"
+  ),
+  Efecto = c("31.0**", "36.3**", "9,429*", "67,096", "16.5", "−20,379", "−1.4"),
+  Error  = c("(15.0)", "(15.9)", "(4,883)", "(61,138)", "(14.5)", "(44,061)", "(2.7)"),
+  Media  = c("77.8%", "51.5", "8,327", "87,306", "35.7", "148,762", "15.3")
+)
+
+kbl(df_resultados, format = "latex", booktabs = TRUE, escape = TRUE,
+    col.names = c("Resultado", "Efecto (LATE)", "Error est.", "Media, no elegibles"),
+    align = c("l", "r", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = c("hold_position")) |>
+  column_spec(1, width = "6.3cm")
+```
+
+*Nota: \* p<0.10, \*\* p<0.05. Estimaciones de RDD difuso (Ecuación 2), tratamiento definido como uso del programa 12 meses después del despido. Cifras en pesos de 2024.*
+
+El uso del RPD incrementa de manera marcada y estadísticamente significativa la duración del desempleo: a los tres meses del despido, haber usado el programa aumenta en 31 puntos porcentuales la probabilidad de seguir desempleado; a los 36 meses, el efecto acumulado es de 36.3 semanas adicionales de desempleo, partiendo de una base de 51.5 semanas entre los no elegibles —un incremento de aproximadamente 70%— (@fig-duracion, @tbl-resultados-principales).
+
+```{r}
+#| label: fig-duracion
+#| fig-cap: "Efecto dinámico del uso del RPD sobre la supervivencia en desempleo y la duración censurada, por meses desde el despido."
+#| out-width: "75%"
+#| fig-align: center
+
+knitr::include_graphics("../thesis_files/figure-pdf/unnamed-chunk-15-1.pdf")
+```
+
+Este desempleo más prolongado no se traduce en mejores condiciones de reempleo. El punto estimado sobre el salario mensual del siguiente empleo es positivo y económicamente grande (+\$9,429 MXN, más del doble del salario promedio previo al despido), pero solo es significativo al 10%; los efectos sobre los ingresos totales y la duración del siguiente empleo no son distinguibles de cero. Sobre el horizonte completo de tres años, ni los ingresos acumulados ni los meses trabajados muestran una mejora significativa —el punto estimado de ingresos totales es, de hecho, negativo—. En suma: el RPD retrasa la salida del desempleo sin generar, en promedio, un emparejamiento laboral de mejor calidad que compense ese costo. Este patrón es opuesto al que predicen los modelos más optimistas del seguro de desempleo, que anticipan ganancias de productividad por una búsqueda más deliberada [@acemoglu2000; @acemoglu1999], y es consistente con evidencia de otros esquemas de sustitución de ingreso en América Latina: en Brasil, la liquidación por despido (FGTS) también prolonga el desempleo formal sin mejorar de forma sistemática los ingresos posteriores [@britto2022], y en Argentina las ganancias salariales asociadas al seguro de desempleo son, cuando existen, modestas frente al costo en duración del desempleo [@gonzález-rozada2023].
+
+### El costo no se distribuye por igual
+
+```{r}
+#| label: tbl-heterogeneidad
+#| tbl-cap: "Heterogeneidad del efecto del RPD sobre duración e ingresos"
+
+library(knitr); library(kableExtra)
+
+df_heterogeneidad <- data.frame(
+  Subgrupo = c(
+    "Por debajo de la mediana", "Por arriba de la mediana",
+    "Por debajo de la mediana (22.9 años)", "Por arriba de la mediana",
+    "Hombres", "Mujeres",
+    "Despedidos antes de marzo 2019", "Despedidos después de marzo 2020"
+  ),
+  Duracion = c("46.2** (17.2)", "−4.7 (15.7)", "35.2 (18.0)", "3.1 (16.6)",
+               "49.1** (18.3)", "−8.7 (17.4)", "52.8** (21.8)", "22.0 (25.7)"),
+  Ingresos = c("−39,836 (38,498)", "17,516 (73,028)", "−20,965 (42,940)", "−9,224 (59,252)",
+               "3,074 (52,415)", "−16,127 (59,432)", "−8,540 (55,380)", "37,278 (69,127)")
+)
+
+kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = TRUE,
+    col.names = c("Subgrupo", "Duración a 36 meses (sem.)", "Ingresos totales a 3 años (MXN 2024)"),
+    align = c("l", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = c("hold_position")) |>
+  column_spec(1, width = "5cm") |>
+  pack_rows("Ingreso previo", 1, 2) |>
+  pack_rows("Edad", 3, 4) |>
+  pack_rows("Sexo", 5, 6) |>
+  pack_rows("Exposición a COVID-19", 7, 8)
+```
+
+*Nota: \*\* p<0.05 (según los criterios de significancia reportados en el estudio original). Error estándar entre paréntesis. Estimaciones de RDD difuso, tratamiento definido como uso del programa 12 meses después del despido. Cifras en pesos de 2024.*
+
+Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). Entre trabajadores con salario previo por debajo de la mediana, el RPD incrementa la duración del desempleo en 46 semanas —casi diez veces el efecto entre trabajadores de mayor ingreso, que no es distinguible de cero— y no genera ninguna mejora salarial al reingresar; entre trabajadores de mayor ingreso, en cambio, el reempleo ocurre con salarios aproximadamente 67% más altos. El patrón se repite por sexo: los hombres que usan el RPD permanecen desempleados 49 semanas más y encuentran empleos mejor pagados, mientras que las mujeres no muestran una extensión significativa del desempleo pero sí una pérdida —no significativa, pero económicamente grande— de ingresos acumulados a tres años. Es decir: el diseño actual del programa tiende a beneficiar, en términos de calidad del reempleo, a quienes ya llegan mejor posicionados, mientras que los trabajadores más vulnerables —de menor ingreso, más jóvenes— absorben el costo de la mayor duración del desempleo sin la contrapartida de un mejor empleo.
+
+Un hallazgo adicional resulta relevante para el diseño de política contracíclica: entre los trabajadores despedidos *antes* de la pandemia, el RPD extendió el desempleo en 53 semanas sin beneficio en ingresos; entre los desplazados *durante* la exposición plena a la crisis del COVID-19, el efecto sobre la duración del desempleo se reduce a más de la mitad (22 semanas, no significativo) y los ingresos totales a tres años aumentan en \$37,278 MXN. En un mercado laboral deprimido, donde la alternativa realista al RPD no es un reempleo más rápido sino un desempleo igualmente largo, la liquidez adicional parece cumplir mejor su función de aseguramiento —una pista relevante para el diseño contracíclico que se retoma en la @sec-propuesta—.

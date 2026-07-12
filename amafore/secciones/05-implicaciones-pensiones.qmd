@@ -1,0 +1,61 @@
+## Implicaciones para la suficiencia de la pensión {#sec-pensiones}
+
+Los resultados anteriores documentan un efecto sobre el mercado laboral: desempleo más largo, sin mejor reempleo. Pero el RPD no es solo un programa de sustitución de ingreso: es, mecánicamente, un retiro del ahorro para el retiro. Esta sección traduce el hallazgo laboral a su costo en pesos sobre la pensión futura del trabajador, mediante un ejercicio ilustrativo de dos canales, construido con los propios parámetros estimados en este estudio y supuestos explícitos y conservadores.
+
+### Un modelo simple de dos canales
+
+**Canal 1 — depleción directa de capital.** El monto retirado deja de generar rendimiento dentro de la cuenta individual. Si $W$ es el monto promedio retirado y $r$ es el rendimiento real anual de la Siefore, el costo en saldo acumulado al retiro, $n$ años después, es $W(1+r)^n$.
+
+**Canal 2 — cotizaciones no realizadas por el desempleo adicional.** Como se documentó en la @sec-resultados, usar el RPD extiende el desempleo en $\Delta$ semanas. Durante esas semanas el trabajador no cotiza al SAR. Si $\bar{w}$ es su salario mensual previo y $c$ la tasa de cotización a la subcuenta de Retiro, Cesantía en Edad Avanzada y Vejez (RCV, aproximadamente 6.5% del salario base entre aportación patronal, obrera y cuota social del Gobierno Federal), el costo adicional en saldo acumulado es $\bar{w} \cdot c \cdot (\Delta/4.345) \cdot (1+r)^n$.
+
+```{r}
+#| label: tbl-costo-pension
+#| tbl-cap: "Costo ilustrativo de un retiro promedio sobre el saldo de pensión a los 65 años"
+
+library(knitr); library(kableExtra); library(scales)
+
+# Parámetros observados en el estudio (pesos de 2024)
+W      <- 7690.6      # monto promedio retirado (Tabla 5.8)
+wbar   <- 9095.4       # salario mensual promedio previo al despido (Tabla 5.8)
+delta  <- 36.27         # semanas adicionales de desempleo por uso del RPD (LATE, Tabla 5.2a)
+c_rate <- 0.065         # tasa de cotización aproximada a RCV
+n      <- 40            # años a la edad de retiro (25 -> 65 años, edad media de despido en la muestra ~24.7 años)
+
+meses_extra <- delta / 4.345
+forgone_nominal <- wbar * c_rate * meses_extra
+
+rs <- c(0.03, 0.04, 0.05)
+fv_factor <- (1 + rs)^n
+
+canal1 <- W * fv_factor
+canal2 <- forgone_nominal * fv_factor
+total  <- canal1 + canal2
+
+df_costo <- data.frame(
+  Rendimiento = percent(rs),
+  Canal1 = dollar(canal1, prefix = "$", suffix = ""),
+  Canal2 = dollar(canal2, prefix = "$", suffix = ""),
+  Total  = dollar(total, prefix = "$", suffix = ""),
+  Multiplo = paste0(round(total / W, 1), "×")
+)
+
+kbl(df_costo, format = "latex", booktabs = TRUE, escape = TRUE,
+    col.names = c("Rendimiento real anual", "Canal 1: capital retirado",
+                   "Canal 2: cotizaciones no realizadas", "Pérdida total en saldo a los 65 años",
+                   "Múltiplo del monto retirado"),
+    align = c("c", "r", "r", "r", "c")) |>
+  kable_styling(font_size = 8.5, latex_options = c("hold_position")) |>
+  column_spec(2, width = "2.6cm") |>
+  column_spec(3, width = "2.9cm") |>
+  column_spec(4, width = "2.9cm")
+```
+
+*Pesos de 2024. Usuario promedio de la muestra: edad ~25 años, retiro de \$7,691, salario previo de \$9,095/mes. Ejercicio ilustrativo, no una re-estimación actuarial: supone que el monto retirado y las cotizaciones no realizadas se capitalizan a una tasa real constante durante 40 años, y no incorpora comisiones, reingreso parcial de cotizaciones tras el reempleo, ni heterogeneidad en el rendimiento efectivo de cada Siefore.*
+
+Con un rendimiento real de 4% —una cifra intermedia y conservadora frente al rendimiento histórico de las Siefores de mayor horizonte—, un retiro promedio de \$7,691 MXN implica una pérdida de saldo acumulado al retiro de aproximadamente \$60,600 MXN de 2024, cerca de **ocho veces el monto nominal originalmente retirado**. Incluso bajo el supuesto más conservador de la tabla (rendimiento real de 3%), la pérdida supera cinco veces el monto retirado. El resultado es simple pero importante: el costo del RPD para la pensión del trabajador no es el monto que ve salir de su cuenta al momento del retiro, sino ese monto multiplicado varias veces por el rendimiento compuesto que dejó de generar durante las décadas que restan hasta su jubilación —un costo invisible en el momento de la decisión—.
+
+### Magnitud agregada
+
+El programa no es un fenómeno marginal: al cierre de 2024, 16.97 millones de trabajadores habían realizado 24.6 millones de retiros por un monto nominal acumulado cercano a \$300,000 millones de pesos de 2024 (@sec-antecedentes). Aplicar un factor de capitalización conservador —entre 2 y 5 veces, consistente con horizontes de 10 a 35 años y rendimientos reales de 3–5%— a cualquier fracción relevante de ese acervo implica que el costo agregado en saldo de pensión perdido, sumado a lo largo del sistema, se mide en cientos de miles de millones de pesos. No se ofrece aquí una cifra agregada puntual porque hacerlo con rigor requeriría información que no forma parte de esta base de datos: la edad de cada usuario histórico al momento de su retiro y su horizonte real a la jubilación. Ese ejercicio —una microsimulación actuarial completa a partir de los registros individuales de CONSAR— es, de hecho, una de las extensiones más directas y valiosas de este trabajo, y una en la que la propia AMAFORE está mejor posicionada que cualquier investigador externo para llevar a cabo con precisión.
+
+Lo que sí puede afirmarse con la evidencia presentada es la dirección y la escala del problema: el RPD, diseñado como un mecanismo de liquidez de corto plazo, transfiere silenciosamente una parte no trivial del riesgo de desempleo hacia la vejez del propio trabajador —y lo hace de manera más severa entre los trabajadores de menor ingreso, que son, según la evidencia de la @sec-resultados, quienes menos se benefician del programa en términos de mejor reempleo.
