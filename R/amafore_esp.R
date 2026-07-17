@@ -18,7 +18,7 @@ tema_esp <- function(base_size = 11) {
 }
 
 eje_dias_esp <- "Días de cotización respecto al umbral de elegibilidad"
-eje_meses_esp <- "Meses desde el despido"
+eje_meses_esp <- "Meses desde la separación"
 
 etiquetas_covariables_esp <- c(
     "female"                    = "Mujer",

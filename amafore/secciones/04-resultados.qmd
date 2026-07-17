@@ -7,7 +7,7 @@
 pe <- tr("primera_etapa_esp")
 ```
 
-Los trabajadores que cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. La @fig-rd-primera-etapa muestra la discontinuidad directamente sobre los datos: la tasa de uso a doce meses salta en el umbral en `r round(pe$coef * 100, 1)` puntos porcentuales (error estándar de `r round(pe$se * 100, 1)`), estimados sobre `r format(pe$n_efectivo, big.mark = ",")` observaciones dentro del ancho de banda óptimo de ±`r round(pe$h)` días. La primera etapa es estadísticamente fuerte —estadístico $t$ de `r round(pe$t, 1)`, equivalente a un estadístico $F$ de `r round(pe$f)`, muy por encima de los umbrales convencionales de instrumento débil—, lo que descarta que los resultados de la segunda etapa estén contaminados por un problema de instrumentos débiles.
+Los trabajadores que apenas cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. La @fig-rd-primera-etapa muestra la discontinuidad directamente sobre los datos: la tasa de uso a doce meses salta en el umbral en `r round(pe$coef * 100, 1)` puntos porcentuales (error estándar de `r round(pe$se * 100, 1)`), estimados sobre `r format(pe$n_efectivo, big.mark = ",")` observaciones dentro del ancho de banda óptimo de ±`r round(pe$h)` días. La primera etapa es estadísticamente fuerte —estadístico $t$ de `r round(pe$t, 1)`, equivalente a un estadístico $F$ de `r round(pe$f)`, muy por encima de los umbrales convencionales de instrumento débil—, lo que descarta que los resultados de la segunda etapa estén contaminados por un problema de instrumentos débiles.
 
 ```{r}
 #| label: fig-rd-primera-etapa
@@ -20,7 +20,7 @@ Los trabajadores que cruzan el umbral de dos años de cotización son significat
 tr("rd_take_up_plot_esp")
 ```
 
-El efecto de intención de tratar crece de 0.8 puntos porcentuales a los dos meses de desplazamiento a 3.6 puntos porcentuales a los doce meses, y se estabiliza alrededor de 4 puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este efecto, aunque estadísticamente muy preciso, es modesto en magnitud —consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado—.
+El efecto causal de cruzar el umbral de eligibilidad en la probabilidad de usar el RPD (la intención de tratar o ITT) crece de 0.8 puntos porcentuales a los dos meses de la separación laboral a 3.6 puntos porcentuales a los doce meses, y se estabiliza alrededor de 4 puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este efecto, aunque estadísticamente muy preciso, es modesto en magnitud —consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado—.
 
 ```{r}
 #| label: fig-primera-etapa

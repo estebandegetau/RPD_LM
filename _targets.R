@@ -354,6 +354,10 @@ list(
     cache_refresh = T,
     profile = "wp"
   ),
+  tar_quarto(
+    amafore,
+    here("amafore/")
+  ),
   # tar_quarto(
   #   name = presentation,
   #   path = "presentations/04_final.qmd",

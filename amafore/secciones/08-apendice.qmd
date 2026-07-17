@@ -46,6 +46,9 @@ tr("balance_table_esp") |>
   )
 ```
 
+
+
+
 ```{r}
 #| label: fig-covariables
 #| fig-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad. Cada punto es el promedio dentro de un bin de la variable de asignación."
