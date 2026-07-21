@@ -1,0 +1,475 @@
+---
+title: "Fixed-Bandwidth Robustness of the RPD RD Estimates"
+subtitle: "Holding the estimation window constant across horizons"
+format:
+  html:
+    toc: true
+    embed-resources: true
+fig-width: 9
+fig-height: 5
+execute:
+  cache: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| output: false
+
+# renv does not auto-activate when Quarto starts R inside notebooks/ —
+# walk up to the project root and activate it if needed.
+if (!requireNamespace("pacman", quietly = TRUE) ||
+    !requireNamespace("rdrobust", quietly = TRUE)) {
+  root <- normalizePath(getwd())
+  while (!file.exists(file.path(root, "renv", "activate.R")) &&
+         dirname(root) != root) {
+    root <- dirname(root)
+  }
+  Sys.setenv(RENV_PROJECT = root)
+  source(file.path(root, "renv", "activate.R"))
+}
+
+pacman::p_load(tidyverse, here, rdrobust, targets, ggpubr, gt)
+
+here::i_am("notebooks/fixed_bw.qmd")
+
+# Read-only reuse of the pipeline's estimators (my_rd, my_fuzzy_rd).
+source(here("R/rd_functions.R"))
+
+theme_set(theme_minimal())
+
+# Explicit store: notebooks/_targets.yaml is stale (old OneDrive path).
+store <- here("_targets")
+
+family_levels <- c("take_up", "survival", "duration")
+family_labels <- c(
+  take_up  = "Take-up (first stage)",
+  survival = "Survival",
+  duration = "Unemployment duration"
+)
+
+# Robust-row stats from an rdrobust fit wrapped as list(output = ...).
+extract_stats <- function(fit) {
+  out <- fit$output
+  tibble(
+    h     = out$bws[1],
+    b     = out$bws[2],
+    n_eff = sum(out$N_h),
+    coef  = out$coef[3],
+    se    = out$se[3],
+    pv    = out$pv[3],
+    ci_l  = out$ci[3],
+    ci_u  = out$ci[6]
+  )
+}
+
+# Fit at a manual bandwidth, preserving the anchor's rho = b0 / h0.
+# Returns only the stats row so the rdrobust object is freed immediately.
+fit_manual <- function(d, h, rho, fuzzy = FALSE) {
+  fit <- if (fuzzy) {
+    my_fuzzy_rd(d, h = h, b = h * rho)
+  } else {
+    my_rd(d, h = h, b = h * rho)
+  }
+  extract_stats(fit)
+}
+```
+
+```{r}
+#| label: load-data
+#| output: false
+
+# Pipe tar_read() straight into filter() so the full ~3.7 GB rd_data tibble
+# is never bound to a name; keep only the three outcome families.
+rd_use <- tar_read(rd_data, store = store) |>
+  filter(str_detect(name, "^(take_up|survival|duration)_\\d+$")) |>
+  select(name, data) |>
+  mutate(
+    months = str_extract(name, "\\d+") |> as.numeric(),
+    family = str_remove(name, "_\\d+$") |> factor(levels = family_levels)
+  )
+invisible(gc())
+```
+
+## Motivation
+
+The main results of the paper let `rdrobust` choose the MSE-optimal bandwidth
+(Calonico, Cattaneo, and Titiunik 2014) separately for every regression. Each
+estimate is individually valid, but within an outcome family measured at many
+horizons (take-up, survival, unemployment duration at 2–36 months after
+displacement), a bandwidth that wanders across horizons means each point of the
+path is estimated on a different local sample. This notebook re-estimates the
+first stage, survival, and duration paths **holding the bandwidth fixed within
+each family**, and shows how sensitive the anchor estimates are to the
+bandwidth choice.
+
+All regressions inherit the paper's specification: local linear regression,
+triangular kernel, HC0 variance, robust bias-corrected inference. When the main
+bandwidth $h$ is fixed manually, the bias bandwidth $b$ is scaled to preserve
+the anchor regression's ratio $\rho = b_0 / h_0$.
+
+```{r}
+#| label: anchors
+#| output: false
+
+anchor_data <- list(
+  take_up  = rd_use |> filter(name == "take_up_12")  |> pluck("data", 1),
+  survival = rd_use |> filter(name == "survival_24") |> pluck("data", 1),
+  duration = rd_use |> filter(name == "duration_36") |> pluck("data", 1)
+)
+
+anchor_fits <- tribble(
+  ~family,    ~anchor,       ~estimand,     ~fuzzy,
+  "take_up",  "take_up_12",  "First stage", FALSE,
+  "survival", "survival_24", "ITT",         FALSE,
+  "survival", "survival_24", "LATE",        TRUE,
+  "duration", "duration_36", "ITT",         FALSE,
+  "duration", "duration_36", "LATE",        TRUE
+) |>
+  mutate(
+    stats = map2(family, fuzzy, \(fam, fz) {
+      fit <- if (fz) my_fuzzy_rd(anchor_data[[fam]]) else my_rd(anchor_data[[fam]])
+      extract_stats(fit)
+    }),
+    family = factor(family, levels = family_levels)
+  ) |>
+  unnest(stats)
+
+# Fixed-h choice: sharp anchor for the first stage; fuzzy (LATE) anchors for
+# survival and duration — LATE is the headline estimand. Round h to the
+# nearest 5 days; one (h, rho) per family, shared by ITT and LATE.
+bw_spec <- anchor_fits |>
+  filter(estimand %in% c("First stage", "LATE")) |>
+  transmute(
+    family,
+    h0    = h,
+    b0    = b,
+    rho   = b0 / h0,
+    h_fix = round(h0 / 5) * 5,
+    b_fix = h_fix * rho
+  )
+
+# Consistency check: the stored pipeline fits should match fresh fits on the
+# current rd_data (guards against a stale _targets store).
+stored_late_24 <- tar_read(survival_iv, store = store) |>
+  filter(name == "survival_24") |>
+  pluck("rd", 1, "output", "coef", 3)
+fresh_late_24 <- anchor_fits |>
+  filter(anchor == "survival_24", estimand == "LATE") |>
+  pull(coef)
+if (!isTRUE(all.equal(stored_late_24, fresh_late_24))) {
+  warning(
+    "Stored pipeline fits differ from fresh fits on current rd_data; ",
+    "optimal-h overlays may be stale."
+  )
+}
+rm(stored_late_24, fresh_late_24)
+```
+
+```{r}
+#| label: sensitivity
+#| output: false
+
+h_grid <- seq(30, 200, by = 10)
+
+sens <- tribble(
+  ~family,    ~estimand,     ~fuzzy,
+  "take_up",  "First stage", FALSE,
+  "survival", "ITT",         FALSE,
+  "survival", "LATE",        TRUE,
+  "duration", "ITT",         FALSE,
+  "duration", "LATE",        TRUE
+) |>
+  left_join(bw_spec |> mutate(family = as.character(family)), by = "family") |>
+  cross_join(tibble(h_manual = h_grid)) |>
+  mutate(
+    stats = pmap(
+      list(family, h_manual, rho, fuzzy),
+      \(fam, h, r, fz) fit_manual(anchor_data[[fam]], h, r, fuzzy = fz),
+      .progress = TRUE
+    ),
+    family = factor(family, levels = family_levels)
+  ) |>
+  unnest(stats)
+```
+
+```{r}
+#| label: fixed-paths
+#| output: false
+
+with_spec <- rd_use |>
+  left_join(bw_spec |> select(family, h_fix, rho), by = "family")
+
+paths_sharp <- with_spec |>
+  mutate(
+    stats = pmap(list(data, h_fix, rho), fit_manual, .progress = TRUE),
+    estimand = if_else(family == "take_up", "First stage", "ITT")
+  ) |>
+  select(family, name, months, estimand, stats)
+
+paths_late <- with_spec |>
+  filter(family != "take_up") |>
+  mutate(
+    stats = pmap(
+      list(data, h_fix, rho),
+      \(d, h, r) fit_manual(d, h, r, fuzzy = TRUE),
+      .progress = TRUE
+    ),
+    estimand = "LATE"
+  ) |>
+  select(family, name, months, estimand, stats)
+
+paths_fixed <- bind_rows(paths_sharp, paths_late) |> unnest(stats)
+
+# Everything downstream is KB-sized; drop the ~2.9 GB of nested data.
+rm(rd_use, with_spec, paths_sharp, paths_late, anchor_data)
+invisible(gc())
+```
+
+```{r}
+#| label: stored-paths
+#| output: false
+
+# Optimal-bandwidth paths come from the stored pipeline fits — no re-fitting.
+extract_stored <- function(tbl) {
+  tbl |>
+    mutate(stats = map(rd, extract_stats)) |>
+    select(name, stats) |>
+    unnest(stats) |>
+    mutate(
+      months = str_extract(name, "\\d+") |> as.numeric(),
+      family = str_remove(name, "_\\d+$") |> factor(levels = family_levels)
+    )
+}
+
+paths_opt <- bind_rows(
+  tar_read(take_up, store = store) |>
+    extract_stored() |>
+    mutate(estimand = "First stage"),
+  tar_read(survival, store = store) |>
+    extract_stored() |>
+    mutate(estimand = "ITT"),
+  tar_read(survival_iv, store = store) |>
+    extract_stored() |>
+    mutate(estimand = "LATE")
+)
+```
+
+## How much does the optimal bandwidth wander?
+
+@fig-h-by-horizon plots the MSE-optimal bandwidth chosen by `rdrobust` at every
+horizon of each outcome family, as used in the paper's path figures. The dashed
+line marks the fixed bandwidth adopted for that family in this notebook.
+
+```{r}
+#| label: fig-h-by-horizon
+#| fig-cap: "CCT-optimal bandwidth by horizon. Dashed line: fixed h adopted for the family."
+
+paths_opt |>
+  ggplot(aes(months, h, color = estimand)) +
+  geom_line() +
+  geom_point(size = 0.8) +
+  geom_hline(
+    data = bw_spec,
+    aes(yintercept = h_fix),
+    linetype = "dashed"
+  ) +
+  facet_wrap(~family, labeller = labeller(family = family_labels)) +
+  scale_x_continuous(breaks = seq(3, 36, 3)) +
+  labs(
+    x = "Months since displacement",
+    y = "Optimal bandwidth h (days)",
+    color = NULL
+  )
+```
+
+## Anchor regressions and the fixed-bandwidth choice
+
+One anchor horizon per family — the first stage at 12 months, survival at 24
+months, duration at 36 months — is estimated at the CCT-optimal bandwidth. The
+fixed bandwidth is the anchor's $h_0$ rounded to the nearest 5 days (sharp
+anchor for the first stage, fuzzy anchors for survival and duration), applied
+to every horizon in the family for both ITT and LATE.
+
+```{r}
+#| label: tbl-anchors
+#| tbl-cap: "Anchor regressions at the CCT-optimal bandwidth and the fixed h adopted per family."
+
+anchor_fits |>
+  left_join(bw_spec |> select(family, h_fix), by = "family") |>
+  mutate(family = family_labels[as.character(family)]) |>
+  select(
+    Family = family, Anchor = anchor, Estimand = estimand,
+    `h (days)` = h, `b (days)` = b, `Effective N` = n_eff,
+    Estimate = coef, SE = se, `p-value` = pv, `Fixed h (days)` = h_fix
+  ) |>
+  gt(groupname_col = "Family") |>
+  fmt_number(columns = c(`h (days)`, `b (days)`), decimals = 1) |>
+  fmt_number(columns = `Effective N`, decimals = 0, use_seps = TRUE) |>
+  fmt_number(columns = c(Estimate, SE, `p-value`), decimals = 3) |>
+  tab_source_note(
+    "Local linear regression, triangular kernel, HC0 variance. Robust
+     bias-corrected estimates and inference (Calonico, Cattaneo, and
+     Titiunik 2014). Effective N counts observations within the bandwidth."
+  )
+```
+
+## Bandwidth sensitivity at the anchor horizons
+
+Each panel re-estimates the anchor regression over a grid of fixed bandwidths
+$h \in \{30, 40, \ldots, 200\}$ days, scaling $b$ to preserve the anchor's
+$\rho$. Dashed vertical line: CCT-optimal $h_0$; solid line: adopted fixed $h$.
+At large $h$ the scaled $b$ exceeds the running variable's $\pm 364$-day
+support, so the bias regression effectively uses the full sample — expected and
+harmless.
+
+```{r}
+#| label: fig-sens-plots
+#| output: false
+
+plot_sens <- function(fam) {
+  df <- sens |> filter(family == fam)
+  vl <- anchor_fits |> filter(family == fam) |> select(estimand, h0 = h)
+  fx <- bw_spec |> filter(family == fam)
+
+  ggplot(df, aes(h_manual, coef)) +
+    geom_hline(yintercept = 0, color = "gray60") +
+    geom_vline(
+      data = vl, aes(xintercept = h0),
+      linetype = "dashed", color = "gray40"
+    ) +
+    geom_vline(xintercept = fx$h_fix, color = "steelblue") +
+    geom_pointrange(aes(ymin = ci_l, ymax = ci_u), size = 0.3) +
+    facet_wrap(~estimand, scales = "free_y") +
+    labs(x = "Bandwidth h (days)", y = "RD estimate (robust)")
+}
+```
+
+```{r}
+#| label: fig-sens-takeup
+#| fig-cap: "First stage at 12 months (take_up_12): estimate vs. fixed bandwidth."
+
+plot_sens("take_up")
+```
+
+```{r}
+#| label: fig-sens-survival
+#| fig-cap: "Survival at 24 months (survival_24): estimate vs. fixed bandwidth, ITT and LATE."
+
+plot_sens("survival")
+```
+
+```{r}
+#| label: fig-sens-duration
+#| fig-cap: "Duration at 36 months (duration_36): estimate vs. fixed bandwidth, ITT and LATE."
+
+plot_sens("duration")
+```
+
+## Effect paths at fixed bandwidths
+
+Each family's path across horizons 2–36 months, re-estimated at the family's
+fixed bandwidth and overlaid on the paper's CCT-optimal-bandwidth estimates.
+With a fixed $h$, every point within a panel uses the same local sample, so
+the shape of the path is no longer confounded by bandwidth movement.
+
+```{r}
+#| label: fig-path-fns
+#| output: false
+
+plot_path <- function(fam, est, ylab) {
+  bind_rows(
+    paths_fixed |>
+      filter(family == fam, estimand == est) |>
+      mutate(Bandwidth = "Fixed h"),
+    paths_opt |>
+      filter(family == fam, estimand == est) |>
+      mutate(Bandwidth = "CCT-optimal h")
+  ) |>
+    ggplot(aes(months, coef, color = Bandwidth)) +
+    geom_hline(yintercept = 0, color = "gray60") +
+    geom_pointrange(
+      aes(ymin = ci_l, ymax = ci_u),
+      position = position_dodge(width = 0.8),
+      size = 0.3
+    ) +
+    scale_x_continuous(breaks = seq(3, 36, 3)) +
+    scale_color_manual(
+      values = c("CCT-optimal h" = "gray50", "Fixed h" = "steelblue")
+    ) +
+    labs(
+      x = "Months since displacement",
+      y = ylab,
+      title = est,
+      color = NULL
+    )
+}
+```
+
+```{r}
+#| label: fig-path-takeup
+#| fig-cap: "Take-up path (first stage) at fixed vs. CCT-optimal bandwidth."
+
+plot_path("take_up", "First stage", "Take-up rate")
+```
+
+```{r}
+#| label: fig-path-survival
+#| fig-height: 8
+#| fig-cap: "Survival paths at fixed vs. CCT-optimal bandwidth, ITT and LATE."
+
+ggarrange(
+  plot_path("survival", "ITT", "Survival rate"),
+  plot_path("survival", "LATE", "Survival rate"),
+  nrow = 2, common.legend = TRUE, legend = "bottom"
+)
+```
+
+```{r}
+#| label: fig-path-duration
+#| fig-height: 8
+#| fig-cap: "Duration paths at fixed vs. CCT-optimal bandwidth, ITT and LATE."
+
+ggarrange(
+  plot_path("duration", "ITT", "Censored duration (weeks)"),
+  plot_path("duration", "LATE", "Censored duration (weeks)"),
+  nrow = 2, common.legend = TRUE, legend = "bottom"
+)
+```
+
+## Summary: optimal vs. fixed bandwidth at the anchors
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Anchor estimates under the CCT-optimal and the fixed bandwidth."
+
+bind_rows(
+  anchor_fits |>
+    select(family, estimand, h, b, n_eff, coef, se, pv) |>
+    mutate(Bandwidth = "CCT-optimal h"),
+  paths_fixed |>
+    filter(
+      (family == "take_up" & months == 12) |
+        (family == "survival" & months == 24) |
+        (family == "duration" & months == 36)
+    ) |>
+    select(family, estimand, h, b, n_eff, coef, se, pv) |>
+    mutate(Bandwidth = "Fixed h")
+) |>
+  arrange(family, estimand, Bandwidth) |>
+  mutate(family = family_labels[as.character(family)]) |>
+  select(
+    Family = family, Estimand = estimand, Bandwidth,
+    `h (days)` = h, `b (days)` = b, `Effective N` = n_eff,
+    Estimate = coef, SE = se, `p-value` = pv
+  ) |>
+  gt(groupname_col = "Family") |>
+  fmt_number(columns = c(`h (days)`, `b (days)`), decimals = 1) |>
+  fmt_number(columns = `Effective N`, decimals = 0, use_seps = TRUE) |>
+  fmt_number(columns = c(Estimate, SE, `p-value`), decimals = 3) |>
+  tab_source_note(
+    "Fixed-h rows scale the bias bandwidth b to preserve the anchor's
+     rho = b0 / h0. All other specification choices match the paper."
+  )
+```
