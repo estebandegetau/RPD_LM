@@ -22,6 +22,8 @@ tr("rd_take_up_plot_esp")
 
 El efecto causal de cruzar el umbral de eligibilidad en la probabilidad de usar el RPD (la intención de tratar o ITT) crece de 0.8 puntos porcentuales a los dos meses de la separación laboral a 3.6 puntos porcentuales a los doce meses, y se estabiliza alrededor de 4 puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este efecto, aunque estadísticamente muy preciso, es modesto en magnitud —consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado—.
 
+[The 3.6 seems factually wrong from the plot. 3.6 is the effect, not the mean take up from the right side. Either make the prose programmatically accurate, or reword.]{.aside}
+
 ```{r}
 #| label: fig-primera-etapa
 #| fig-cap: "Efecto dinámico de la elegibilidad sobre el uso del RPD, por meses desde el despido. Las barras verticales son intervalos de confianza al 95% con inferencia robusta."
@@ -60,7 +62,7 @@ kbl(df_resultados, format = "latex", booktabs = TRUE, escape = TRUE,
   kable_styling(font_size = 9, latex_options = c("hold_position")) |>
   column_spec(1, width = "6.3cm") |>
   footnote(
-    general = "* p<0.10, ** p<0.05. Estimaciones de RDD difuso (segunda etapa, Sección 5), con tratamiento definido como uso del programa 12 meses después del despido; inferencia robusta con corrección de sesgo, por lo que los valores p no se derivan directamente del cociente entre punto estimado y error estándar. Cifras en pesos de 2024.",
+    general = "* p<0.10, ** p<0.05. Estimaciones de RDD difuso (Ecuación 2), con tratamiento definido como uso del programa 12 meses después del despido; ancho de banda óprimo [@calonico2020]; inferencia robusta con corrección de sesgo [@calonico2014]. Cifras en pesos de 2024.",
     general_title = "Nota: ",
     footnote_as_chunk = TRUE,
     threeparttable = TRUE
@@ -102,10 +104,10 @@ El Apéndice complementa estos resultados con las estimaciones de forma reducida
 
 df_heterogeneidad <- data.frame(
   Subgrupo = c(
-    "Por debajo de la mediana", "Por arriba de la mediana",
+    "Por debajo de la mediana ($6,669.2)", "Por arriba de la mediana",
     "Por debajo de la mediana (22.9 años)", "Por arriba de la mediana",
     "Hombres", "Mujeres",
-    "Despedidos antes de marzo 2019", "Despedidos después de marzo 2020"
+    "Separación antes de marzo 2019", "Separación después de marzo 2020"
   ),
   Duracion = c("46.2** (17.2)", "−4.7 (15.7)", "35.2 (18.0)", "3.1 (16.6)",
                "49.1** (18.3)", "−8.7 (17.4)", "52.8** (21.8)", "22.0 (25.7)"),
@@ -114,7 +116,7 @@ df_heterogeneidad <- data.frame(
 )
 
 kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = TRUE,
-    col.names = c("Subgrupo", "Duración a 36 meses (sem.)", "Ingresos totales a 3 años (MXN 2024)"),
+    col.names = c("Subgrupo", "Duración del desempleo a 36 meses (sem.)", "Ingresos totales a 3 años (MXN 2024)"),
     align = c("l", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("hold_position")) |>
   column_spec(1, width = "5cm") |>
@@ -123,12 +125,19 @@ kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = TRUE,
   pack_rows("Sexo", 5, 6) |>
   pack_rows("Exposición a COVID-19", 7, 8) |>
   footnote(
-    general = "** p<0.05. Error estándar entre paréntesis. Estimaciones de RDD difuso con inferencia robusta y corrección de sesgo, tratamiento definido como uso del programa 12 meses después del despido. Cifras en pesos de 2024.",
+    general = "** p<0.05. Error estándar entre paréntesis. Estimaciones de RDD difuso con inferencia robusta y corrección de sesgo, tratamiento definido como uso del programa 12 meses después del despido. Cifras monetarias en pesos de 2024.",
     general_title = "Nota: ",
     footnote_as_chunk = TRUE,
     threeparttable = TRUE
   )
 ```
+
+[Let Column 1 in @tbl-heterogeneidad be a bit wider so that each subgroup's name fits in one row; let columns 2 and 3 be narrower, even if the header row needs wrap text into a second "row"]{.aside}
+
+
+[I changed @tbl-heterogeneidad , but in general we talk about "separación" rather than "despedir" because we cannot know who terminated the labor relation. Make sure the whole paper sticks to this language.]{.aside}
+
+[I just noticed that the figures in @tbl-heterogeneidad are hardcoded. This is unacceptable. Every table and figure should present results transformed directly from the data. The layout is perfect, but it should draw the numbers from the computed results. The same for all other Figure and Table, please check. I'll review this section's prose once the change is made.]{.aside}
 
 Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). Entre trabajadores con salario previo por debajo de la mediana, el RPD incrementa la duración del desempleo en 46 semanas —casi diez veces el efecto entre trabajadores de mayor ingreso, que no es distinguible de cero— y no genera ninguna mejora salarial al reingresar; entre trabajadores de mayor ingreso, en cambio, el reempleo ocurre con salarios aproximadamente 67% más altos. El patrón se repite por sexo: los hombres que usan el RPD permanecen desempleados 49 semanas más y encuentran empleos mejor pagados, mientras que las mujeres no muestran una extensión significativa del desempleo pero sí una pérdida —no significativa, pero económicamente grande— de ingresos acumulados a tres años. Es decir: el diseño actual del programa tiende a beneficiar, en términos de calidad del reempleo, a quienes ya llegan mejor posicionados, mientras que los trabajadores más vulnerables —de menor ingreso, más jóvenes— absorben el costo de la mayor duración del desempleo sin la contrapartida de un mejor empleo.
 
