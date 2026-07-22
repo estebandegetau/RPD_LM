@@ -115,17 +115,17 @@ the anchor regression's ratio $\rho = b_0 / h_0$.
 
 anchor_data <- list(
   take_up  = rd_use |> filter(name == "take_up_12")  |> pluck("data", 1),
-  survival = rd_use |> filter(name == "survival_24") |> pluck("data", 1),
-  duration = rd_use |> filter(name == "duration_36") |> pluck("data", 1)
+  survival = rd_use |> filter(name == "survival_12") |> pluck("data", 1),
+  duration = rd_use |> filter(name == "duration_12") |> pluck("data", 1)
 )
 
 anchor_fits <- tribble(
   ~family,    ~anchor,       ~estimand,     ~fuzzy,
   "take_up",  "take_up_12",  "First stage", FALSE,
-  "survival", "survival_24", "ITT",         FALSE,
-  "survival", "survival_24", "LATE",        TRUE,
-  "duration", "duration_36", "ITT",         FALSE,
-  "duration", "duration_36", "LATE",        TRUE
+  "survival", "survival_12", "ITT",         FALSE,
+  "survival", "survival_12", "LATE",        TRUE,
+  "duration", "duration_12", "ITT",         FALSE,
+  "duration", "duration_12", "LATE",        TRUE
 ) |>
   mutate(
     stats = map2(family, fuzzy, \(fam, fz) {
@@ -137,8 +137,9 @@ anchor_fits <- tribble(
   unnest(stats)
 
 # Fixed-h choice: sharp anchor for the first stage; fuzzy (LATE) anchors for
-# survival and duration — LATE is the headline estimand. Round h to the
-# nearest 5 days; one (h, rho) per family, shared by ITT and LATE.
+# survival and duration — LATE is the headline estimand. All three anchors are
+# at the 12-month horizon. Round h to the nearest 5 days; one (h, rho) per
+# family, shared by ITT and LATE.
 bw_spec <- anchor_fits |>
   filter(estimand %in% c("First stage", "LATE")) |>
   transmute(
@@ -152,19 +153,19 @@ bw_spec <- anchor_fits |>
 
 # Consistency check: the stored pipeline fits should match fresh fits on the
 # current rd_data (guards against a stale _targets store).
-stored_late_24 <- tar_read(survival_iv, store = store) |>
-  filter(name == "survival_24") |>
+stored_late_12 <- tar_read(survival_iv, store = store) |>
+  filter(name == "survival_12") |>
   pluck("rd", 1, "output", "coef", 3)
-fresh_late_24 <- anchor_fits |>
-  filter(anchor == "survival_24", estimand == "LATE") |>
+fresh_late_12 <- anchor_fits |>
+  filter(anchor == "survival_12", estimand == "LATE") |>
   pull(coef)
-if (!isTRUE(all.equal(stored_late_24, fresh_late_24))) {
+if (!isTRUE(all.equal(stored_late_12, fresh_late_12))) {
   warning(
     "Stored pipeline fits differ from fresh fits on current rd_data; ",
     "optimal-h overlays may be stale."
   )
 }
-rm(stored_late_24, fresh_late_24)
+rm(stored_late_12, fresh_late_12)
 ```
 
 ```{r}
@@ -286,11 +287,11 @@ paths_opt |>
 
 ## Anchor regressions and the fixed-bandwidth choice
 
-One anchor horizon per family — the first stage at 12 months, survival at 24
-months, duration at 36 months — is estimated at the CCT-optimal bandwidth. The
-fixed bandwidth is the anchor's $h_0$ rounded to the nearest 5 days (sharp
-anchor for the first stage, fuzzy anchors for survival and duration), applied
-to every horizon in the family for both ITT and LATE.
+One anchor horizon per family — the first stage, survival, and duration all at
+12 months — is estimated at the CCT-optimal bandwidth. The fixed bandwidth is
+the anchor's $h_0$ rounded to the nearest 5 days (sharp anchor for the first
+stage, fuzzy anchors for survival and duration), applied to every horizon in
+the family for both ITT and LATE.
 
 ```{r}
 #| label: tbl-anchors
@@ -315,9 +316,10 @@ anchor_fits |>
   )
 ```
 
-## Bandwidth sensitivity at the anchor horizons
+## Bandwidth sensitivity at the 12-month anchors
 
-Each panel re-estimates the anchor regression over a grid of fixed bandwidths
+Each panel re-estimates the anchor regression (at the 12-month horizon) over a
+grid of fixed bandwidths
 $h \in \{30, 40, \ldots, 200\}$ days, scaling $b$ to preserve the anchor's
 $\rho$. Dashed vertical line: CCT-optimal $h_0$; solid line: adopted fixed $h$.
 At large $h$ the scaled $b$ exceeds the running variable's $\pm 364$-day
@@ -355,14 +357,14 @@ plot_sens("take_up")
 
 ```{r}
 #| label: fig-sens-survival
-#| fig-cap: "Survival at 24 months (survival_24): estimate vs. fixed bandwidth, ITT and LATE."
+#| fig-cap: "Survival at 12 months (survival_12): estimate vs. fixed bandwidth, ITT and LATE."
 
 plot_sens("survival")
 ```
 
 ```{r}
 #| label: fig-sens-duration
-#| fig-cap: "Duration at 36 months (duration_36): estimate vs. fixed bandwidth, ITT and LATE."
+#| fig-cap: "Duration at 12 months (duration_12): estimate vs. fixed bandwidth, ITT and LATE."
 
 plot_sens("duration")
 ```
@@ -449,11 +451,7 @@ bind_rows(
     select(family, estimand, h, b, n_eff, coef, se, pv) |>
     mutate(Bandwidth = "CCT-optimal h"),
   paths_fixed |>
-    filter(
-      (family == "take_up" & months == 12) |
-        (family == "survival" & months == 24) |
-        (family == "duration" & months == 36)
-    ) |>
+    filter(months == 12) |>
     select(family, estimand, h, b, n_eff, coef, se, pv) |>
     mutate(Bandwidth = "Fixed h")
 ) |>
