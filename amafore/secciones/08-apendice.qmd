@@ -10,7 +10,7 @@ unidades <- c(
   "Mujer"                                = "Mujer (proporción)",
   "Fecha de nacimiento"                  = "Fecha de nacimiento (años)",
   "Inicio de vida laboral formal"        = "Inicio de vida laboral formal (años)",
-  "Fecha de despido"                     = "Fecha de despido (años)",
+  "Fecha de separación"                  = "Fecha de separación (años)",
   "Edad"                                 = "Edad (años)",
   "Días desde apertura de la cuenta"     = "Días desde apertura de la cuenta (días)",
   "Sin CURP"                             = "Sin CURP (proporción)",
@@ -63,7 +63,7 @@ tr("covariates_plots_esp")
 
 ### Estimaciones de forma reducida (efecto de la elegibilidad) {.unnumbered}
 
-La @tbl-itt reporta el efecto de la *elegibilidad* (forma reducida o intención de tratar, @eq-primera-etapa aplicada a cada resultado) junto a la primera etapa. Ningún efecto de forma reducida sobre resultados laborales es significativo al 5%, lo cual es consistente con una primera etapa de 3.6 puntos porcentuales: un efecto de 36 semanas sobre los usuarios (@tbl-resultados-principales) se diluye a menos de una semana al promediarse sobre toda la población cercana al umbral, mayoritariamente no usuaria. Cabe señalar que el cociente entre forma reducida y primera etapa no reproduce exactamente el LATE de la @tbl-resultados-principales porque cada estimación difusa selecciona su propio ancho de banda óptimo y aplica corrección de sesgo; la estabilidad del LATE ante variaciones del ancho de banda se examina en la @tbl-sensibilidad.
+La @tbl-itt reporta el efecto de la *elegibilidad* (forma reducida o intención de tratar, @eq-primera-etapa aplicada a cada resultado) junto a la primera etapa. Ningún efecto de forma reducida sobre resultados laborales es significativo al 5%, lo cual es consistente con una primera etapa de `r round(fs12, 1)` puntos porcentuales: un efecto de `r round(dur36)` semanas sobre los usuarios (@tbl-resultados-principales) se diluye a menos de una semana al promediarse sobre toda la población cercana al umbral, mayoritariamente no usuaria. Cabe señalar que el cociente entre forma reducida y primera etapa no reproduce exactamente el LATE de la @tbl-resultados-principales porque cada estimación difusa selecciona su propio ancho de banda óptimo y aplica corrección de sesgo; la estabilidad del LATE ante variaciones del ancho de banda se examina en la @tbl-sensibilidad.
 
 ```{r}
 #| label: tbl-itt

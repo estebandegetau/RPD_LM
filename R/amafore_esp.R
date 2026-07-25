@@ -24,7 +24,7 @@ etiquetas_covariables_esp <- c(
     "female"                    = "Mujer",
     "birth_date"                = "Fecha de nacimiento",
     "began_working"             = "Inicio de vida laboral formal",
-    "unemployment_date"         = "Fecha de despido",
+    "unemployment_date"         = "Fecha de separación",
     "age"                       = "Edad",
     "days_since_account_opened" = "Días desde apertura de la cuenta",
     "no_curp"                   = "Sin CURP",
@@ -309,6 +309,119 @@ make_bw_sensitivity_esp <- function(rd_data,
         extraer_rd_stats_esp() |>
         mutate(resultado = etiquetas[name]) |>
         select(name, resultado, multiplo, h, coef, se, pv, n_efectivo)
+}
+
+# Resultados principales (LATE difuso) ------------------------------------------------
+# Extrae, para cada resultado, el coeficiente difuso (fila "Robust"), su error
+# estándar, valor-p, la media del lado no elegible (tau_bc[1], como en
+# glance.rdrobust) y el N efectivo. Regresa numéricos crudos + una etiqueta de
+# unidad `tipo`; el formato (estrellas, %, $) se decide en amafore/.
+
+extraer_late_esp <- function(x) {
+    x |>
+        mutate(
+            coef = map_dbl(rd, ~ pluck(.x, "output", "coef", 3)),
+            se = map_dbl(rd, ~ pluck(.x, "output", "se", 3)),
+            pv = map_dbl(rd, ~ pluck(.x, "output", "pv", 3)),
+            media = map_dbl(rd, ~ pluck(.x, "output", "tau_bc", 1)),
+            n_efectivo = map_dbl(rd, ~ pluck(.x, "output", "N_h", 1)) +
+                map_dbl(rd, ~ pluck(.x, "output", "N_h", 2))
+        )
+}
+
+make_resultados_principales_esp <- function(survival_iv, next_job_iv, medium_term_iv) {
+    spec <- tibble::tribble(
+        ~name,                   ~resultado,                                        ~tipo,
+        "survival_3",            "Supervivencia en desempleo a 3 meses (pp)",       "pp",
+        "duration_36",           "Duración del desempleo a 36 meses (semanas)",     "semanas",
+        "next_job_av_earnings",  "Salario mensual, siguiente empleo (MXN 2024)",    "mxn",
+        "next_job_cum_earnings", "Ingresos totales, siguiente empleo (MXN 2024)",   "mxn",
+        "next_job_duration",     "Duración del siguiente empleo (semanas)",         "semanas",
+        "earnings_total",        "Ingresos totales acumulados a 3 años (MXN 2024)", "mxn",
+        "months_worked_total",   "Meses trabajados a 3 años",                       "meses"
+    )
+
+    bind_rows(survival_iv, next_job_iv, medium_term_iv) |>
+        filter(name %in% spec$name) |>
+        extraer_late_esp() |>
+        select(name, coef, se, pv, media, n_efectivo) |>
+        left_join(spec, by = "name") |>
+        arrange(match(name, spec$name)) |>
+        select(name, resultado, tipo, coef, se, pv, media, n_efectivo)
+}
+
+# Heterogeneidad (LATE difuso por subgrupo) -------------------------------------------
+# Para cada target de corte (*_results) toma la fila del resultado pedido y el
+# subgrupo indicado, devolviendo coef/se/pv/media crudos.
+
+extraer_subgrupo_esp <- function(results, outcome, valor) {
+    results |>
+        filter(name == outcome, split == valor) |>
+        extraer_late_esp() |>
+        transmute(coef, se, pv, media) |>
+        slice(1)
+}
+
+make_heterogeneidad_esp <- function(income_results, age_results,
+                                    gender_results, covid_results) {
+    filas <- tibble::tribble(
+        ~grupo,                  ~subgrupo,                          ~target,          ~valor,
+        "Ingreso previo",        "Por debajo de la mediana",         "income_results", "1",
+        "Ingreso previo",        "Por arriba de la mediana",         "income_results", "2",
+        "Edad",                  "Por debajo de la mediana",         "age_results",    "1",
+        "Edad",                  "Por arriba de la mediana",         "age_results",    "2",
+        "Sexo",                  "Hombres",                          "gender_results", "0",
+        "Sexo",                  "Mujeres",                          "gender_results", "1",
+        "Exposición a COVID-19", "Separación antes de marzo 2019",   "covid_results",  "No Exposure",
+        "Exposición a COVID-19", "Separación después de marzo 2020", "covid_results",  "Full Exposure"
+    )
+
+    targets <- list(
+        income_results = income_results,
+        age_results = age_results,
+        gender_results = gender_results,
+        covid_results = covid_results
+    )
+
+    # El tipo de la columna `split` difiere (entero, lógico, texto); comparamos
+    # sobre su representación como texto para casar el valor solicitado.
+    saca <- function(target, outcome, valor) {
+        res <- targets[[target]] |> mutate(split = as.character(split))
+        extraer_subgrupo_esp(res, outcome, valor)
+    }
+
+    filas |>
+        mutate(
+            dur  = pmap(list(target, valor), \(t, v) saca(t, "duration_36", v)),
+            ing  = pmap(list(target, valor), \(t, v) saca(t, "earnings_total", v)),
+            wage = pmap(list(target, valor), \(t, v) saca(t, "next_job_av_earnings", v))
+        ) |>
+        mutate(
+            dur_coef = map_dbl(dur, "coef"), dur_se = map_dbl(dur, "se"), dur_pv = map_dbl(dur, "pv"),
+            ing_coef = map_dbl(ing, "coef"), ing_se = map_dbl(ing, "se"), ing_pv = map_dbl(ing, "pv"),
+            wage_coef = map_dbl(wage, "coef"), wage_media = map_dbl(wage, "media")
+        ) |>
+        select(grupo, subgrupo,
+               dur_coef, dur_se, dur_pv,
+               ing_coef, ing_se, ing_pv,
+               wage_coef, wage_media)
+}
+
+# Estadísticos de muestra y parámetros de costeo --------------------------------------
+
+make_muestra_stats_esp <- function(rpd_data) {
+    tibble(
+        n_muestra       = nrow(rpd_data),
+        wbar            = mean(rpd_data$prev_job_av_earnings, na.rm = TRUE),
+        mediana_ingreso = median(rpd_data$prev_job_av_earnings, na.rm = TRUE),
+        mediana_edad    = median(rpd_data$age, na.rm = TRUE),
+        edad_media      = mean(rpd_data$age, na.rm = TRUE),
+        # Monto promedio retirado entre los usuarios de la muestra (W del costeo §05).
+        w_retiro        = mean(rpd_data$amount_withdrawn, na.rm = TRUE),
+        # Tasas de uso a 12 meses por elegibilidad (niveles, no el salto en el umbral).
+        tu_elig         = mean(rpd_data$take_up_12[rpd_data$elig], na.rm = TRUE),
+        tu_no_elig      = mean(rpd_data$take_up_12[!rpd_data$elig], na.rm = TRUE)
+    )
 }
 
 # Costeo agregado a partir del registro de retiros ------------------------------------

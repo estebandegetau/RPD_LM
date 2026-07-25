@@ -39,7 +39,7 @@ La reforma al sistema de pensiones aprobada en diciembre de 2020 [@dof2020] modi
 
 ### Uso y crecimiento del programa
 
-El RPD se implementó en 1997 pero su uso permaneció marginal hasta 2009, cuando —en el contexto de la Gran Recesión— se convirtió en una fuente relevante de sustitución de ingreso para los trabajadores desempleados. La crisis de empleo derivada de la pandemia de COVID-19 produjo un segundo salto en su adopción. Ambos episodios muestran que las crisis de empleo dejan un efecto permanente sobre el uso del programa, probablemente por la mayor difusión y conocimiento que adquiere durante esos periodos (@fig-uso).
+La posibilidad de retirar parte de la cuenta individual ante el desempleo existe desde el inicio del sistema de cuentas individuales en 1997, pero en su forma actual —con las dos modalidades descritas arriba, el descuento proporcional de semanas de cotización y la opción de reintegro— proviene de la reforma a la Ley del Seguro Social de mayo de 2009, en pleno contexto de la Gran Recesión [@lss2026]. De forma congruente, su uso fue marginal durante la primera década del sistema y dio un primer gran salto en 2009, cuando se consolidó como una fuente relevante de sustitución de ingreso para los trabajadores separados. La crisis de empleo derivada de la pandemia de COVID-19 produjo un segundo salto en su adopción. Ambos episodios muestran que las crisis de empleo dejan un efecto permanente sobre el uso del programa, probablemente por la mayor difusión y conocimiento que adquiere durante esos periodos (@fig-uso).
 
 ```{r}
 #| label: fig-uso
@@ -51,9 +51,7 @@ El RPD se implementó en 1997 pero su uso permaneció marginal hasta 2009, cuand
 tr("rpd_usage_plot_esp")
 ```
 
-Para dimensionar la magnitud del programa: al cierre de 2024, 16,966,851 trabajadores habían realizado 24,598,838 retiros acumulados —más retiros que trabajadores activos reportados por el IMSS en ese mismo corte (22,238,379)— por un monto acumulado cercano a los \$300,000 millones de pesos de 2024. El RPD no es, entonces, un mecanismo marginal: es, en términos de cobertura, el instrumento de sustitución de ingreso por desempleo de mayor alcance en México.
-
-[Ojo aquí. Por favor confirma esto: el RPD como figura se creó en el marco de la gran recesión (2008-2009). La @fig-uso muestra retiros desde el 1997 porque también incluye otros tipos de retiros parciales del sistema de Afores que inició en 1997. Si confirmamos que el RPD se creó circa de 2009, hay que reescribir esta subsección.]{.aside}
+Para dimensionar la magnitud del programa: al cierre de 2024, `r format(n_usuarios, big.mark = ",")` trabajadores habían realizado `r format(n_retiros_tot, big.mark = ",")` retiros acumulados —más retiros que trabajadores activos reportados por el IMSS en ese mismo corte (22,238,379)— por un monto acumulado cercano a los `r mmdp(acervo)` de pesos de 2024. El RPD no es, entonces, un mecanismo marginal: es, en términos de cobertura, el instrumento de sustitución de ingreso por desempleo de mayor alcance en México.
 
 ### Por qué el RPD domina como sustituto de ingreso
 

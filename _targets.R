@@ -440,6 +440,22 @@ list(
     command = make_bw_sensitivity_esp(rd_data)
   ),
   tar_target(
+    name = resultados_principales_esp,
+    command = make_resultados_principales_esp(survival_iv, next_job_iv, medium_term_iv)
+  ),
+  tar_target(
+    name = heterogeneidad_esp,
+    command = make_heterogeneidad_esp(income_results, age_results, gender_results, covid_results)
+  ),
+  tar_target(
+    name = take_up_path_data_esp,
+    command = extraer_path_esp(take_up, "take_up")
+  ),
+  tar_target(
+    name = muestra_stats_esp,
+    command = make_muestra_stats_esp(rpd_data)
+  ),
+  tar_target(
     name = retiros_capitalizados_esp,
     command = compute_retiros_capitalizados_esp(rpd_data_path)
   ),

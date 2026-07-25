@@ -26,6 +26,58 @@ library(ggplot2)
 tr <- function(name) tar_read_raw(name, store = .store)
 
 fmt_mmdp <- function(x) dollar(x / 1e9, accuracy = 1, big.mark = ",")
+mmdp <- function(x) paste0("\\$", format(round(x / 1e9), big.mark = ","), " mil millones")
+
+# --- Resultados leídos una sola vez y compartidos por todas las secciones -------------
+# (propuesta.qmd corre antes de los {{< include >}}, así que estos objetos quedan
+# en el entorno de todas las secciones; evita duplicar cifras y que se desfasen.)
+res_prin <- tr("resultados_principales_esp")
+het      <- tr("heterogeneidad_esp")
+tu_path  <- tr("take_up_path_data_esp")
+muestra  <- tr("muestra_stats_esp")
+cap_ret  <- tr("retiros_capitalizados_esp")
+pe       <- tr("primera_etapa_esp")
+balance  <- tr("balance_table_esp")
+shares   <- tr("retiro_saldo_shares_esp")
+
+# --- Helpers de formato ----------------------------------------------------------------
+estrellas <- function(pv) case_when(pv < 0.05 ~ "**", pv < 0.10 ~ "*", TRUE ~ "")
+
+# Formatea un valor según su unidad (pp = puntos porcentuales sin signo %).
+fmt_val <- function(x, tipo) case_when(
+  tipo == "pp"                   ~ formatC(x * 100, format = "f", digits = 1),
+  tipo == "mxn"                  ~ formatC(round(x), format = "d", big.mark = ","),
+  tipo %in% c("semanas", "meses") ~ formatC(x, format = "f", digits = 1),
+  TRUE                           ~ formatC(x, format = "f", digits = 1)
+)
+fmt_media <- function(x, tipo) ifelse(
+  tipo == "pp",
+  paste0(formatC(x * 100, format = "f", digits = 1), "%"),
+  fmt_val(x, tipo)
+)
+fmt_efecto <- function(x, pv, tipo) paste0(fmt_val(x, tipo), estrellas(pv))
+fmt_se     <- function(x, tipo) paste0("(", fmt_val(x, tipo), ")")
+fmt_cell   <- function(coef, se, pv, tipo) {
+  paste0(fmt_val(coef, tipo), estrellas(pv), " (", fmt_val(se, tipo), ")")
+}
+
+# --- Atajos para cifras puntuales ------------------------------------------------------
+rp    <- function(nombre, col = "coef") res_prin[[col]][res_prin$name == nombre]
+hetv  <- function(g, s, col) het[[col]][het$grupo == g & het$subgrupo == s]
+fs_pp <- function(m) tu_path$point[tu_path$months == m] * 100  # efecto 1ª etapa (pp)
+
+# --- Cifras de titular reutilizadas en varias secciones --------------------------------
+dur36      <- rp("duration_36")                          # semanas adicionales (LATE)
+dur36_base <- rp("duration_36", "media")                 # base no elegibles (semanas)
+surv3_pp   <- rp("survival_3") * 100                     # supervivencia 3m (pp)
+fs2        <- fs_pp(2)                                    # 1ª etapa a 2 meses (pp)
+fs12       <- fs_pp(12)                                   # 1ª etapa a 12 meses (pp)
+fs24       <- fs_pp(24)                                   # 1ª etapa a 24 meses (pp)
+acervo     <- cap_ret$monto_2024[1]                      # acervo retirado (pesos 2024)
+cap4       <- cap_ret$capitalizado[cap_ret$tasa == 0.04] # capitalizado al 4%
+n_retiros_val <- cap_ret$n_retiros[1]                    # retiros con fecha/importe válidos
+n_usuarios    <- tr("rpd_users")                         # trabajadores distintos que usaron el RPD
+n_retiros_tot <- tr("rpd_usage")                         # retiros acumulados (todas las fechas)
 ```
 
 {{< include secciones/01-introduccion.qmd >}}
