@@ -91,7 +91,7 @@ El Apéndice complementa estos resultados con las estimaciones de forma reducida
 
 ```{r}
 #| label: tbl-heterogeneidad
-#| tbl-cap: "Heterogeneidad del efecto del RPD sobre duración e ingresos"
+#| tbl-cap: "Heterogeneidad del efecto del RPD después de tres años de la separación"
 
 df_heterogeneidad <- het |>
   mutate(
@@ -111,7 +111,7 @@ df_heterogeneidad <- het |>
 
 kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = FALSE,
     col.names = kableExtra::linebreak(
-      c("Subgrupo", "Duración del desempleo\na 36 meses (sem.)", "Ingresos totales\na 3 años (MXN 2024)"),
+      c("Subgrupo", "Duración del desempleo (semanas)", "Ingresos totales\n(MXN 2024)"),
       align = "c"),
     align = c("l", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("hold_position")) |>
@@ -130,6 +130,10 @@ kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = FALSE,
   )
 ```
 
-Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). Entre trabajadores con salario previo por debajo de la mediana, el RPD incrementa la duración del desempleo en `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))` semanas —casi diez veces el efecto entre trabajadores de mayor ingreso, que no es distinguible de cero— y no genera ninguna mejora salarial al reingresar; entre trabajadores de mayor ingreso, en cambio, el reempleo ocurre con salarios aproximadamente `r round(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef") / hetv("Ingreso previo", "Por arriba de la mediana", "wage_media") * 100)`% más altos. El patrón se repite por sexo: los hombres que usan el RPD permanecen desempleados `r round(hetv("Sexo", "Hombres", "dur_coef"))` semanas más y encuentran empleos mejor pagados, mientras que las mujeres no muestran una extensión significativa del desempleo pero sí una pérdida —no significativa, pero económicamente grande— de ingresos acumulados a tres años. Es decir: el diseño actual del programa tiende a beneficiar, en términos de calidad del reempleo, a quienes ya llegan mejor posicionados, mientras que los trabajadores más vulnerables —de menor ingreso, más jóvenes— absorben el costo de la mayor duración del desempleo sin la contrapartida de un mejor empleo.
+Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). Entre trabajadores con salario previo por debajo de la mediana ($6,669.2 MXN 2024), el RPD incrementa la duración del desempleo en `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))`. Entre trabajadores de mayor ingreso, en cambio, el reempleo ocurre con salarios aproximadamente `r round(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef") / hetv("Ingreso previo", "Por arriba de la mediana", "wage_media") * 100)`% más altos. El patrón se repite por sexo: los hombres que usan el RPD permanecen desempleados `r round(hetv("Sexo", "Hombres", "dur_coef"))` semanas más y encuentran empleos mejor pagados, mientras que las mujeres no muestran una extensión significativa del desempleo pero sí una pérdida —no significativa, pero económicamente grande— de ingresos acumulados a tres años. Es decir: el diseño actual del programa tiende a beneficiar, en términos de calidad del reempleo, a quienes ya llegan mejor posicionados, mientras que los trabajadores más vulnerables —de menor ingreso, más jóvenes— absorben el costo de la mayor duración del desempleo sin la contrapartida de un mejor empleo.
+
+[It doesn't really make sense to compare the magnitudes of two effects that have contrary direction. Moreover, it does not make sense to compare the magnitude of a significant coefficient to an insignificant coefficient, because you cannot tell if the insignificant coefficient is distinct from zero. I messed up the paragraph, please fix it in these terms.]{.aside}
 
 Un hallazgo adicional resulta relevante para el diseño de política contracíclica: entre los trabajadores separados *antes* de la pandemia, el RPD extendió el desempleo en `r round(hetv("Exposición a COVID-19", "Separación antes de marzo 2019", "dur_coef"))` semanas sin beneficio en ingresos; entre los separados *durante* la exposición plena a la crisis del COVID-19, el efecto sobre la duración del desempleo se reduce a más de la mitad (`r round(hetv("Exposición a COVID-19", "Separación después de marzo 2020", "dur_coef"))` semanas, no significativo) y los ingresos totales a tres años aumentan en \$`r fmt_val(hetv("Exposición a COVID-19", "Separación después de marzo 2020", "ing_coef"), "mxn")` MXN. En un mercado laboral deprimido, donde la alternativa realista al RPD no es un reempleo más rápido sino un desempleo igualmente largo, la liquidez adicional parece cumplir mejor su función de aseguramiento —una pista relevante para el diseño contracíclico que se retoma en la @sec-propuesta—.
+
+[I really like the conclusion of the paragraph above. DO adhere to the observations in the note above.]{.aside}

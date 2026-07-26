@@ -2,6 +2,8 @@
 
 ### Balance de covariables en el umbral {.unnumbered}
 
+[Include a summary statics table here, like the one we have in sections/appendix.qmd.]{.aside}
+
 ```{r}
 #| label: tbl-balance
 #| tbl-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad"
