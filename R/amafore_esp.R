@@ -399,12 +399,91 @@ make_heterogeneidad_esp <- function(income_results, age_results,
         mutate(
             dur_coef = map_dbl(dur, "coef"), dur_se = map_dbl(dur, "se"), dur_pv = map_dbl(dur, "pv"),
             ing_coef = map_dbl(ing, "coef"), ing_se = map_dbl(ing, "se"), ing_pv = map_dbl(ing, "pv"),
-            wage_coef = map_dbl(wage, "coef"), wage_media = map_dbl(wage, "media")
+            wage_coef = map_dbl(wage, "coef"), wage_se = map_dbl(wage, "se"),
+            wage_pv = map_dbl(wage, "pv"), wage_media = map_dbl(wage, "media")
+        ) |>
+        # Prueba de diferencia entre los dos subgrupos de cada corte. Las
+        # estimaciones provienen de submuestras disjuntas, así que la varianza de
+        # la diferencia es la suma de las varianzas. Sin esto, el texto sólo
+        # podría contrastar magnitudes de coeficientes, que es justo lo que no
+        # informa si los subgrupos difieren.
+        mutate(
+            .by = grupo,
+            dif_coef = dur_coef[1] - dur_coef[2],
+            dif_se   = sqrt(dur_se[1]^2 + dur_se[2]^2),
+            dif_pv   = 2 * pnorm(-abs(dif_coef / dif_se))
         ) |>
         select(grupo, subgrupo,
                dur_coef, dur_se, dur_pv,
                ing_coef, ing_se, ing_pv,
-               wage_coef, wage_media)
+               wage_coef, wage_se, wage_pv, wage_media,
+               dif_coef, dif_se, dif_pv)
+}
+
+# Estadísticas descriptivas de la muestra ---------------------------------------------
+# Equivalente en español de make_summary_statistics() (R/data.R), que alimenta la
+# tabla del apéndice. Se calcula del mismo `rpd_data`, así que las medias coinciden
+# por construcción con las de make_muestra_stats_esp() usadas en el costeo de §05.
+
+# Orden de las filas y de los bloques dentro de la tabla. Las fechas se reportan
+# en años decimales, como en la versión en inglés.
+etiquetas_resumen_esp <- tibble::tribble(
+    ~variable,                     ~etiqueta,                                        ~grupo,
+    "female",                      "Mujer (proporción)",                             "Covariables",
+    "birth_date",                  "Fecha de nacimiento (año)",                      "Covariables",
+    "began_working",               "Inicio de vida laboral formal (año)",            "Covariables",
+    "unemployment_date",           "Fecha de separación (año)",                      "Covariables",
+    "age",                         "Edad a la separación (años)",                    "Covariables",
+    "days_since_account_opened",   "Días desde la apertura de la cuenta",            "Covariables",
+    "no_curp",                     "Sin CURP (proporción)",                          "Covariables",
+    "prev_job_duration",           "Duración del empleo previo (semanas)",           "Empleo previo",
+    "prev_job_av_earnings",        "Salario mensual, empleo previo (MXN 2024)",      "Empleo previo",
+    "prev_job_cum_earnings",       "Ingresos totales, empleo previo (MXN 2024)",     "Empleo previo",
+    "amount_withdrawn",            "Monto retirado (MXN 2024)",                      "Retiro (RPD)",
+    "balance_rcv",                 "Saldo RCV al momento del retiro (MXN 2024)",     "Retiro (RPD)",
+    "contributed_weeks_rpd",       "Semanas cotizadas al momento del retiro",        "Retiro (RPD)",
+    "days_to_take_up",             "Días entre la separación y el retiro",           "Retiro (RPD)",
+    "days_withdrawn",              "Días de salario retirados",                      "Retiro (RPD)",
+    "survival_3",                  "Sigue desempleado a 3 meses (proporción)",       "Búsqueda de empleo",
+    "survival_36",                 "Sigue desempleado a 36 meses (proporción)",      "Búsqueda de empleo",
+    "duration_3",                  "Semanas de desempleo, censuradas a 3 meses",     "Búsqueda de empleo",
+    "duration_36",                 "Semanas de desempleo, censuradas a 36 meses",    "Búsqueda de empleo",
+    "next_job_duration",           "Duración del siguiente empleo (semanas)",        "Siguiente empleo",
+    "next_job_av_earnings",        "Salario mensual, siguiente empleo (MXN 2024)",   "Siguiente empleo",
+    "next_job_cum_earnings",       "Ingresos totales, siguiente empleo (MXN 2024)",  "Siguiente empleo",
+    "earnings_total",              "Ingresos totales a 3 años (MXN 2024)",           "Mediano plazo",
+    "av_earnings_total",           "Salario mensual promedio a 3 años (MXN 2024)",   "Mediano plazo",
+    "months_worked_total",         "Meses trabajados a 3 años",                      "Mediano plazo"
+)
+
+make_tabla_resumen_esp <- function(rpd_data, especificacion = etiquetas_resumen_esp) {
+    # Se resume columna por columna en lugar de pivotear a formato largo (como
+    # hace la versión en inglés): con 877 mil filas, materializar el largo
+    # multiplica la memoria sin necesidad.
+    resumir <- function(variable) {
+        x <- rpd_data[[variable]]
+        if (inherits(x, "Date")) x <- decimal_date(x)
+        x <- as.numeric(x)
+        x <- x[!is.na(x)]
+
+        tibble(
+            variable = variable,
+            n        = length(x),
+            media    = mean(x),
+            mediana  = median(x),
+            de       = sd(x),
+            min      = min(x),
+            max      = max(x)
+        )
+    }
+
+    especificacion |>
+        filter(variable %in% names(rpd_data)) |>
+        mutate(stats = map(variable, resumir)) |>
+        unnest(stats, names_sep = "_") |>
+        select(grupo, etiqueta,
+               n = stats_n, media = stats_media, mediana = stats_mediana,
+               de = stats_de, min = stats_min, max = stats_max)
 }
 
 # Estadísticos de muestra y parámetros de costeo --------------------------------------

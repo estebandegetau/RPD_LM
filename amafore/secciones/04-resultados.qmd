@@ -7,7 +7,7 @@
 pe <- tr("primera_etapa_esp")
 ```
 
-Los trabajadores que apenas cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. La @fig-rd-primera-etapa muestra la discontinuidad directamente sobre los datos: la tasa de uso a doce meses salta en el umbral en `r round(pe$coef * 100, 1)` puntos porcentuales (error estándar de `r round(pe$se * 100, 1)`), estimados sobre `r format(pe$n_efectivo, big.mark = ",")` observaciones dentro del ancho de banda óptimo de ±`r round(pe$h)` días. La primera etapa es estadísticamente fuerte —estadístico $t$ de `r round(pe$t, 1)`, equivalente a un estadístico $F$ de `r round(pe$f)`, muy por encima de los umbrales convencionales de instrumento débil—, lo que descarta que los resultados de la segunda etapa estén contaminados por un problema de instrumentos débiles.
+Los trabajadores que apenas cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. La @fig-rd-primera-etapa muestra la discontinuidad directamente sobre los datos: la tasa de uso a doce meses salta en el umbral en `r round(pe$coef * 100, 1)` puntos porcentuales (error estándar de `r round(pe$se * 100, 1)`), estimados sobre `r format(pe$n_efectivo, big.mark = ",")` observaciones dentro del ancho de banda óptimo de ±`r round(pe$h)` días. La primera etapa es estadísticamente fuerte (estadístico $t$ de `r round(pe$t, 1)`, equivalente a un estadístico $F$ de `r round(pe$f)`, muy por encima de los umbrales convencionales de instrumento débil), lo que descarta que los resultados de la segunda etapa estén contaminados por un problema de instrumentos débiles.
 
 ```{r}
 #| label: fig-rd-primera-etapa
@@ -20,7 +20,7 @@ Los trabajadores que apenas cruzan el umbral de dos años de cotización son sig
 tr("rd_take_up_plot_esp")
 ```
 
-El efecto causal de cruzar el umbral de elegibilidad sobre la probabilidad de usar el RPD (la intención de tratar o ITT) crece de `r round(fs2, 1)` puntos porcentuales a los dos meses de la separación laboral a `r round(fs12, 1)` puntos porcentuales a los doce meses, y se estabiliza alrededor de `r round(fs24, 1)` puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este salto en el umbral —el efecto de la elegibilidad, no el nivel de uso del lado elegible— es estadísticamente muy preciso pero modesto en magnitud, consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado.
+El efecto causal de cruzar el umbral de elegibilidad sobre la probabilidad de usar el RPD (la intención de tratar o ITT) crece de `r round(fs2, 1)` puntos porcentuales a los dos meses de la separación laboral a `r round(fs12, 1)` puntos porcentuales a los doce meses, y se estabiliza alrededor de `r round(fs24, 1)` puntos porcentuales hacia el mes 24 (@fig-primera-etapa). Este salto en el umbral, que mide el efecto de la elegibilidad y no el nivel de uso del lado elegible, es estadísticamente muy preciso pero modesto en magnitud, consistente con el diseño del RPD como beneficio autofinanciado: a diferencia de un seguro de desempleo tradicional, el trabajador retira de su propio ahorro, lo que limita naturalmente la propensión al uso indiscriminado.
 
 ```{r}
 #| label: fig-primera-etapa
@@ -60,7 +60,7 @@ kbl(df_resultados, format = "latex", booktabs = TRUE, escape = TRUE,
   )
 ```
 
-El uso del RPD incrementa de manera marcada y estadísticamente significativa la duración del desempleo: a los tres meses de la separación, haber usado el programa aumenta en `r round(surv3_pp, 1)` puntos porcentuales la probabilidad de seguir desempleado; a los 36 meses, el efecto acumulado es de `r round(dur36, 1)` semanas adicionales de desempleo, partiendo de una base de `r round(dur36_base, 1)` semanas entre los no elegibles —un incremento de aproximadamente `r round(dur36 / dur36_base * 100)`%— (@fig-rd-resultados, @fig-duracion, @tbl-resultados-principales).
+El uso del RPD incrementa de manera marcada y estadísticamente significativa la duración del desempleo: a los tres meses de la separación, haber usado el programa aumenta en `r round(surv3_pp, 1)` puntos porcentuales la probabilidad de seguir desempleado; a los 36 meses, el efecto acumulado es de `r round(dur36, 1)` semanas adicionales de desempleo, partiendo de una base de `r round(dur36_base, 1)` semanas entre los no elegibles, un incremento de aproximadamente `r round(dur36 / dur36_base * 100)`% (@fig-rd-resultados, @fig-duracion, @tbl-resultados-principales).
 
 ```{r}
 #| label: fig-rd-resultados
@@ -83,7 +83,7 @@ tr("rd_outcome_plot_esp")
 tr("fuzzy_path_esp")
 ```
 
-Este desempleo más prolongado no se traduce en mejores condiciones de reempleo. El punto estimado sobre el salario mensual del siguiente empleo es positivo y económicamente grande (+\$`r fmt_val(rp("next_job_av_earnings"), "mxn")` MXN), pero solo es significativo al 10% y debe leerse con cautela: una ganancia mayor al salario base promedio excede lo plausible como efecto promedio y refleja, sobre todo, la imprecisión inherente a un instrumento que mueve el uso en apenas `r round(fs12, 1)` puntos porcentuales. El dato robusto es la ausencia de mejora sistemática: los efectos sobre los ingresos totales y la duración del siguiente empleo no son distinguibles de cero y, sobre el horizonte completo de tres años, ni los ingresos acumulados ni los meses trabajados muestran una mejora significativa —el punto estimado de ingresos totales es, de hecho, negativo—. En suma: el RPD retrasa la salida del desempleo sin generar, en promedio, un emparejamiento laboral de mejor calidad que compense ese costo. Este patrón es opuesto al que predicen los modelos más optimistas del seguro de desempleo, que anticipan ganancias de productividad por una búsqueda más deliberada [@acemoglu2000; @acemoglu1999], y es consistente con evidencia de otros esquemas de sustitución de ingreso en América Latina: en Brasil, la liquidación por despido (FGTS) también prolonga el desempleo formal sin mejorar de forma sistemática los ingresos posteriores [@britto2022], y en Argentina las ganancias salariales asociadas al seguro de desempleo son, cuando existen, modestas frente al costo en duración del desempleo [@gonzález-rozada2023].
+Este desempleo más prolongado no se traduce en mejores condiciones de reempleo. El punto estimado sobre el salario mensual del siguiente empleo es positivo y económicamente grande (+\$`r fmt_val(rp("next_job_av_earnings"), "mxn")` MXN), pero solo es significativo al 10% y debe leerse con cautela: una ganancia mayor al salario base promedio excede lo plausible como efecto promedio y refleja, sobre todo, la imprecisión inherente a un instrumento que mueve el uso en apenas `r round(fs12, 1)` puntos porcentuales. El dato robusto es la ausencia de mejora sistemática: los efectos sobre los ingresos totales y la duración del siguiente empleo no son distinguibles de cero y, sobre el horizonte completo de tres años, ni los ingresos acumulados ni los meses trabajados muestran una mejora significativa; el punto estimado de ingresos totales es, de hecho, negativo. En suma: el RPD retrasa la salida del desempleo sin generar, en promedio, un emparejamiento laboral de mejor calidad que compense ese costo. Este patrón es opuesto al que predicen los modelos más optimistas del seguro de desempleo, que anticipan ganancias de productividad por una búsqueda más deliberada [@acemoglu2000; @acemoglu1999], y es consistente con evidencia de otros esquemas de sustitución de ingreso en América Latina: en Brasil, la liquidación por despido (FGTS) también prolonga el desempleo formal sin mejorar de forma sistemática los ingresos posteriores [@britto2022], y en Argentina las ganancias salariales asociadas al seguro de desempleo son, cuando existen, modestas frente al costo en duración del desempleo [@gonzález-rozada2023].
 
 El Apéndice complementa estos resultados con las estimaciones de forma reducida (efecto de la *elegibilidad*, @tbl-itt), la sensibilidad de los efectos principales al ancho de banda (@tbl-sensibilidad) y las pruebas de balance de covariables (@tbl-balance).
 
@@ -105,35 +105,49 @@ df_heterogeneidad <- het |>
       TRUE ~ subgrupo
     ),
     Duracion = fmt_cell(dur_coef, dur_se, dur_pv, "semanas"),
-    Ingresos = fmt_cell(ing_coef, ing_se, ing_pv, "mxn")
+    Ingresos = fmt_cell(ing_coef, ing_se, ing_pv, "mxn"),
+    Salario  = fmt_cell(wage_coef, wage_se, wage_pv, "mxn")
   ) |>
-  select(Subgrupo, Duracion, Ingresos)
+  select(Subgrupo, Duracion, Ingresos, Salario)
+
+# Prueba de diferencia entre los dos subgrupos de cada corte (sobre la duración):
+# sin ella, la tabla sólo permitiría contrastar magnitudes, que no informan si los
+# subgrupos difieren entre sí.
+nota_dif <- het |>
+  distinct(grupo, dif_pv) |>
+  mutate(txt = paste0(grupo, ", $p$ = ", formatC(dif_pv, format = "f", digits = 3))) |>
+  pull(txt) |>
+  paste(collapse = "; ")
 
 kbl(df_heterogeneidad, format = "latex", booktabs = TRUE, escape = FALSE,
     col.names = kableExtra::linebreak(
-      c("Subgrupo", "Duración del desempleo (semanas)", "Ingresos totales\n(MXN 2024)"),
+      c("Subgrupo", "Duración del\ndesempleo\n(semanas)",
+        "Ingresos totales\na 3 años\n(MXN 2024)",
+        "Salario mensual,\nsiguiente empleo\n(MXN 2024)"),
       align = "c"),
-    align = c("l", "r", "r")) |>
+    align = c("l", "r", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("hold_position")) |>
-  column_spec(1, width = "6cm") |>
-  column_spec(2, width = "3cm") |>
-  column_spec(3, width = "3cm") |>
+  column_spec(1, width = "5cm") |>
+  column_spec(2:4, width = "2.8cm") |>
   pack_rows("Ingreso previo", 1, 2) |>
   pack_rows("Edad", 3, 4) |>
   pack_rows("Sexo", 5, 6) |>
   pack_rows("Exposición a COVID-19", 7, 8) |>
   footnote(
-    general = "* p<0.10, ** p<0.05. Error estándar entre paréntesis. Estimaciones de RDD difuso con inferencia robusta y corrección de sesgo, tratamiento definido como uso del programa 12 meses después de la separación. Cifras monetarias en pesos de 2024.",
+    general = paste0(
+      "* p<0.10, ** p<0.05. Error estándar entre paréntesis. Estimaciones de RDD difuso con inferencia robusta y corrección de sesgo, tratamiento definido como uso del programa 12 meses después de la separación. Cifras monetarias en pesos de 2024. Cada subgrupo se estima sobre una submuestra disjunta, con su propio ancho de banda óptimo; la significancia de un coeficiente no implica que difiera del coeficiente del subgrupo complementario. Prueba de diferencia entre subgrupos sobre la duración del desempleo: ",
+      nota_dif, "."),
     general_title = "Nota: ",
     footnote_as_chunk = TRUE,
-    threeparttable = TRUE
+    threeparttable = TRUE,
+    escape = FALSE
   )
 ```
 
-Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). Entre trabajadores con salario previo por debajo de la mediana ($6,669.2 MXN 2024), el RPD incrementa la duración del desempleo en `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))`. Entre trabajadores de mayor ingreso, en cambio, el reempleo ocurre con salarios aproximadamente `r round(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef") / hetv("Ingreso previo", "Por arriba de la mediana", "wage_media") * 100)`% más altos. El patrón se repite por sexo: los hombres que usan el RPD permanecen desempleados `r round(hetv("Sexo", "Hombres", "dur_coef"))` semanas más y encuentran empleos mejor pagados, mientras que las mujeres no muestran una extensión significativa del desempleo pero sí una pérdida —no significativa, pero económicamente grande— de ingresos acumulados a tres años. Es decir: el diseño actual del programa tiende a beneficiar, en términos de calidad del reempleo, a quienes ya llegan mejor posicionados, mientras que los trabajadores más vulnerables —de menor ingreso, más jóvenes— absorben el costo de la mayor duración del desempleo sin la contrapartida de un mejor empleo.
+Los efectos promedio esconden una heterogeneidad económicamente importante (@tbl-heterogeneidad). El costo en duración del desempleo no se reparte de manera pareja: sólo es distinguible de cero entre los trabajadores con salario previo por debajo de la mediana (\$`r formatC(muestra$mediana_ingreso, format = "f", digits = 1, big.mark = ",")` MXN de 2024), donde el RPD añade `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))` semanas de desempleo, y entre los hombres, donde añade `r round(hetv("Sexo", "Hombres", "dur_coef"))`. Y en ambos cortes la diferencia respecto del subgrupo complementario es ella misma estadísticamente significativa ($p$ = `r formatC(hetv("Ingreso previo", "Por debajo de la mediana", "dif_pv"), format = "f", digits = 3)` por ingreso y $p$ = `r formatC(hetv("Sexo", "Hombres", "dif_pv"), format = "f", digits = 3)` por sexo), de modo que el gradiente no es sólo un contraste de magnitudes estimadas. El corte por edad apunta en la misma dirección, con un efecto detectable entre los más jóvenes y ninguno entre los de mayor edad, pero la diferencia entre ambos no alcanza significancia convencional ($p$ = `r formatC(hetv("Edad", "Por debajo de la mediana", "dif_pv"), format = "f", digits = 3)`) y conviene leerla como indicativa.
 
-[It doesn't really make sense to compare the magnitudes of two effects that have contrary direction. Moreover, it does not make sense to compare the magnitude of a significant coefficient to an insignificant coefficient, because you cannot tell if the insignificant coefficient is distinct from zero. I messed up the paragraph, please fix it in these terms.]{.aside}
+Frente a ese costo desigual no aparece una contrapartida equivalente. En ningún subgrupo, sin excepción, el efecto sobre los ingresos acumulados a tres años es distinguible de cero. La única mejora salarial que alcanza significancia al 5% es la del salario mensual del siguiente empleo entre los trabajadores de mayor ingreso previo (\$`r fmt_val(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef"), "mxn")` MXN), y merece la misma reserva señalada arriba para el estimador promedio de esa variable: su magnitud es implausible como efecto medio y proviene de un instrumento que mueve el uso en pocos puntos porcentuales. Lo que la evidencia sí sostiene es más simple: los trabajadores de menor ingreso absorben la parte del león de la extensión del desempleo, y no hay señal de que al final de esa espera más larga les aguarde un mejor empleo.
 
-Un hallazgo adicional resulta relevante para el diseño de política contracíclica: entre los trabajadores separados *antes* de la pandemia, el RPD extendió el desempleo en `r round(hetv("Exposición a COVID-19", "Separación antes de marzo 2019", "dur_coef"))` semanas sin beneficio en ingresos; entre los separados *durante* la exposición plena a la crisis del COVID-19, el efecto sobre la duración del desempleo se reduce a más de la mitad (`r round(hetv("Exposición a COVID-19", "Separación después de marzo 2020", "dur_coef"))` semanas, no significativo) y los ingresos totales a tres años aumentan en \$`r fmt_val(hetv("Exposición a COVID-19", "Separación después de marzo 2020", "ing_coef"), "mxn")` MXN. En un mercado laboral deprimido, donde la alternativa realista al RPD no es un reempleo más rápido sino un desempleo igualmente largo, la liquidez adicional parece cumplir mejor su función de aseguramiento —una pista relevante para el diseño contracíclico que se retoma en la @sec-propuesta—.
+Un último contraste resulta indicativo para el diseño de política contracíclica. Entre los trabajadores separados *antes* de la pandemia, el RPD extendió el desempleo en `r round(hetv("Exposición a COVID-19", "Separación antes de marzo 2019", "dur_coef"))` semanas, un efecto claramente distinguible de cero. Entre los separados *durante* la exposición plena a la crisis del COVID-19 el estimador no lo es; pero la diferencia entre ambos grupos tampoco lo es ($p$ = `r formatC(hetv("Exposición a COVID-19", "Separación antes de marzo 2019", "dif_pv"), format = "f", digits = 3)`), de manera que los datos son compatibles tanto con un efecto genuinamente menor durante la crisis como con el mismo efecto estimado con menor precisión. En ninguno de los dos periodos cambian de forma detectable los ingresos acumulados a tres años.
 
-[I really like the conclusion of the paragraph above. DO adhere to the observations in the note above.]{.aside}
+Con esa cautela por delante, la hipótesis que el contraste sugiere merece explorarse: en un mercado laboral deprimido, donde la alternativa realista al RPD no es un reempleo más rápido sino un desempleo igualmente largo, la liquidez adicional cumpliría mejor su función de aseguramiento y peor su papel de subsidio a una búsqueda que de todos modos no prosperaría. Es una pista, no un resultado, y como tal se retoma en la @sec-propuesta.

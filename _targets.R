@@ -456,6 +456,10 @@ list(
     command = make_muestra_stats_esp(rpd_data)
   ),
   tar_target(
+    name = tabla_resumen_esp,
+    command = make_tabla_resumen_esp(rpd_data)
+  ),
+  tar_target(
     name = retiros_capitalizados_esp,
     command = compute_retiros_capitalizados_esp(rpd_data_path)
   ),

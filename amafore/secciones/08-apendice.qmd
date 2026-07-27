@@ -1,8 +1,42 @@
 ## Apéndice: validez y robustez {.unnumbered #sec-apendice}
 
-### Balance de covariables en el umbral {.unnumbered}
+### Estadísticas descriptivas de la muestra {.unnumbered}
 
-[Include a summary statics table here, like the one we have in sections/appendix.qmd.]{.aside}
+La @tbl-resumen reporta las estadísticas descriptivas de las variables utilizadas en el análisis, sobre la muestra final de estimación. Las medias del bloque de retiro se calculan únicamente sobre los `r format(muestra_resumen$n[muestra_resumen$etiqueta == "Monto retirado (MXN 2024)"], big.mark = ",")` trabajadores de la muestra que efectivamente usaron el programa, y son las que alimentan el costeo pensionario de la @sec-pensiones.
+
+```{r}
+#| label: tbl-resumen
+#| tbl-cap: "Estadísticas descriptivas de la muestra de estimación"
+
+# Los `pack_rows` se derivan de la columna `grupo` en lugar de fijarse a mano:
+# así los encabezados de bloque no se desalinean si cambia el número de variables.
+bloques <- rle(as.character(muestra_resumen$grupo))
+fin     <- cumsum(bloques$lengths)
+ini     <- fin - bloques$lengths + 1
+
+tab_resumen <- muestra_resumen |>
+  select(etiqueta, n, media, mediana, de, min, max) |>
+  kbl(format = "latex", booktabs = TRUE, escape = TRUE, digits = 1,
+      format.args = list(big.mark = ","),
+      col.names = c("Variable", "N", "Media", "Mediana", "Desv. est.",
+                    "Mín.", "Máx."),
+      align = c("l", "r", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 8, latex_options = c("scale_down", "HOLD_position"))
+
+for (i in seq_along(bloques$values)) {
+  tab_resumen <- pack_rows(tab_resumen, bloques$values[i], ini[i], fin[i])
+}
+
+tab_resumen |>
+  footnote(
+    general = "Muestra final de estimación: trabajadores del panel patrón-trabajador del IMSS que registran una separación con al menos 46 días sin relación laboral vigente. Las fechas se expresan en años decimales. Cifras monetarias en pesos de diciembre de 2024. Las variables del bloque de retiro están definidas solo para quienes usaron el RPD.",
+    general_title = "Nota: ",
+    footnote_as_chunk = TRUE,
+    threeparttable = TRUE
+  )
+```
+
+### Balance de covariables en el umbral {.unnumbered}
 
 ```{r}
 #| label: tbl-balance
@@ -96,7 +130,7 @@ tr("itt_table_esp") |>
                     "N efectivo", "$h$ (días)"),
       align = c("l", "r", "r", "r", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
-  column_spec(1, width = "7.2cm") |>
+  column_spec(1, width = "6.2cm") |>
   footnote(
     general = "Estimaciones de RD nítida (elegibilidad, no uso) con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. Cifras monetarias en pesos de 2024.",
     general_title = "Nota: ",
