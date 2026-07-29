@@ -18,6 +18,7 @@ execute:
   warning: false
   message: false
 
+bibliography: references.bib
 
 # Add the wp profile
 

@@ -1,0 +1,9 @@
+---
+author: Esteban Degetau
+date: today
+date-format: long
+---
+
+[^1]: Los resultados sobre el mercado laboral que aquí se presentan circulan también como documento de trabajo, bajo el título *The Labor Market Outcomes of (Quasi) Unemployment Insurance: Evidence from the Retiro Parcial por Desempleo in Mexico* ([pdf](https://www.estebandegetau.com/RPD_LM/wp.pdf)), aún no publicado en una revista especializada. El presente trabajo es una adaptación enfocada en la implicación pensionaria de esos resultados y en la propuesta de política pública que se deriva de ellos.
+
+{{< include index.qmd >}}

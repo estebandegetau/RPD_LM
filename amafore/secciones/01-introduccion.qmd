@@ -1,12 +1,6 @@
 ## Planteamiento del problema[^1]
 
-::: {.content-visible when-profile="firmado"}
-[^1]: Los resultados sobre el mercado laboral que aquí se retoman circulan también como documento de trabajo, bajo el título *The Labor Market Outcomes of (Quasi) Unemployment Insurance: Evidence from the Retiro Parcial por Desempleo in Mexico* ([pdf](https://www.estebandegetau.com/RPD_LM/wp.pdf)), aún no publicado en una revista especializada. El presente trabajo es una adaptación enfocada en la implicación pensionaria de esos resultados y en la propuesta de política que se deriva de ellos.
-:::
 
-::: {.content-visible when-profile="anonimo"}
-[^1]: Los resultados sobre el mercado laboral que aquí se retoman circulan también como documento de trabajo, aún no publicado en una revista especializada; su referencia se omite para preservar el anonimato de la postulación. El presente trabajo es una adaptación enfocada en la implicación pensionaria de esos resultados y en la propuesta de política que se deriva de ellos.
-:::
 
 La pérdida de empleo interrumpe abruptamente el ingreso de los trabajadores. En economías con mercados de crédito completos y sistemas públicos de aseguramiento contra el desempleo, esta interrupción se amortigua mediante transferencias que permiten suavizar el consumo mientras se busca una nueva ocupación. México carece de un sistema de seguro de desempleo de cobertura nacional. En su lugar, el marco legal descansa en dos mecanismos de sustitución de ingreso para el trabajador separado: la indemnización constitucional a cargo del patrón y el *Retiro Parcial por Desempleo* (RPD), que permite a los trabajadores formales retirar una fracción de su cuenta individual de ahorro para el retiro (Afore) al quedar desempleados.
 
