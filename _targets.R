@@ -356,7 +356,7 @@ list(
   ),
   tar_quarto(
     amafore,
-    here("amafore/")
+    here("amafore/propuesta.qmd")
   ),
   # tar_quarto(
   #   name = presentation,
@@ -470,5 +470,9 @@ list(
   tar_target(
     name = fig_retiro_saldo_esp,
     command = make_fig_retiro_saldo_esp(retiro_saldo_shares_esp)
+  ),
+  tar_target(
+    name = fig_retiro_semanas_esp,
+    command = make_fig_retiro_semanas_esp(retiro_saldo_shares_esp)
   )
 )

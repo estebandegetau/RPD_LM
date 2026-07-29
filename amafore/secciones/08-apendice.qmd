@@ -6,7 +6,7 @@ La @tbl-resumen reporta las estadísticas descriptivas de las variables utilizad
 
 ```{r}
 #| label: tbl-resumen
-#| tbl-cap: "Estadísticas descriptivas de la muestra de estimación"
+#| tbl-cap: "Estadísticas descriptivas de la muestra de análisis."
 
 # Los `pack_rows` se derivan de la columna `grupo` en lugar de fijarse a mano:
 # así los encabezados de bloque no se desalinean si cambia el número de variables.
@@ -40,7 +40,7 @@ tab_resumen |>
 
 ```{r}
 #| label: tbl-balance
-#| tbl-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad"
+#| tbl-cap: "Continuidad de covariables predeterminadas en el umbral de elegibilidad."
 
 unidades <- c(
   "Mujer"                                = "Mujer (proporción)",
@@ -103,7 +103,7 @@ La @tbl-itt reporta el efecto de la *elegibilidad* (forma reducida o intención 
 
 ```{r}
 #| label: tbl-itt
-#| tbl-cap: "Efecto de la elegibilidad al RPD (forma reducida) sobre los resultados principales"
+#| tbl-cap: "Efecto de la elegibilidad al RPD (forma reducida) sobre los resultados principales."
 
 labs_itt <- c(
   take_up_12           = "Uso del RPD a 12 meses (primera etapa, pp)",
@@ -145,7 +145,7 @@ La @tbl-sensibilidad re-estima los dos efectos principales fijando el ancho de b
 
 ```{r}
 #| label: tbl-sensibilidad
-#| tbl-cap: "Sensibilidad de los efectos principales (LATE) al ancho de banda"
+#| tbl-cap: "Sensibilidad de los efectos principales (LATE) al ancho de banda."
 
 bw <- tr("bw_sensitivity_esp") |>
   mutate(

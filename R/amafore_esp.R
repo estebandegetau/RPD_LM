@@ -123,10 +123,10 @@ make_take_up_path_esp <- function(take_up) {
         geom_hline(yintercept = 0, linewidth = 0.3, color = "gray40") +
         geom_pointrange(aes(ymin = lower, ymax = upper), size = 0.3, linewidth = 0.4) +
         scale_x_continuous(breaks = seq(from = 3, to = 48, by = 3)) +
-        scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+        scale_y_continuous(labels = ~ .x * 100) +
         labs(
             x = eje_meses_esp,
-            y = "Efecto sobre la tasa de uso del RPD"
+            y = "Efecto sobre la tasa de uso del RPD (pp)"
         ) +
         tema_esp()
 }
@@ -138,7 +138,7 @@ make_fuzzy_path_esp <- function(survival_iv) {
         geom_hline(yintercept = 0, linewidth = 0.3, color = "gray40") +
         geom_pointrange(aes(ymin = lower, ymax = upper), size = 0.3, linewidth = 0.4) +
         scale_x_continuous(breaks = seq(from = 3, to = 48, by = 3)) +
-        scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+        scale_y_continuous(labels = ~ .x * 100) +
         labs(
             x = NULL,
             title = "Probabilidad de seguir desempleado",
@@ -537,7 +537,7 @@ compute_retiro_saldo_shares_esp <- function(path, corte = as.Date("2024-12-31"))
     con <- DBI::dbConnect(duckdb::duckdb())
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
-    here(path) |>
+    retiros <- here(path) |>
         open_dataset(format = "feather") |>
         to_duckdb(con) |>
         filter(
@@ -550,6 +550,20 @@ compute_retiro_saldo_shares_esp <- function(path, corte = as.Date("2024-12-31"))
             share = pmin(amount_withdrawn / balance_rcv, 1),
             quintil = ntile(wage_rpd, 5)
         ) |>
+        # `share` no se puede reusar dentro del mismo mutate() en dbplyr: va aparte.
+        # Art. 198 LSS: el retiro descuenta semanas en la misma proporción que el saldo.
+        mutate(semanas_perdidas = share * contributed_weeks_rpd)
+
+    # Medianas de todo el registro, no de un quintil: se citan en el texto y no
+    # son recuperables a partir de las medianas por quintil.
+    totales <- retiros |>
+        summarise(
+            sem_p50_total = quantile(semanas_perdidas, 0.50),
+            p50_total = quantile(share, 0.50)
+        ) |>
+        collect()
+
+    retiros |>
         group_by(quintil) |>
         summarise(
             p25 = quantile(share, 0.25),
@@ -557,14 +571,27 @@ compute_retiro_saldo_shares_esp <- function(path, corte = as.Date("2024-12-31"))
             p75 = quantile(share, 0.75),
             media = mean(share),
             prop_25 = mean(as.integer(share >= 0.25)),
+            sem_p25 = quantile(semanas_perdidas, 0.25),
+            sem_p50 = quantile(semanas_perdidas, 0.50),
+            sem_p75 = quantile(semanas_perdidas, 0.75),
+            sem_media = mean(semanas_perdidas),
+            # Acervo de semanas al momento del retiro: explica por qué el conteo
+            # absoluto de semanas perdidas crece con el salario aunque la razón caiga.
+            sem_acum_p50 = quantile(contributed_weeks_rpd, 0.50),
             salario_mediano = median(wage_rpd),
             n = n()
         ) |>
         collect() |>
-        arrange(quintil)
+        arrange(quintil) |>
+        mutate(
+            sem_p50_total = totales$sem_p50_total,
+            p50_total = totales$p50_total
+        )
 }
 
-make_fig_retiro_saldo_esp <- function(shares) {
+# Los dos paneles de @fig-retiro-saldo comparten geometría y solo cambian de unidad,
+# así que se construyen con el mismo helper: mediana como punto, RIC como barra.
+fig_quintil_esp <- function(shares, lo, mid, hi, y_lab, y_labels) {
     shares |>
         mutate(
             quintil_lab = factor(
@@ -575,13 +602,36 @@ make_fig_retiro_saldo_esp <- function(shares) {
                 )
             )
         ) |>
-        ggplot(aes(x = quintil_lab, y = p50)) +
-        geom_linerange(aes(ymin = p25, ymax = p75), linewidth = 0.6, color = "gray55") +
+        ggplot(aes(x = quintil_lab, y = .data[[mid]])) +
+        geom_linerange(
+            aes(ymin = .data[[lo]], ymax = .data[[hi]]),
+            linewidth = 0.6, color = "gray55"
+        ) +
         geom_point(size = 2.2) +
-        scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+        scale_y_continuous(labels = y_labels) +
         labs(
-            x = "Quintil del salario previo al retiro (pesos de 2024)",
-            y = "Retiro como proporción del saldo RCV"
+            # Título corto: los paneles van a media plana y uno más largo se desborda.
+            # El pie de figura precisa que es el salario diario real al momento del retiro.
+            x = "Quintil del salario del usuario",
+            y = y_lab
         ) +
         tema_esp()
+}
+
+make_fig_retiro_saldo_esp <- function(shares) {
+    fig_quintil_esp(
+        shares,
+        lo = "p25", mid = "p50", hi = "p75",
+        y_lab = "Retiro como proporción del saldo RCV",
+        y_labels = scales::label_percent(accuracy = 1)
+    )
+}
+
+make_fig_retiro_semanas_esp <- function(shares) {
+    fig_quintil_esp(
+        shares,
+        lo = "sem_p25", mid = "sem_p50", hi = "sem_p75",
+        y_lab = "Semanas de cotización descontadas",
+        y_labels = scales::label_number(accuracy = 1)
+    )
 }
