@@ -63,22 +63,31 @@ fmt_num <- function(x) {
 tr("balance_table_esp") |>
   mutate(
     covariable = unidades[covariable],
+    # Holm sobre las diez pruebas: controla la probabilidad de al menos un falso
+    # positivo sin suponer independencia entre covariables (edad y fecha de
+    # nacimiento son, de hecho, la misma prueba con signo opuesto).
+    pv_holm = p.adjust(pv, method = "holm"),
     across(c(coef, se), fmt_num),
-    pv = ifelse(pv < 0.001, "$<$0.001", format(round(pv, 3), nsmall = 3)),
+    across(
+      c(pv, pv_holm),
+      ~ ifelse(.x < 0.001, "$<$0.001", format(round(.x, 3), nsmall = 3))
+    ),
     n_efectivo = format(n_efectivo, big.mark = ","),
     h = round(h)
   ) |>
+  select(covariable, coef, se, pv, pv_holm, n_efectivo, h) |>
   kbl(format = "latex", booktabs = TRUE, escape = FALSE,
       col.names = c("Covariable", "Efecto (RD)", "Error est.", "Valor $p$",
-                    "N efectivo", "$h$ (días)"),
-      align = c("l", "r", "r", "r", "r", "r")) |>
+                    "$p$ (Holm)", "N efectivo", "$h$ (días)"),
+      align = c("l", "r", "r", "r", "r", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
-  column_spec(1, width = "6.2cm") |>
+  column_spec(1, width = "5.6cm") |>
   footnote(
-    general = "Estimaciones de RD nítida (forma reducida) para cada covariable predeterminada, con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. La discontinuidad en edad (y su reflejo mecánico en la fecha de nacimiento) equivale a ~1.5 meses sobre una media de 25 años: estadísticamente detectable, pero económicamente menor y del orden esperable al realizar diez pruebas simultáneas.",
+    general = "Estimaciones de RD nítida (forma reducida) para cada covariable predeterminada, con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. La columna $p$ (Holm) corrige por la realización de diez pruebas simultáneas: bajo ese ajuste ninguna covariable conserva significancia al 5%. Las discontinuidades individualmente detectables son además económicamente menores: la de edad (y su reflejo mecánico en la fecha de nacimiento) equivale a ~1.5 meses sobre una media de 25 años, y la de días desde la apertura de la cuenta, a ~2 días sobre una media superior a 1,200.",
     general_title = "Nota: ",
     footnote_as_chunk = TRUE,
-    threeparttable = TRUE
+    threeparttable = TRUE,
+    escape = FALSE
   )
 ```
 
@@ -94,7 +103,7 @@ tr("balance_table_esp") |>
 #| fig-align: center
 #| fig-pos: "p"
 
-tr("covariates_plots_esp")
+fig_esp("covariates_plots_esp", width = 8, height = 9)
 ```
 
 ### Estimaciones de forma reducida (efecto de la elegibilidad) {.unnumbered}
@@ -109,10 +118,11 @@ labs_itt <- c(
   take_up_12           = "Uso del RPD a 12 meses (primera etapa, pp)",
   survival_3           = "Supervivencia en desempleo a 3 meses (pp)",
   duration_36          = "Duración del desempleo a 36 meses (semanas)",
-  next_job_av_earnings = "Salario mensual, siguiente empleo (MXN 2024)",
-  next_job_duration    = "Duración del siguiente empleo (semanas)",
-  earnings_total       = "Ingresos totales acumulados a 3 años (MXN 2024)",
-  months_worked_total  = "Meses trabajados a 3 años"
+  next_job_av_earnings  = "Salario mensual, siguiente empleo (MXN 2024)",
+  next_job_cum_earnings = "Ingresos totales, siguiente empleo (MXN 2024)",
+  next_job_duration     = "Duración del siguiente empleo (semanas)",
+  earnings_total        = "Ingresos totales acumulados a 3 años (MXN 2024)",
+  months_worked_total   = "Meses trabajados a 3 años"
 )
 
 tr("itt_table_esp") |>

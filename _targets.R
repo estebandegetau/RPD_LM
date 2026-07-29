@@ -354,10 +354,12 @@ list(
     cache_refresh = T,
     profile = "wp"
   ),
-  tar_quarto(
-    amafore,
-    here("amafore/propuesta.qmd")
-  ),
+  # La postulación AMAFORE se renderiza fuera del pipeline, con
+  # `quarto render --profile amafore` (ver _quarto-amafore.yml): sus documentos
+  # leen los targets *_esp con tar_read_raw(store = "../_targets"), de modo que
+  # targets no puede rastrear la dependencia y un tar_quarto() aquí solo
+  # re-renderizaría a ciegas. El target anterior apuntaba, además, a un archivo
+  # (amafore/propuesta.qmd) que ya no existe y rompía tar_make().
   # tar_quarto(
   #   name = presentation,
   #   path = "presentations/04_final.qmd",
@@ -462,6 +464,10 @@ list(
   tar_target(
     name = retiros_capitalizados_esp,
     command = compute_retiros_capitalizados_esp(rpd_data_path)
+  ),
+  tar_target(
+    name = retiros_anuales_esp,
+    command = compute_retiros_anuales_esp(rpd_data_path)
   ),
   tar_target(
     name = retiro_saldo_shares_esp,

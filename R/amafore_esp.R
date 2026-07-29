@@ -262,10 +262,14 @@ make_itt_table_esp <- function(take_up, survival, next_job, medium_term) {
         "take_up_12"           = "Uso del RPD a 12 meses (primera etapa)",
         "survival_3"           = "Supervivencia en desempleo a 3 meses",
         "duration_36"          = "Duración del desempleo a 36 meses (semanas)",
-        "next_job_av_earnings" = "Salario mensual, siguiente empleo (MXN 2024)",
-        "next_job_duration"    = "Duración del siguiente empleo (semanas)",
-        "earnings_total"       = "Ingresos totales acumulados a 3 años (MXN 2024)",
-        "months_worked_total"  = "Meses trabajados a 3 años"
+        "next_job_av_earnings"  = "Salario mensual, siguiente empleo (MXN 2024)",
+        # Espeja exactamente las filas de tbl-resultados-principales: el Apéndice
+        # anuncia que la tabla de forma reducida acompaña a la de LATE, así que
+        # omitir un resultado invitaría a preguntar por qué.
+        "next_job_cum_earnings" = "Ingresos totales, siguiente empleo (MXN 2024)",
+        "next_job_duration"     = "Duración del siguiente empleo (semanas)",
+        "earnings_total"        = "Ingresos totales acumulados a 3 años (MXN 2024)",
+        "months_worked_total"   = "Meses trabajados a 3 años"
     )
 
     bind_rows(take_up, survival, next_job, medium_term) |>
@@ -531,6 +535,53 @@ compute_retiros_capitalizados_esp <- function(path,
             ),
             multiplo = capitalizado / monto_2024
         )
+}
+
+# Flujo anual de retiros ---------------------------------------------------------------
+# El costeo de las propuestas 2 y 3 (§06) necesita el flujo reciente de retiros, no el
+# acumulado desde 1997: el uso del programa está muy cargado hacia los últimos años, de
+# modo que un promedio sobre las 28 cohortes subestimaría el costo actual por un factor
+# grande. `n_bajo`/`monto_bajo` acotan el grupo objetivo del componente solidario
+# (usuarios por debajo de la mediana salarial del propio registro).
+
+compute_retiros_anuales_esp <- function(path, corte = as.Date("2024-12-31")) {
+    con <- DBI::dbConnect(duckdb::duckdb())
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
+
+    retiros <- here(path) |>
+        open_dataset(format = "feather") |>
+        to_duckdb(con) |>
+        filter(amount_withdrawn > 0, wage_rpd > 0, rpd_date <= corte)
+
+    mediana <- retiros |>
+        summarise(w = quantile(wage_rpd, 0.5)) |>
+        collect() |>
+        pull(w)
+
+    # Se agrega por día en duckdb y se anualiza en R: evita depender de la traducción
+    # de funciones de fecha al motor SQL, y el resultado diario cabe holgadamente en RAM.
+    diario <- retiros |>
+        mutate(bajo = as.integer(wage_rpd < mediana)) |>
+        group_by(rpd_date) |>
+        summarise(
+            n = n(),
+            monto = sum(amount_withdrawn),
+            n_bajo = sum(bajo),
+            monto_bajo = sum(bajo * amount_withdrawn)
+        ) |>
+        collect()
+
+    diario |>
+        mutate(anio = as.integer(format(rpd_date, "%Y"))) |>
+        summarise(
+            .by = anio,
+            n = sum(n),
+            monto = sum(monto),
+            n_bajo = sum(n_bajo),
+            monto_bajo = sum(monto_bajo)
+        ) |>
+        arrange(anio) |>
+        mutate(mediana_salario = mediana)
 }
 
 compute_retiro_saldo_shares_esp <- function(path, corte = as.Date("2024-12-31")) {
