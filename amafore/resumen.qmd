@@ -1,15 +1,6 @@
 ---
-title: "Resumen de candidatura"
-subtitle: "El costo pensionario de un colchón de liquidez: evidencia causal del *Retiro Parcial por Desempleo* y una agenda de mejora para el Sistema de Ahorro para el Retiro en México"
-lang: es
-format:
-  pdf:
-    documentclass: article
-    geometry: margin=2.5cm
-    fontsize: 11pt
-    linestretch: 1.2
-    number-sections: false
-    colorlinks: true
+title: "El costo (más real) de usar el ahorro del retiro para financiar el desempleo"
+subtitle: "Resumen de candidatura"
 ---
 
 ## Contribución científica

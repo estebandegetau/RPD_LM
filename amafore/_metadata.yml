@@ -1,4 +1,3 @@
-lang: es
 
 format:
   pdf:
@@ -22,6 +21,8 @@ format:
         \captionsetup{font=small,labelfont=bf}
         \usepackage{float}
         \floatplacement{table}{H}
+
+lang: es
 
 csl: apa.csl
 

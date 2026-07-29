@@ -1,5 +1,5 @@
 ---
-author: Esteban Degetau
+author: "Esteban Degetau^[Barcelona School of Economics, [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com).]"
 date: today
 date-format: long
 ---

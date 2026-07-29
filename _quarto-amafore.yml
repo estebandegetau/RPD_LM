@@ -1,3 +1,4 @@
 project:
   render:
     - amafore/index_*.qmd
+    - amafore/resumen.qmd
