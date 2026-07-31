@@ -217,25 +217,35 @@ Cada panel responde, entonces, una pregunta distinta. Frente al mínimo de seman
 cap <- tr("retiros_capitalizados_esp")
 
 mmdp <- function(x) paste0("\\$", format(round(x / 1e9), big.mark = ","), " mil millones")
+mult <- function(x) formatC(x, format = "f", digits = 1)
 
 acervo <- cap$monto_2024[1]
 cap4 <- cap$capitalizado[cap$tasa == 0.04]
 cap3 <- cap$capitalizado[cap$tasa == 0.03]
 cap5 <- cap$capitalizado[cap$tasa == 0.05]
 
-proy <- tidyr::crossing(tasa = cap$tasa, horizonte = c(20, 30)) |>
-  dplyr::left_join(cap, by = "tasa") |>
-  dplyr::mutate(valor = capitalizado * (1 + tasa)^horizonte)
+# Costeo de dos canales sobre el registro completo. `ca4` y `ca4_ref` (4% real con la
+# tasa de cotización de 6.5% y con el tope de 15%, respectivamente) vienen del setup de
+# index.qmd; aquí solo se añaden los extremos del rango de rendimiento.
+ca3 <- costo_agr[costo_agr$tasa == 0.03 & costo_agr$c_rate == 0.065, ]
+ca5 <- costo_agr[costo_agr$tasa == 0.05 & costo_agr$c_rate == 0.065, ]
 
-p_min <- min(proy$valor)
-p_max <- max(proy$valor)
-p_central <- cap4 * 1.04^25
+# Múltiplo implícito en @tbl-costo-pension: el mismo cociente, pero calculado con las
+# medias de la muestra de estimación en lugar del registro. El texto contrasta ambos.
+m_muestra <- 1 + muestra$wbar * 0.065 * (rp("duration_36") / 4.345) / muestra$w_retiro
+
+# Cuánto crece el acervo ya devengado por cada década que falte a la jubilación.
+decada <- 1.04^10
 ```
 
-El registro administrativo permite ir más allá de la ilustración individual. Entre julio de 1997 y el cierre de 2024 se registraron `r format(cap$n_retiros[1], big.mark = ",")` retiros con fecha e importe válidos —el subconjunto del registro sobre el que puede hacerse el cálculo—, por un total de `r mmdp(acervo)` de pesos de 2024. Capitalizando cada retiro individual desde su fecha hasta diciembre de 2024 a una tasa real constante, ese acervo equivale hoy a entre `r mmdp(cap3)` (3% real) y `r mmdp(cap5)` (5% real), con `r mmdp(cap4)` en el escenario central de 4%. Es decir: el costo *ya devengado* en rendimiento perdido asciende a más de `r mmdp(cap4 - acervo)` de pesos, sin ningún supuesto sobre el futuro.
+El registro administrativo permite ir más allá de la ilustración individual. Entre julio de 1997 y el cierre de 2024 se registraron `r format(cap$n_retiros[1], big.mark = ",")` retiros con fecha e importe válidos —el subconjunto del registro sobre el que puede hacerse el cálculo—, por un total de `r mmdp(acervo)` de pesos de 2024. Capitalizando cada retiro individual desde su fecha hasta diciembre de 2024 a una tasa real constante, ese acervo equivale hoy a entre `r mmdp(cap3)` (3% real) y `r mmdp(cap5)` (5% real), con `r mmdp(cap4)` en el escenario central de 4%. El rendimiento que esos retiros ya dejaron de generar asciende, por sí solo, a más de `r mmdp(cap4 - acervo)` de pesos, sin ningún supuesto sobre el futuro.
 
-Esa cifra, sin embargo, no es el costo final: la mayor parte del rendimiento compuesto de un retiro se pierde en las décadas que faltan hasta la jubilación de cada usuario. Proyectar el acervo capitalizado sobre horizontes de 20 a 30 años sitúa el costo agregado en saldo pensionario entre `r mmdp(p_min)` y `r mmdp(p_max)` de pesos de 2024, con un escenario central del orden de **un billón de pesos** (4% real, 25 años). Para dimensionarlo, ese escenario central equivale a alrededor de 15% de los activos netos que administran actualmente las Siefores [@consar2024].
+Eso, sin embargo, es únicamente el Canal 1. El mismo registro permite añadir el Canal 2 sin recurrir a los promedios de la muestra de estimación, porque contiene el salario base de cotización de cada usuario al momento de su retiro: basta aplicarle el efecto estimado de `r formatC(rp("duration_36"), format = "f", digits = 1)` semanas de desempleo adicional y la tasa de cotización a RCV de `r round(ca4$c_rate * 100, 1)`% vigente durante todo el periodo. Las cotizaciones que ese desempleo impidió realizar suman `r mmdp(ca4$canal2)` capitalizados a diciembre de 2024, de modo que **el costo pensionario ya devengado del programa asciende a cerca de `r mmdp(ca4$total)` de pesos de 2024**, entre `r mmdp(ca3$total)` y `r mmdp(ca5$total)` según la tasa real que se suponga. Dicho de otro modo: cada peso que salió de las cuentas individuales ha costado en realidad `r mult(ca4$markup)` pesos de saldo pensionario. Para dimensionarlo, esa cifra equivale a `r formatC(ca4$total / activos_sar * 100, format = "f", digits = 1)`% de los \$6.8 billones de pesos que administraba el SAR al cierre de 2024 [@consar4t2024].
 
-Esta última proyección es el supuesto más frágil del ejercicio, y conviene señalar en qué dirección falla. Aplica un mismo horizonte de 20 a 30 años a todo el acervo, incluidos los retiros realizados a finales de los noventa y en los dos mil, cuyos titulares están hoy mucho más cerca de la jubilación de lo que ese horizonte supone; por ese lado, la cifra está sobrestimada. El registro administrativo no incluye la fecha de nacimiento del usuario, de modo que el horizonte no puede anclarse empíricamente. Una cifra definitiva exigiría la microsimulación actuarial completa, con la edad y el horizonte real a la jubilación de cada usuario histórico, información con la que cuenta el propio sistema; ese ejercicio, para el cual este trabajo aporta los parámetros causales, es una extensión directa en la que AMAFORE y CONSAR están mejor posicionadas que cualquier investigador externo. Lo que aquí se sostiene, por tanto, no es la cifra puntual sino su orden de magnitud: el costo pensionario acumulado del programa se mide en cientos de miles de millones de pesos, no en decenas.
+Expresar el resultado como múltiplo tiene una ventaja que no es solo de presentación: el múltiplo no depende del horizonte. Ambos canales se capitalizan por el mismo factor, de modo que los años que resten hasta la jubilación de cada usuario se cancelan en el cociente, y la cifra anterior es costo *ya devengado* al cierre de 2024, no una proyección. Ese acervo, desde luego, no deja de crecer mientras sus titulares no se jubilen: a 4% real, cada década adicional lo multiplica por `r mult(decada)`. No se proyecta aquí un total a la jubilación porque el registro administrativo no incluye la fecha de nacimiento del usuario y el horizonte, por tanto, no puede anclarse empíricamente. Esa cifra exigiría la microsimulación actuarial completa, con la edad y el horizonte real a la jubilación de cada usuario histórico, información con la que cuenta el propio sistema; ese ejercicio, para el cual este trabajo aporta los parámetros causales, es una extensión directa en la que AMAFORE y CONSAR están mejor posicionadas que cualquier investigador externo.
+
+Todo el cálculo descansa, entonces, en un solo parámetro importado: el efecto sobre la duración del desempleo, que es un efecto local sobre los cumplidores del umbral de dos años y que aquí se aplica a los `r round(cap$n_retiros[1] / 1e6, 1)` millones de retiros del registro. Conviene acotarlo por sus dos lados. Por el de la dirección, la muestra de estimación se sitúa justo en el umbral, donde el saldo acumulado —y con él el monto retirado— es pequeño en relación con el salario mensual: con sus medias el múltiplo asciende a `r mult(m_muestra)`, frente a `r mult(ca4$markup)` en el registro completo, cuyos usuarios llegan al RPD con mucha más antigüedad acumulada. Calcular el múltiplo sobre el registro y no sobre la muestra es, en ese sentido, la opción conservadora. Por el de la magnitud, el intervalo de confianza al 95% del efecto implica un costo agregado de entre `r mmdp(ca4$total_lo)` y `r mmdp(ca4$total_hi)`; y el Canal 1, `r mmdp(ca4$canal1)`, es un piso que no depende en absoluto de la estimación causal.
+
+La reforma de 2020 amplifica el resultado sin obligar a proyectar nada. Repitiendo el cálculo con el tope de `r round(ca4_ref$c_rate * 100)`% hacia el que converge la escala de cotización, el múltiplo pasa de `r mult(ca4$markup)` a `r mult(ca4_ref$markup)`: cada peso que salga de una cuenta individual bajo el régimen ya plenamente vigente costará casi dos pesos de saldo pensionario.
 
 Lo que la evidencia presentada sí establece es la dirección, el orden de magnitud y la incidencia del problema: el RPD, diseñado como un mecanismo de liquidez de corto plazo, transfiere silenciosamente una parte no trivial del riesgo de desempleo hacia la vejez del propio trabajador, y lo hace de manera más severa entre los trabajadores de menor ingreso, que son, según la evidencia de la @sec-resultados y de la @fig-retiro-saldo, quienes menos se benefician del programa y quienes mayor fracción de su saldo y de su avance hacia la pensión entregan por cada peso retirado.

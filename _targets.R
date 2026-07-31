@@ -465,6 +465,13 @@ list(
     name = retiros_capitalizados_esp,
     command = compute_retiros_capitalizados_esp(rpd_data_path)
   ),
+  # Añade el Canal 2 (cotizaciones no realizadas) al acervo capitalizado. Depende de
+  # resultados_principales_esp porque toma de ahí el efecto sobre la duración y su
+  # error estándar: si cambia la estimación RD, el costeo agregado se recalcula.
+  tar_target(
+    name = costo_agregado_esp,
+    command = compute_costo_agregado_esp(rpd_data_path, resultados_principales_esp)
+  ),
   tar_target(
     name = retiros_anuales_esp,
     command = compute_retiros_anuales_esp(rpd_data_path)

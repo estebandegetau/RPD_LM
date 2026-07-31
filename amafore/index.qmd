@@ -2,7 +2,7 @@
 title: "El costo (más real) de usar el ahorro del retiro para financiar el desempleo"
 subtitle: "Evidencia causal del *Retiro Parcial por Desempleo* y una agenda de mejora para el Sistema de Ahorro para el Retiro en México"
 abstract: >
-  El *Retiro Parcial por Desempleo* (RPD) permite a los trabajadores formales mexicanos retirar parte de su cuenta individual de ahorro para el retiro (Afore) al quedar desempleados, y se ha convertido, ante la ausencia de un seguro de desempleo público y el fracaso práctico de la indemnización legal, en el instrumento de sustitución de ingreso de mayor alcance del país. Con datos administrativos del Instituto Mexicano del Seguro Social (IMSS) y un diseño de discontinuidad de regresión difusa que explota el umbral legal de dos años de cotización al seguro social, este trabajo encuentra que el uso del RPD incrementa en 36 semanas la duración del desempleo sobre un horizonte de tres años, sin generar mejoras sistemáticas en el salario, la estabilidad o los ingresos del siguiente empleo. Ese costo se concentra, en los trabajadores de menor ingreso y los hombres, sin que ningún grupo muestre una mejora detectable en sus ingresos acumulados. La duración adicional del desempleo se traduce en un efecto sobre el ahorro para el retiro: bajo supuestos conservadores, la pérdida de saldo acumulado al retiro para el usuario promedio es entre 5 y 11 veces mayor al monto nominal que retiró, y 39% de esa pérdida proviene de la duración extendida del desempleo causada por el RPD. A escala del sistema, el acervo retirado desde 1997, \$305 mil millones de pesos de 2024, equivale ya, capitalizado al presente, a más de \$415 mil millones, y proyectado a la jubilación de sus usuarios se sitúa en el orden de un billón de pesos. El trabajo concluye con seis propuestas concretas de mejora al diseño del programa, derivadas directamente de la evidencia.
+  El *Retiro Parcial por Desempleo* (RPD) permite a los trabajadores formales mexicanos retirar parte de su cuenta individual de ahorro para el retiro (Afore) al quedar desempleados, y se ha convertido, ante la ausencia de un seguro de desempleo público y el fracaso práctico de la indemnización legal, en el instrumento de sustitución de ingreso de mayor alcance del país. Con datos administrativos del Instituto Mexicano del Seguro Social (IMSS) y un diseño de discontinuidad de regresión difusa que explota el umbral legal de dos años de cotización al seguro social, este trabajo encuentra que el uso del RPD incrementa en 36 semanas la duración del desempleo sobre un horizonte de tres años, sin generar mejoras sistemáticas en el salario, la estabilidad o los ingresos del siguiente empleo. Ese costo se concentra, en los trabajadores de menor ingreso y los hombres, sin que ningún grupo muestre una mejora detectable en sus ingresos acumulados. La duración adicional del desempleo se traduce en un efecto sobre el ahorro para el retiro: bajo supuestos conservadores, la pérdida de saldo acumulado al retiro para el usuario promedio es entre 5 y 11 veces mayor al monto nominal que retiró, y 39% de esa pérdida proviene de la duración extendida del desempleo causada por el RPD. A escala del sistema, sumando el capital retirado desde 1997, el rendimiento que ya dejó de generar y las cotizaciones que el desempleo adicional impidió realizar, el costo pensionario ya devengado del programa asciende a cerca de \$583 mil millones de pesos de 2024, alrededor de 8.6% de los activos que administra hoy el SAR. El trabajo concluye con seis propuestas concretas de mejora al diseño del programa, derivadas directamente de la evidencia.
 keywords: [pensiones, SAR, Afore, seguro de desempleo, retiro parcial por desempleo, discontinuidad de regresión, México]
 ---
 
@@ -64,6 +64,7 @@ tu_path  <- tr("take_up_path_data_esp")
 muestra  <- tr("muestra_stats_esp")
 muestra_resumen <- tr("tabla_resumen_esp")
 cap_ret  <- tr("retiros_capitalizados_esp")
+costo_agr <- tr("costo_agregado_esp")
 retiros_anuales <- tr("retiros_anuales_esp")
 pe       <- tr("primera_etapa_esp")
 balance  <- tr("balance_table_esp")
@@ -105,6 +106,15 @@ fs24       <- fs_pp(24)                                   # 1ª etapa a 24 meses
 acervo     <- cap_ret$monto_2024[1]                      # acervo retirado (pesos 2024)
 cap4       <- cap_ret$capitalizado[cap_ret$tasa == 0.04] # capitalizado al 4%
 n_retiros_val <- cap_ret$n_retiros[1]                    # retiros con fecha/importe válidos
+
+# Costeo agregado de dos canales. `ca4` es el escenario central del texto (4% real y la
+# tasa de cotización de 6.5% vigente 1997-2024); `ca4_ref` repite con el tope de 15% al
+# que llega la escala de la reforma de 2020.
+ca_fila <- function(r, c) costo_agr[costo_agr$tasa == r & costo_agr$c_rate == c, ]
+ca4      <- ca_fila(0.04, 0.065)
+ca4_ref  <- ca_fila(0.04, 0.15)
+# Activos netos del SAR al cierre de 2024 (CONSAR): denominador de la comparación.
+activos_sar <- 6.8e12
 n_usuarios    <- tr("rpd_users")                         # trabajadores distintos que usaron el RPD
 n_retiros_tot <- tr("rpd_usage")                         # retiros acumulados (todas las fechas)
 ```

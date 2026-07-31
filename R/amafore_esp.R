@@ -537,6 +537,86 @@ compute_retiros_capitalizados_esp <- function(path,
         )
 }
 
+# Costeo agregado de dos canales -------------------------------------------------------
+# `retiros_capitalizados_esp` cuantifica solo el Canal 1: el capital que sale de la
+# cuenta y el rendimiento que deja de generar. Este target le suma el Canal 2, las
+# cotizaciones que el desempleo adicional causado por el programa impidió realizar.
+#
+# La razón para reportarlo como múltiplo (`markup`) y no como una proyección a la
+# jubilación es algebraica: ambos canales se capitalizan por el mismo factor, de modo
+# que el cociente total/canal1 = 1 + (wbar * c * delta) / W es invariante tanto a la
+# tasa real como al horizonte. El costo agregado puede entonces expresarse sin suponer
+# nada sobre cuándo se jubila cada usuario, que es justo el dato que el registro no
+# tiene (no incluye fecha de nacimiento).
+#
+# El salario sale del propio registro (`wage_rpd`, SBC diario, deflactado a dic-2024 en
+# el mismo paso que los montos), no de las medias de la muestra de estimación: así el
+# único parámetro importado del RD es delta. Importa porque la muestra se sitúa en el
+# umbral de dos años, donde el monto retirado es pequeño frente al salario mensual y el
+# múltiplo sale más alto que en el registro completo.
+#
+# La agregación diaria es exacta, no una aproximación: todos los retiros de una misma
+# fecha comparten factor de capitalización, así que la suma de montos y la suma de
+# salarios por fecha son estadísticos suficientes. Deja el cálculo en ~10k filas.
+
+compute_costo_agregado_esp <- function(path,
+                                       resultados,
+                                       tasas    = c(0.03, 0.04, 0.05),
+                                       c_rates  = c(0.065, 0.15),
+                                       dias_mes = 30.4,
+                                       corte    = as.Date("2024-12-31")) {
+    delta    <- resultados$coef[resultados$name == "duration_36"]
+    delta_se <- resultados$se[resultados$name == "duration_36"]
+
+    # 4.345 semanas/mes y 30.4 días/mes (= 4.345 * 7): las mismas conversiones que usan
+    # los paneles de @tbl-costo-pension, para que el agregado y la ilustración
+    # individual no difieran por convención.
+    meses <- c(
+        central = delta,
+        lo      = delta - 1.96 * delta_se,
+        hi      = delta + 1.96 * delta_se
+    ) / 4.345
+
+    # Mismo filtro que compute_retiros_capitalizados_esp() (solo la fecha): así
+    # `n_retiros` y `canal1` reproducen ese target al peso y el texto puede citar el
+    # mismo denominador en ambos lugares.
+    diario <- here(path) |>
+        open_dataset(format = "feather") |>
+        summarise(
+            .by = rpd_date,
+            monto   = sum(amount_withdrawn),
+            salario = sum(wage_rpd, na.rm = TRUE),
+            n = n()
+        ) |>
+        collect() |>
+        filter(rpd_date <= corte) |>
+        mutate(anios = as.numeric(corte - rpd_date) / 365.25)
+
+    crossing(tasa = tasas, c_rate = c_rates) |>
+        mutate(
+            n_retiros  = sum(diario$n),
+            monto_2024 = sum(diario$monto),
+            canal1 = map_dbl(tasa, \(r) sum(diario$monto * (1 + r)^diario$anios)),
+            # Masa salarial mensual capitalizada: el Canal 2 es esta base por la tasa de
+            # cotización y por los meses de desempleo adicional.
+            base2  = map_dbl(tasa, \(r) sum(diario$salario * dias_mes * (1 + r)^diario$anios)),
+            canal2    = base2 * c_rate * meses[["central"]],
+            canal2_lo = base2 * c_rate * meses[["lo"]],
+            canal2_hi = base2 * c_rate * meses[["hi"]],
+            total     = canal1 + canal2,
+            total_lo  = canal1 + canal2_lo,
+            total_hi  = canal1 + canal2_hi,
+            markup    = total / canal1,
+            markup_lo = total_lo / canal1,
+            markup_hi = total_hi / canal1,
+            # Variante sin capitalizar: costo en pesos de 2024 al momento del retiro.
+            canal2_nom = sum(diario$salario) * dias_mes * c_rate * meses[["central"]],
+            total_nom  = monto_2024 + canal2_nom,
+            markup_nom = total_nom / monto_2024
+        ) |>
+        select(!base2)
+}
+
 # Flujo anual de retiros ---------------------------------------------------------------
 # El costeo de las propuestas 2 y 3 (§06) necesita el flujo reciente de retiros, no el
 # acumulado desde 1997: el uso del programa está muy cargado hacia los últimos años, de
