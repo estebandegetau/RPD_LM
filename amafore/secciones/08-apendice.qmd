@@ -83,7 +83,7 @@ tr("balance_table_esp") |>
   kable_styling(font_size = 9, latex_options = c("HOLD_position")) |>
   column_spec(1, width = "5.6cm") |>
   footnote(
-    general = "Estimaciones de RD nítida (forma reducida) para cada covariable predeterminada, con polinomio local lineal, kernel triangular, ancho de banda óptimo y valores p robustos con corrección de sesgo. La columna $p$ (Holm) corrige por la realización de diez pruebas simultáneas: bajo ese ajuste ninguna covariable conserva significancia al 5%. Las discontinuidades individualmente detectables son además económicamente menores: la de edad (y su reflejo mecánico en la fecha de nacimiento) equivale a ~1.5 meses sobre una media de 25 años, y la de días desde la apertura de la cuenta, a ~2 días sobre una media superior a 1,200.",
+    general = "Estimaciones de RD nítida (forma reducida) para cada covariable predeterminada, con polinomio local lineal, kernel triangular, ancho de banda óptimo  (Calonico et al., 2020) y valores p robustos con corrección de sesgo  (Calonico et al., 2014). La columna $p$ (Holm) corrige por la realización de diez pruebas simultáneas: bajo ese ajuste ninguna covariable conserva significancia al 5%. Las discontinuidades individualmente detectables son además económicamente menores: la de edad (y su reflejo mecánico en la fecha de nacimiento) equivale a ~1.5 meses sobre una media de 25 años, y la de días desde la apertura de la cuenta, a ~2 días sobre una media superior a 1,200 (Aickin y Gensler, 1996).",
     general_title = "Nota: ",
     footnote_as_chunk = TRUE,
     threeparttable = TRUE,

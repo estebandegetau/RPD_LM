@@ -24,11 +24,11 @@ format:
 
 lang: es
 
-csl: apa.csl
+csl: https://www.zotero.org/styles/apa-no-ampersand
 
 execute:
   echo: false
   warning: false
   message: false
-  freeze: auto
+  freeze: false
   cache: false

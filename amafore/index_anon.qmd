@@ -3,6 +3,6 @@ date: today
 date-format: long
 ---
 
-[^1]: Los resultados sobre el mercado laboral que aquí se presentan circulan también como documento de trabajo, aún no publicado en una revista especializada; su referencia se omite para preservar el anonimato de la postulación. El presente trabajo es una adaptación enfocada en la implicación pensionaria de esos resultados y en la propuesta de política pública que se deriva de ellos.
+[^1]: Los resultados sobre el mercado laboral que aquí se presentan circulan también como documento de trabajo, aún no publicado en una revista especializada; su referencia se omite para preservar el anonimato de la postulación. El presente trabajo es una adaptación enfocada en la implicación pensionaria de esos resultados y en la propuesta de política pública que se deriva de ellos. La cita completa se encuentra en la versión firmada de este trabajo.
 
 {{< include index.qmd >}}
