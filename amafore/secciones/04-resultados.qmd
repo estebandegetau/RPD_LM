@@ -4,7 +4,7 @@
 
 ```{r}
 #| include: false
-pe <- tr("primera_etapa_esp")
+pe <- tar_read(primera_etapa_esp)
 ```
 
 La primera etapa de estimación está representada por la @eq-primera-etapa. Los trabajadores que apenas cruzan el umbral de dos años de cotización son significativamente más propensos a usar el RPD que quienes no lo cruzan. La @fig-rd-primera-etapa muestra la discontinuidad directamente sobre los datos: la tasa de uso a doce meses salta en el umbral en `r round(pe$coef * 100, 1)` puntos porcentuales (error estándar de `r round(pe$se * 100, 1)`), estimados sobre `r format(pe$n_efectivo, big.mark = ",")` observaciones dentro del ancho de banda óptimo de ±`r round(pe$h)` días. La primera etapa es estadísticamente fuerte (estadístico $t$ de `r round(pe$t, 1)`, equivalente a un estadístico $F$ de `r round(pe$f)`, muy por encima de los umbrales convencionales de instrumento débil), lo que descarta que los resultados de la segunda etapa estén contaminados por un problema de instrumentos débiles.
@@ -53,7 +53,23 @@ kbl(df_resultados, format = "latex", booktabs = TRUE, escape = TRUE,
     col.names = c("Resultado", "Efecto (LATE)", "Error est.", "Media, no elegibles"),
     align = c("l", "r", "r", "r")) |>
   kable_styling(font_size = 9, latex_options = c("hold_position")) |>
-  column_spec(1, width = "6.3cm") |>
+  column_spec(1, width = "7.4cm") |>
+  column_spec(2:4, width = "2.2cm") |>
+  pack_rows(
+    "Búsqueda de empleo",
+    1, 
+    2
+  ) |>
+  pack_rows(
+    "Calidad del siguiente empleo",
+    3,
+    5
+  ) |>
+  pack_rows(
+    "Mediano plazo",
+    6,
+    7
+  ) |>
   footnote(
     general = "* p<0.10, ** p<0.05. Estimaciones de RDD difuso (Ecuación 2), con tratamiento definido como uso del programa 12 meses después de la separación; ancho de banda óptimo (Calonico et al., 2020); inferencia robusta con corrección de sesgo (Calonico et al., 2014). Cifras monetarias en pesos mexicanos de 2024.",
     general_title = "Nota: ",

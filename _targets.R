@@ -360,6 +360,13 @@ list(
   # targets no puede rastrear la dependencia y un tar_quarto() aquí solo
   # re-renderizaría a ciegas. El target anterior apuntaba, además, a un archivo
   # (amafore/propuesta.qmd) que ya no existe y rompía tar_make().
+  tar_quarto(
+    amafore,
+    quiet = F,
+    execute = T,
+    cache_refresh = T,
+    profile = "amafore"
+  ),
   # tar_quarto(
   #   name = presentation,
   #   path = "presentations/04_final.qmd",

@@ -1,4 +1,4 @@
-## Apéndice: validez y robustez {.unnumbered #sec-apendice}
+## Apéndice {.unnumbered #sec-apendice}
 
 ### Estadísticas descriptivas de la muestra {.unnumbered}
 
@@ -60,7 +60,7 @@ fmt_num <- function(x) {
          character(1))
 }
 
-tr("balance_table_esp") |>
+tar_read(balance_table_esp) |>
   mutate(
     covariable = unidades[covariable],
     # Holm sobre las diez pruebas: controla la probabilidad de al menos un falso
@@ -125,7 +125,7 @@ labs_itt <- c(
   months_worked_total   = "Meses trabajados a 3 años"
 )
 
-tr("itt_table_esp") |>
+tar_read(itt_table_esp) |>
   mutate(
     resultado = labs_itt[name],
     across(c(coef, se), ~ ifelse(name %in% c("take_up_12", "survival_3"), .x * 100, .x)),
@@ -157,7 +157,7 @@ La @tbl-sensibilidad re-estima los dos efectos principales fijando el ancho de b
 #| label: tbl-sensibilidad
 #| tbl-cap: "Sensibilidad de los efectos principales (LATE) al ancho de banda."
 
-bw <- tr("bw_sensitivity_esp") |>
+bw <- tar_read(bw_sensitivity_esp) |>
   mutate(
     across(c(coef, se), ~ ifelse(name == "survival_3", .x * 100, .x)),
     multiplo_lab = ifelse(multiplo == 1,

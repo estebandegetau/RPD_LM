@@ -11,18 +11,25 @@ keywords: [pensiones, SAR, Afore, seguro de desempleo, retiro parcial por desemp
 #| include: false
 #| cache: false
 
-library(targets)
-library(knitr)
-library(kableExtra)
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(scales)
-library(ggplot2)
+pacman::p_load(
+  targets,
+  here,
+  knitr,
+  kableExtra,
+  dplyr,
+  tidyr,
+  purrr,
+  scales,
+  ggplot2
+  )
+
+here::i_am("amafore/index.qmd")
+
 
 # Los resultados se leen del almacén de targets del proyecto raíz (solo lectura).
-.store <- normalizePath(file.path("..", "_targets"))
-tr <- function(name) tar_read_raw(name, store = .store)
+
+tar_config_set(store = here("_targets"))
+# tar_source(files = here("R"))
 
 # Figuras en proceso efímero -----------------------------------------------------------
 # Las gráficas construidas sobre rdrobust::rdplot() arrastran, a través del entorno del
@@ -58,17 +65,17 @@ mmdp <- function(x) paste0("\\$", format(round(x / 1e9), big.mark = ","), " mil 
 # --- Resultados leídos una sola vez y compartidos por todas las secciones -------------
 # (propuesta.qmd corre antes de los {{< include >}}, así que estos objetos quedan
 # en el entorno de todas las secciones; evita duplicar cifras y que se desfasen.)
-res_prin <- tr("resultados_principales_esp")
-het      <- tr("heterogeneidad_esp")
-tu_path  <- tr("take_up_path_data_esp")
-muestra  <- tr("muestra_stats_esp")
-muestra_resumen <- tr("tabla_resumen_esp")
-cap_ret  <- tr("retiros_capitalizados_esp")
-costo_agr <- tr("costo_agregado_esp")
-retiros_anuales <- tr("retiros_anuales_esp")
-pe       <- tr("primera_etapa_esp")
-balance  <- tr("balance_table_esp")
-shares   <- tr("retiro_saldo_shares_esp")
+res_prin <- tar_read(resultados_principales_esp)
+het      <- tar_read(heterogeneidad_esp)
+tu_path  <- tar_read(take_up_path_data_esp)
+muestra  <- tar_read(muestra_stats_esp)
+muestra_resumen <- tar_read(tabla_resumen_esp)
+cap_ret  <- tar_read(retiros_capitalizados_esp)
+costo_agr <- tar_read(costo_agregado_esp)
+retiros_anuales <- tar_read(retiros_anuales_esp)
+pe       <- tar_read(primera_etapa_esp)
+balance  <- tar_read(balance_table_esp)
+shares   <- tar_read(retiro_saldo_shares_esp)
 
 # --- Helpers de formato ----------------------------------------------------------------
 estrellas <- function(pv) case_when(pv < 0.05 ~ "**", pv < 0.10 ~ "*", TRUE ~ "")
@@ -115,8 +122,8 @@ ca4      <- ca_fila(0.04, 0.065)
 ca4_ref  <- ca_fila(0.04, 0.15)
 # Activos netos del SAR al cierre de 2024 (CONSAR): denominador de la comparación.
 activos_sar <- 6.8e12
-n_usuarios    <- tr("rpd_users")                         # trabajadores distintos que usaron el RPD
-n_retiros_tot <- tr("rpd_usage")                         # retiros acumulados (todas las fechas)
+n_usuarios    <- tar_read(rpd_users)                           # trabajadores distintos que usaron el RPD
+n_retiros_tot <- tar_read(rpd_usage)                           # retiros acumulados (todas las fechas)
 ```
 
 {{< include secciones/01-introduccion.qmd >}}
