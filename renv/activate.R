@@ -1113,7 +1113,7 @@ local({
   
   renv_bootstrap_user_dir <- function() {
     dir <- renv_bootstrap_user_dir_impl()
-    path.expand(chartar_read("\\", "/", dir))
+    path.expand(chartr("\\", "/", dir))
   }
   
   renv_bootstrap_user_dir_impl <- function() {
