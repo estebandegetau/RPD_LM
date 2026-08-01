@@ -1,0 +1,86 @@
+{
+  "name": "RPD_LM",
+
+  // Context is this directory, not the repo root: the repo is ~77 GB
+  // (data/ + _targets/) and would be far too large to send to the daemon.
+  // This is why there is no `COPY . .` -- the project arrives by bind mount.
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+
+  // Mounted at the same absolute path it has on the host, rather than the
+  // usual /workspace. That keeps the absolute store: paths in both
+  // _targets.yaml files valid, and keeps Claude Code's project memory
+  // (keyed on the working directory) continuous with the host's.
+  "workspaceMount": "source=/home/estebandegetau/projects/RPD_LM,target=/home/estebandegetau/projects/RPD_LM,type=bind,consistency=cached",
+  "workspaceFolder": "/home/estebandegetau/projects/RPD_LM",
+
+  // uid/gid 1000, renamed in the Dockerfile to match the host account so that
+  // HOME is /home/estebandegetau and the renv library's absolute symlinks into
+  // ~/.cache/R/renv resolve. Deliberately not root: a root remoteUser is what
+  // leaves root-owned files behind in bind-mounted project directories.
+  "remoteUser": "estebandegetau",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "mounts": [
+    // Share Claude Code credentials, settings, and project memory with the
+    // host. Note that ~/.claude.json is a single shared file -- run Claude on
+    // the host or in the container, not both at once.
+    "source=/home/estebandegetau/.claude,target=/home/estebandegetau/.claude,type=bind",
+    "source=/home/estebandegetau/.claude.json,target=/home/estebandegetau/.claude.json,type=bind",
+    // The host's existing renv cache (~2.8 GB), mounted at its ORIGINAL
+    // absolute path. This is required, not an optimisation: the project
+    // library is made of absolute symlinks into this exact path, so mounting
+    // it anywhere else dangles all of them and renv reports ~198 packages
+    // missing. Its platform key (linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu)
+    // matches the image, so the host's prebuilt binaries are reused directly.
+    "source=/home/estebandegetau/.cache/R/renv,target=/home/estebandegetau/.cache/R/renv,type=bind"
+  ],
+
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+  },
+
+  "forwardPorts": [8787, 8888, 4200],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "REditorSupport.r",
+        "quarto.quarto",
+        "eamodio.gitlens",
+        "davidanson.vscode-markdownlint"
+      ],
+      "settings": {
+        "r.rterm.linux": "/usr/local/bin/R",
+        "r.rpath.linux": "/usr/local/bin/R",
+        "r.bracketedPaste": true,
+        "r.plot.useHttpgd": true,
+        "r.lsp.enabled": true,
+        "r.lsp.diagnostics": true,
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // renv.lock stays the single source of truth for R packages rather than
+  // duplicating versions in the Dockerfile. Because the bind-mounted library
+  // and cache already match this image's OS and R version, the restore is
+  // effectively a no-op (217 of 199 lockfile packages already resolve).
+  //
+  // Wrapped in try() on purpose: renv.lock still records taskscheduleR, a
+  // Windows-only leftover from when this project ran on Windows. It cannot
+  // install on Linux and nothing in the pipeline uses it, so it must not be
+  // allowed to fail container creation.
+  //
+  // Claude Code's CLI is installed here rather than baked into the image so it
+  // tracks the latest release.
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code && R -q -e 'try(renv::restore(prompt = FALSE))'"
+}

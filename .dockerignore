@@ -1,0 +1,4 @@
+# The Dockerfile copies nothing, so an empty build context is correct.
+# This also guarantees the 68 GB of confidential data under data/ and the
+# 8.6 GB _targets store can never be swept into an image layer.
+*
