@@ -74,6 +74,9 @@ RUN tlmgr install \
       float \
       colortbl \
       multirow \
+      ulem \
+      makecell \
+      siunitx \
     && tlmgr path add
 
 # Mirror the host account exactly. This is not cosmetic: the project's renv

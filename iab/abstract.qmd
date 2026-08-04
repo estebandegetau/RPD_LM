@@ -1,0 +1,157 @@
+---
+title: "Insuring Unemployment Out of Your Own Pension"
+subtitle: "Causal Evidence from Mexico's *Retiro Parcial por Desempleo*"
+author: "Esteban Degetau^[Barcelona School of Economics — [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com). Working paper: <https://www.estebandegetau.com/RPD_LM/wp.pdf>.]"
+date: today
+date-format: long
+keywords: [unemployment insurance, pension savings, regression discontinuity, informality, Mexico]
+bibliography: ../references.bib
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
+
+pacman::p_load(targets, here, knitr, kableExtra, dplyr)
+
+here::i_am("iab/abstract.qmd")
+tar_config_set(store = here("_targets"))
+
+# Every figure quoted below is read from the built pipeline, never typed by hand.
+# These targets are small tibbles; none of them loads `rd_data`, so this is safe on a
+# 7 GB machine and no plot target is ever deserialised in this session.
+res_prin <- tar_read(resultados_principales_esp)
+het      <- tar_read(heterogeneidad_esp)
+pe       <- tar_read(primera_etapa_esp)
+tu_path  <- tar_read(take_up_path_data_esp)
+muestra  <- tar_read(muestra_stats_esp)
+balance  <- tar_read(balance_table_esp)
+itt      <- tar_read(itt_table_esp)
+resumen  <- tar_read(tabla_resumen_esp)
+
+# --- accessors ------------------------------------------------------------------------
+# `het` is keyed on the Spanish labels of the AMAFORE companion paper; only the numeric
+# columns are used here, so the keys are left as they are rather than duplicating the
+# estimation behind an English label spec.
+rp    <- function(n, col = "coef") res_prin[[col]][res_prin$name == n]
+hetv  <- function(g, s, col)       het[[col]][het$grupo == g & het$subgrupo == s]
+difp  <- function(g)               unique(het$dif_pv[het$grupo == g])
+fs_pp <- function(m)               tu_path$point[tu_path$months == m] * 100
+res_m <- function(lab, col = "media") resumen[[col]][resumen$etiqueta == lab]
+
+n1  <- function(x) formatC(x, format = "f", digits = 1)
+n2  <- function(x) formatC(x, format = "f", digits = 2)
+n3  <- function(x) formatC(x, format = "f", digits = 3)
+# Sign-preserving: the three-year earnings LATE is negative, and an abs() here would
+# silently contradict the text. Inline uses all happen to be positive quantities.
+mx  <- function(x) formatC(round(x), format = "d", big.mark = ",")
+big <- function(x) formatC(x, format = "d", big.mark = ",")
+
+# --- headline quantities --------------------------------------------------------------
+dur36    <- rp("duration_36")
+dur36_se <- rp("duration_36", "se")
+surv3    <- rp("survival_3") * 100
+
+# --- two-channel pension cost ---------------------------------------------------------
+# Channel 1: the withdrawn capital stops compounding inside the account.
+# Channel 2: contributions not made during the RPD-induced extra non-employment.
+# Both scale by the same (1+r)^n, so channel 2's share of the total is invariant to r.
+W       <- muestra$w_retiro       # mean withdrawal among users, 2024 MXN
+wbar    <- muestra$wbar           # mean prior monthly wage, 2024 MXN
+fv      <- (1 + c(0.03, 0.04, 0.05))^40   # mean separation age ~25, so ~40 years to 65
+extra_m <- dur36 / 4.345
+
+pension_mult <- function(c_rate) {
+  ch1 <- W * fv
+  ch2 <- wbar * c_rate * extra_m * fv
+  list(mult = (ch1 + ch2) / W, share2 = (ch2 / (ch1 + ch2))[1])
+}
+p065 <- pension_mult(0.065)       # RCV contribution rate over the estimation window
+p15  <- pension_mult(0.15)        # statutory ceiling phased in by 2030
+```
+
+## Motivation
+
+The canonical account of unemployment insurance balances consumption smoothing against moral hazard [@baily1978]. @chetty2008 showed that the behavioural response to a benefit decomposes into two mechanisms with very different welfare content: a *moral hazard* component, in which the benefit distorts the incentive to search, and a *liquidity* component, in which it relaxes a constraint that had been forcing the worker to take the first available offer. Only the first is an efficiency cost, and the two are hard to separate because in most programmes they move together.
+
+Mexico's *Retiro Parcial por Desempleo* (RPD) offers an unusually clean case. Displaced formal-sector workers may withdraw part of their own accumulated retirement savings. There is no risk pooling and no fiscal cost: the worker pays the entire price of the benefit through a smaller pension. Conventional reasoning therefore predicts a muted behavioural response — the property individual unemployment accounts were designed to deliver [@feldstein2007], and the one Chile's system exhibits, where the response concentrates in the solidarity-funded tranche rather than the worker's own [@hartley2011]. I ask whether that prediction survives contact with administrative data, and what the answer costs workers in retirement income.
+
+## Setting and data
+
+Mexico operates no federal unemployment insurance, and statutory severance is widely unenforced [@sadka2024]. In that vacuum the RPD has become the country's broadest income-substitution instrument for the unemployed. Eligibility under Scheme A requires three years in the formal sector, plus 104 weeks of social-security contributions at separation; a parallel Scheme B grants eligibility after five years in the formal sector regardless of contribution history. Both eligibility schemes require the worker be 46 days without a registered job. The benefit is small and self-limiting: the average withdrawal is \$`r mx(W)` (2024 MXN), about `r n2((W / wbar) * 100)`% of one month's prior salary and `r n1(W / res_m("Saldo RCV al momento del retiro (MXN 2024)") * 100)`% of the accumulated balance. It also discounts contribution weeks proportionally, which bears on the minimum-pension guarantee.
+
+I combine two confidential sources from the Mexican Social Security Institute (IMSS): the matched employer–employee panel covering the universe of formal employment, restricted to workers entering between 2010 and 2017 so all face the same regime (`r big(14819690)` workers, `r big(406813240)` contracts), and the individual registry of partial withdrawals, matched by social security number. Together they let me observe eligibility, *realised take-up* and labour-market trajectories directly.
+
+One scope condition governs everything below: these data record formal employment and only formal employment. What I measure is time to the next *registered* job, so a worker who moves into informal or self-employment is indistinguishable from one who keeps searching. I use "unemployment" for brevity and confront the interpretation in the closing section. The estimation sample holds workers with exactly one non-employment spell of at least 46 days during their third year in the formal sector and one to three accumulated contribution years at separation: `r big(muestra$n_muestra)` workers.
+
+## Empirical strategy
+
+I exploit the 104-week threshold in a fuzzy regression discontinuity design, with a local linear polynomial, triangular kernel, the bandwidth of @calonico2020 and robust bias-corrected inference [@calonico2014]. Crossing the threshold raises the probability of using the programme within twelve months by `r n1(pe$coef * 100)` percentage points (s.e. `r n1(pe$se * 100)`) — precise ($t$ = `r n1(pe$t)`, $F$ = `r round(pe$f)`) though modest in level, rising from `r n1(fs_pp(2))` points at two months to about `r n1(fs_pp(24))` by month 24.
+
+Three checks support the design. There is no bunching in the running variable [@cattaneo2020] — landing on the eligible side would require postponing one's own dismissal. Of `r nrow(balance)` predetermined covariates, `r sum(balance$pv < 0.05)` reject continuity at 5% individually but **none survives a Holm correction** for the `r nrow(balance)` simultaneous tests (smallest adjusted $p$ = `r n2(min(p.adjust(balance$pv, method = "holm")))`) [@aickin1996]; the largest jump, in age, is `r n1(abs(balance$coef[balance$covariable == "Edad"]) * 12)` months against a mean of `r n1(muestra$edad_media)` years. Estimates stay positive across bandwidths from half to twice the optimum.
+
+The size of the first stage governs how the estimates should be read, since it is also the complier share: about `r n1(pe$coef * 100)` workers per hundred near the threshold use the programme *because* of the rule. The effects below describe that group, not the average worker or user. They are therefore large against population means precisely because they concentrate in a small group, while reduced-form effects averaged over everyone near the threshold are correspondingly small (the intent-to-treat effect on duration is `r n1(itt$coef[itt$name == "duration_36"])` weeks, $p$ = `r n2(itt$pv[itt$name == "duration_36"])`).
+
+## Results
+
+```{r}
+#| label: tbl-main
+#| tbl-cap: "Effect of RPD take-up on labour market outcomes (fuzzy RD, local average treatment effect)."
+
+labs_en <- c(
+  survival_3            = "Still non-employed at 3 months (pp)",
+  duration_36           = "Non-employment over 36 months (weeks)",
+  next_job_av_earnings  = "Monthly wage, next job (2024 MXN)",
+  next_job_cum_earnings = "Total earnings, next job (2024 MXN)",
+  next_job_duration     = "Duration of next job (weeks)",
+  earnings_total        = "Cumulative earnings over 3 years (2024 MXN)",
+  months_worked_total   = "Months worked over 3 years"
+)
+
+stars <- function(p) ifelse(p < 0.05, "**", ifelse(p < 0.10, "*", ""))
+fmt   <- function(x, tipo) ifelse(tipo == "pp", n1(x * 100),
+                           ifelse(tipo == "mxn", mx(x), n1(x)))
+
+res_prin |>
+  transmute(
+    Outcome = labs_en[name],
+    Effect  = paste0(fmt(coef, tipo), stars(pv)),
+    SE      = paste0("(", fmt(se, tipo), ")"),
+    Mean    = ifelse(tipo == "pp", paste0(n1(media * 100), "%"), fmt(media, tipo))
+  ) |>
+  kbl(format = "latex", booktabs = TRUE, escape = TRUE,
+      col.names = c("Outcome", "LATE", "Std. err.", "Mean, ineligible"),
+      align = c("l", "r", "r", "r")) |>
+  kable_styling(font_size = 9, latex_options = "hold_position") |>
+  column_spec(1, width = "7.2cm") |>
+  column_spec(2:4, width = "2.3cm") |>
+  pack_rows("Job search", 1, 2) |>
+  pack_rows("Quality of the next job", 3, 5) |>
+  pack_rows("Medium term", 6, 7) |>
+  footnote(
+    general = "* p<0.10, ** p<0.05. The mean column is a scale reference for the whole ineligible population; it is not additive with the complier LATE.",
+    general_title = "Note: ", footnote_as_chunk = TRUE, threeparttable = TRUE
+  )
+```
+
+**Using the RPD substantially prolongs non-employment.** Three months after separation, programme use raises the probability of still lacking a registered job by `r n1(surv3)` percentage points ($p$ = `r n3(rp("survival_3", "pv"))`). Over three years the cumulative effect is `r n1(dur36)` additional weeks ($p$ = `r n3(rp("duration_36", "pv"))`; 95% CI `r n1(dur36 - 1.96 * dur36_se)`–`r n1(dur36 + 1.96 * dur36_se)`) against a base of `r n1(rp("duration_36", "media"))` weeks among the ineligible.
+
+**The longer wait buys nothing measurable.** The estimate on the next job's monthly wage is large but short of 5% significance (\$`r mx(rp("next_job_av_earnings"))`, $p$ = `r n3(rp("next_job_av_earnings", "pv"))`). Effects on the next job's total earnings and duration, and on cumulative earnings and months worked over three years, are all indistinguishable from zero; the three-year earnings estimate is negative. This contradicts models in which more generous insurance raises match quality through more deliberate search [@acemoglu2000] and matches evidence from comparable Latin American schemes [@britto2022; @gonzález-rozada2023].
+
+**The cost is unevenly borne, and the difference is testable.** Estimating each split on disjoint subsamples and testing the difference between halves, the duration cost falls on workers with below-median prior earnings (`r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))` weeks, $p$ = `r n3(hetv("Ingreso previo", "Por debajo de la mediana", "dur_pv"))`; difference $p$ = `r n3(difp("Ingreso previo"))`) and on men (`r round(hetv("Sexo", "Hombres", "dur_coef"))` weeks, $p$ = `r n3(hetv("Sexo", "Hombres", "dur_pv"))`; difference $p$ = `r n3(difp("Sexo"))`). Splits by age and by COVID-19 exposure point the same way, but their differences are **not** distinguishable from zero ($p$ = `r n2(difp("Edad"))` and `r n2(difp("Exposición a COVID-19"))`), so I report them as suggestive rather than as findings. Against this uneven cost stands no compensating benefit: in none of the eight subgroups is the three-year earnings effect distinguishable from zero, and the only reemployment-wage gain significant at 5% accrues to workers already above the median (\$`r mx(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef"))`).
+
+## Interpretation and contribution
+
+The estimate cannot distinguish longer search from unobserved work outside the formal sector, and the distinction matters. @britto2022 finds that 57% of the formal employment displaced by longer benefits in Brazil reappears informally; @gerard2021 show the efficiency cost of such programmes is lower where formal re-entry is unlikely anyway; and @carreñogodínez2025 finds RPD eligibility raises transitions into self-employment in Mexico. I cannot apportion the `r n1(dur36)` weeks between these margins. But the retirement conclusion does not depend on which dominates, and the informality reading strengthens it: neither informal work nor self-employment generates contributions to the retirement subaccount or accrues contribution weeks.
+
+That conclusion is the paper's second contribution. Combining the estimated duration effect with observed withdrawals and prior wages, for a worker 40 years from retirement the loss in accumulated balance is `r n1(min(p065$mult))`–`r n1(max(p065$mult))` times the sum withdrawn at real returns of 3–5%, and `r round(p065$share2 * 100)`% of that loss comes not from the withdrawal itself but from contributions never made during the additional non-employment the programme induces. Under the rate to which the 2020 reform converges by 2030, the multiple rises to `r n1(min(p15$mult))`–`r n1(max(p15$mult))`. A liquidity instrument that looks cheap when used is, over a working life, an order of magnitude costlier than its face value.
+
+This is the first causal evidence on the RPD from administrative records and observed take-up; existing studies use household surveys and identify effects from eligibility alone [@velázquezguadarrama2023; @carreñogodínez2025]. More broadly, a benefit financed entirely from the worker's own savings — the strongest possible internalisation of its cost — still produces a large duration response with no matching gain. That pattern fits a liquidity mechanism better than classical moral hazard [@chetty2008], and suggests the reassurance offered by self-financing is weaker than the individual-account literature assumes. For the workshop I am adding a characterisation of compliers, effect sizes normalised by benefit generosity for comparison with @britto2022 and the European literature [@schmieder2012; @nekoei2017], and estimates censored at twelve months, before Scheme B makes the control group eligible and attenuates the long-horizon effect.
+
+**Keywords:** unemployment insurance; pension savings; regression discontinuity; informality; Mexico.
+
+## References {.unnumbered}
+
+::: {#refs}
+:::

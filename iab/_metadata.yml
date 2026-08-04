@@ -1,0 +1,36 @@
+
+format:
+  pdf:
+    # xelatex, not the lualatex default: lualatex pulls in luatexbase/selnolig, which are
+    # absent from the image, and tlmgr's auto-install then dies on `fmtutil-sys --all`
+    # (the container user is uid 1000 and /usr/local/texlive is root-owned).
+    pdf-engine: xelatex
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 11pt
+    linestretch: 1.15
+    number-sections: false
+    toc: false
+    fig-cap-location: top
+    colorlinks: true
+    link-citations: true
+    include-in-header:
+      text: |
+        \usepackage{amsmath}
+        \usepackage{booktabs}
+        \usepackage{array}
+        \usepackage{caption}
+        \captionsetup{font=small,labelfont=bf}
+        \usepackage{float}
+        \floatplacement{table}{H}
+
+lang: en
+
+csl: https://www.zotero.org/styles/apa-no-ampersand
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: false
+  cache: false
