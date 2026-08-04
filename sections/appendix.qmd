@@ -77,10 +77,10 @@ summary_table |>
   kableExtra::kable_styling(latex_options = c("scale_down")) |>
   pack_rows("Covariates", 1, 7) |>
   pack_rows("Previous Job", 8, 10) |>
-  pack_rows("Partial Withdrawal (RPD)", 11, 14) |>
-  pack_rows("Job Search Outcomes", 15, 18) |>
-  pack_rows("Next Job Quality", 19, 21) |>
-  pack_rows("Medium Term Outcomes (Over 3 Years)", 22, 24) |>
+  pack_rows("Partial Withdrawal (RPD)", 11, 15) |>
+  pack_rows("Job Search Outcomes", 16, 19) |>
+  pack_rows("Next Job Quality", 20, 22) |>
+  pack_rows("Medium Term Outcomes (Over 3 Years)", 23, 25) |>
   # pack_rows("Take up", 21, 21) |>
   # column_spec(1, width = "20em") |>
   # column_spec(2:7, width = "3em") |>

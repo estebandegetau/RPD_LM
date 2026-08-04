@@ -8,7 +8,7 @@ load_rpd_data <- function(path) {
 
 
 make_balance_table <- function(data) {
- 
+
     data |>
         dplyr::select(
             elig,
@@ -48,12 +48,20 @@ make_balance_table <- function(data) {
                 no_curp = "No CURP"
             )
         ) |>
-        gtsummary::add_p() 
+        gtsummary::add_p()
 }
 
 make_summary_statistics <- function(data) {
-   # browser()
-    var_groups <- group_outcomes(data)
+    # browser()
+    # `group_outcomes()` also drives `prepare_rd_data()` and therefore every RD target, so a
+    # variable that is only ever descriptive is attached here rather than by widening its regex.
+    # `balance_rcv` is observed for takers only, like the rest of the RPD block.
+    var_groups <- dplyr::bind_rows(
+        group_outcomes(data),
+        labelled::generate_dictionary(data) |>
+            dplyr::filter(variable == "balance_rcv") |>
+            dplyr::mutate(group = "RPD")
+    )
 
     summary <- data |>
         mutate(across(where(is.Date), decimal_date)) |>
@@ -83,6 +91,7 @@ make_summary_statistics <- function(data) {
             ),
             label = case_when(
                 name == "birth_date" ~ "Birth date",
+                name == "balance_rcv" ~ "Balance at withdrawal (2024 MXN)",
                 T ~ label
             )
         ) |>
@@ -92,20 +101,5 @@ make_summary_statistics <- function(data) {
         select(!c(month)) |>
         rename("Variable" = label) |>
         group_by(group) |>
-        arrange(Variable, .by_group = T) 
-    #   gt() |>
-    #   tab_footnote(
-    #     md("*Note:* This table shows summary statistics of the variables used in the analysis. The observations included were the final sample of interest. "),
-    #   ) |>
-    #   fmt_number(
-    #     decimals = 1,
-    #     drop_trailing_zeros = T
-    #   ) |>
-    #   cols_width(
-    #     where(is.numeric) ~ pct(11.6),
-    #     everything() ~ pct(30)
-    #   ) |>
-    #   tab_options(
-    #     quarto.disable_processing = T
-    #   )
+        arrange(Variable, .by_group = T)
 }
