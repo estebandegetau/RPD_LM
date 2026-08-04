@@ -5,10 +5,7 @@ authors:
   - name: Esteban Degetau^[Barcelona School of Economics -- [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com)]
     affiliation:
       - Barcelona School of Economics
-      - Instituto Mexicano del Seguro Social
-      - Instituto Tecnológico Autónomo de México
     orcid: 0009-0004-4095-8819
-    roles: writing
     email: estebandegetau@gmail.com
     url: https://estebandegetau.com
     corresponding: true
