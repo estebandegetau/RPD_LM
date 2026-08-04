@@ -1,15 +1,15 @@
 ---
-title: "The Labor Market Outcomes of (Quasi) Unemployment Insurance"
-subtitle: "Evidence from the *Retiro Parcial por Desempleo* in Mexico"
+title: "Insuring Unemployment Out of Your Own Pension"
+subtitle: "Causal Evidence from Mexico's *Retiro Parcial por Desempleo*"
 authors:
-  - name: Esteban Degetau
+  - name: Esteban Degetau^[Barcelona School of Economics -- [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com)]
     affiliation:
       - Barcelona School of Economics
       - Instituto Mexicano del Seguro Social
       - Instituto Tecnológico Autónomo de México
     orcid: 0009-0004-4095-8819
     roles: writing
-    email: esteban.degetau@imss.gob.mx
+    email: estebandegetau@gmail.com
     url: https://estebandegetau.com
     corresponding: true
 citation:
