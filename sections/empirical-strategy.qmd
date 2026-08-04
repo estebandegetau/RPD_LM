@@ -79,33 +79,63 @@ tar_read(prev_job_plots)
 Previous Job Outcomes around Eligibility Threshold
 :::
 
+@tbl-covariates-bal reports the formal continuity tests for the ten predetermined covariates. Three of them reject continuity at the 5% level individually, but these p-values are not the right basis for a conclusion: ten simultaneous tests are being conducted, and under the null one would expect roughly one rejection at 5% by chance alone. Applying the Holm step-down correction, which controls the probability of at least one false rejection without assuming independence across covariates, **no covariate retains significance at the 5% level** [@aickin1996]. The correction matters here in particular because two of the three individually significant covariates — age and date of birth — are mechanically the same test with opposite sign, and so are perfectly dependent.
+
+The discontinuities that are individually detectable are also economically negligible. The jump in age amounts to about a month and a half against a sample mean of roughly twenty-five years, and the jump in days since the pension account was opened is on the order of two days against a mean above twelve hundred. Neither is of a magnitude that could plausibly generate the effects reported below.
+
 ```{r}
 #| label: tbl-covariates-bal
-#| tbl-cap: "Eligibility Effect: Balance of Covariates"
+#| tbl-cap: "Continuity of Predetermined Covariates at the Eligibility Threshold"
 #| cache: false
 
+# Reads the tidied balance target rather than re-running rdrobust, and adds the Holm
+# column: with ten simultaneous tests the raw p-values overstate the evidence against
+# continuity, and two of the ten (age and date of birth) are the same test twice.
+labs_bal <- c(
+    "Mujer"                                = "Female (share)",
+    "Fecha de nacimiento"                  = "Date of birth (years)",
+    "Inicio de vida laboral formal"        = "Formal labor market entry (years)",
+    "Fecha de separación"                  = "Date of separation (years)",
+    "Edad"                                 = "Age (years)",
+    "Días desde apertura de la cuenta"     = "Days since account opened",
+    "Sin CURP"                             = "No CURP (share)",
+    "Duración del empleo previo (semanas)" = "Previous job duration (weeks)",
+    "Ingresos totales, empleo previo"      = "Previous job total earnings (2024 MXN)",
+    "Salario mensual, empleo previo"       = "Previous job monthly wage (2024 MXN)"
+)
 
-tar_read(all_covariates) |>
-    arrange(group, label) |>
-    slice_head(n = 5) |>
-    my_modelsummary(digits = 3) |>
-    kable_styling(latex_options = "scale_down") |>
-    column_spec(1, width = "11em") |>
-    column_spec(2:6, width = "6em")
+sig3 <- function(x) {
+    vapply(x, function(v) format(signif(v, 3), big.mark = ",", scientific = FALSE),
+           character(1))
+}
 
-tar_read(all_covariates) |>
-    arrange(group, label) |>
-    slice_tail(n = 5) |>
-    my_modelsummary(digits = 3) |>
-    kable_styling(latex_options = "scale_down") |>
-    column_spec(1, width = "11em") |>
-    column_spec(2:6, width = "6em") |>
+tar_read(balance_table_esp) |>
+    mutate(
+        covariable = labs_bal[covariable],
+        pv_holm    = p.adjust(pv, method = "holm"),
+        across(c(coef, se), sig3),
+        across(c(pv, pv_holm),
+               ~ ifelse(.x < 0.001, "$<$0.001", format(round(.x, 3), nsmall = 3))),
+        n_efectivo = format(n_efectivo, big.mark = ","),
+        h          = round(h)
+    ) |>
+    select(covariable, coef, se, pv, pv_holm, n_efectivo, h) |>
+    kbl(
+        booktabs = TRUE, escape = FALSE,
+        col.names = c("Covariate", "RD effect", "Std. err.", "$p$",
+                      "$p$ (Holm)", "Eff. $N$", "$h$ (days)"),
+        align = c("l", "r", "r", "r", "r", "r", "r")
+    ) |>
+    kable_styling(latex_options = "hold_position", font_size = 9) |>
+    column_spec(1, width = "13em") |>
     footnote(
-        general = rdd_footnote,
+        # No literal percent sign: this string is passed through with escape = FALSE, and
+        # LaTeX would read it as a comment, silently truncating the note.
+        general = "Sharp RD (reduced form) estimates for each predetermined covariate, with a local linear polynomial, triangular kernel, optimal bandwidth (Calonico et al., 2020) and robust bias-corrected p-values (Calonico et al., 2014). The Holm column corrects for the ten simultaneous tests; under that adjustment no covariate retains significance at the 5 percent level.",
         general_title = "Note:",
-        threeparttable = T,
-        escape = F,
-        footnote_as_chunk = T
+        threeparttable = TRUE,
+        escape = FALSE,
+        footnote_as_chunk = TRUE
     )
 
 ```

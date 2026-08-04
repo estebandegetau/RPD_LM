@@ -28,6 +28,13 @@ tar_source(files = here("R"))
 
 theme_set(theme_minimal())
 
+# Curated summaries used by the robustness tables below. See sections/results.qmd.
+res_main <- tar_read(resultados_principales_esp)
+pe       <- tar_read(primera_etapa_esp)
+
+rp <- function(n, col = "coef") res_main[[col]][res_main$name == n]
+f1 <- function(x) formatC(x, format = "f", digits = 1)
+
 ```
 
 ## Appendix {.unnumbered}
@@ -189,3 +196,50 @@ tar_read(next_job) |>
 
 ```
 
+
+### Reduced-Form Estimates and Their Relation to the LATE {.unnumbered}
+
+@tbl-job-search reports the effect of *eligibility* rather than of use — the reduced form, or intent-to-treat. No reduced-form effect on a labor market outcome is significant at the 5% level, and this is exactly what a first stage of `r f1(pe$coef * 100)` percentage points implies. An effect of `r f1(rp("duration_36"))` weeks concentrated on compliers dilutes to well under a week once averaged over the entire population near the threshold, the overwhelming majority of whom never use the program. The reduced form is therefore not in tension with the LATE; it is the same evidence expressed per capita rather than per user.
+
+One caveat is worth stating for readers who attempt the division directly. The ratio of the reduced form to the first stage does not exactly reproduce the LATE reported in @tbl-fuzzy-job-search, because each fuzzy estimate selects its own optimal bandwidth and applies its own bias correction, so numerator and denominator are not computed on the same effective sample. The stability of the LATE with respect to the bandwidth is examined in @tbl-bw-sensitivity below.
+
+### Sensitivity to the Bandwidth {.unnumbered}
+
+@tbl-bw-sensitivity re-estimates the two principal effects with the bandwidth fixed at multiples of the optimum, scaling the bias-correction bandwidth in the same proportion. Point estimates are positive across the entire range and of comparable magnitude between half and one times the optimal width; at wide bandwidths they attenuate, as expected once the local polynomial approximation absorbs observations increasingly far from the threshold. Statistical significance at the 5% level concentrates around the optimal bandwidth, reflecting the usual bias–variance trade-off in this class of design.
+
+```{r}
+#| label: tbl-bw-sensitivity
+#| tbl-cap: "Sensitivity of the Main Effects (LATE) to the Bandwidth"
+
+bw <- tar_read(bw_sensitivity_esp) |>
+    mutate(
+        across(c(coef, se), ~ ifelse(name == "survival_3", .x * 100, .x)),
+        bw_label = ifelse(multiplo == 1, "Optimal $h$",
+                          paste0(multiplo, " $\\times$ $h$")),
+        across(c(coef, se), ~ formatC(.x, format = "f", digits = 1)),
+        pv = ifelse(pv < 0.001, "$<$0.001", format(round(pv, 3), nsmall = 3)),
+        n_efectivo = format(n_efectivo, big.mark = ","),
+        h = round(h)
+    )
+
+n_surv <- sum(bw$name == "survival_3")
+
+bw |>
+    select(bw_label, h, coef, se, pv, n_efectivo) |>
+    kbl(
+        booktabs = TRUE, escape = FALSE,
+        col.names = c("Bandwidth", "$h$ (days)", "LATE", "Std. err.",
+                      "$p$", "Eff. $N$"),
+        align = c("l", "r", "r", "r", "r", "r")
+    ) |>
+    kable_styling(latex_options = "hold_position", font_size = 9) |>
+    pack_rows("Survival in unemployment at 3 months (pp)", 1, n_surv) |>
+    pack_rows("Unemployment duration at 36 months (weeks)", n_surv + 1, nrow(bw)) |>
+    footnote(
+        general = "Fuzzy RD estimates re-computed with the bandwidth fixed at multiples of the optimum, scaling the bias-correction bandwidth proportionally. Robust bias-corrected p-values. The optimal-bandwidth row may differ marginally from the main tables because the bandwidth is set explicitly rather than selected internally.",
+        general_title = "Note:",
+        threeparttable = TRUE,
+        escape = FALSE,
+        footnote_as_chunk = TRUE
+    )
+```
