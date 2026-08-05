@@ -4,21 +4,21 @@ project:
 
 
 format:
-  html:
-    comments:
-      hypothesis: true
-    title-block-banner: true
-    toc: true
-    code-links: 
-      - icon: github
-        text: Source Code
-        href: https://github.com/estebandegetau/RPD_LM
-    fig-cap-location: top
-  pdf: 
+  # html:
+  #   comments:
+  #     hypothesis: true
+  #   title-block-banner: true
+  #   toc: true
+  #   code-links:
+  #     - icon: github
+  #       text: Source Code
+  #       href: https://github.com/estebandegetau/RPD_LM
+  #   fig-cap-location: top
+  pdf:
     fontfamily: libertinus
     dpi: 300
-    colorlinks: false
-    include-in-header: 
+    colorlinks: true
+    include-in-header:
       text: |
         \usepackage{lscape}
         \newcommand{\blandscape}{\begin{landscape}}
@@ -30,7 +30,6 @@ format:
     link-citations: true
     notebook-links: false
     fig-cap-location: top
-
 
 
 keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
