@@ -2,8 +2,9 @@
 title: "Insuring Unemployment Out of Your Own Pension"
 subtitle: "Causal Evidence from Mexico's *Retiro Parcial por Desempleo*"
 authors:
-  - name: Esteban Degetau^[Barcelona School of Economics -- [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com)]
+  - name: Esteban Degetau^[Instituto Mexicano del Seguro Social, Barcelona School of Economics -- [estebandegetau@gmail.com](mailto:estebandegetau@gmail.com)]
     affiliation:
+      - Instituto Mexicano del Seguro Social
       - Barcelona School of Economics
     orcid: 0009-0004-4095-8819
     email: estebandegetau@gmail.com

@@ -494,5 +494,76 @@ list(
   tar_target(
     name = fig_retiro_semanas_esp,
     command = make_fig_retiro_semanas_esp(retiro_saldo_shares_esp)
+  ),
+
+  # Slides (English) ------------------------------------------------------------------
+  # Targets for the conference deck in slides/. They only consume existing targets;
+  # the functions live in R/slides_en.R and nothing here modifies a target or a
+  # function used by the thesis, the working paper, or the AMAFORE submission.
+  #
+  # rd_take_up_plot_slides and rd_outcome_plot_slides load `rd_data` (~955 MB) and
+  # must each be built in their own R process:
+  #   Rscript -e "targets::tar_make(names = 'rd_take_up_plot_slides')"
+  #
+  # There is deliberately no tar_quarto() for the deck, for the same reason given
+  # for AMAFORE above: slides/rpd-talk.qmd reads targets with an explicit store=, so
+  # targets cannot track the dependency and a tar_quarto() would only re-render
+  # blindly. It would also render inside the pipeline process, which is exactly the
+  # OOM path the deck's figure subprocesses exist to avoid.
+  tar_target(
+    name = rd_take_up_plot_slides,
+    command = make_rd_take_up_plot_slides(rd_data)
+  ),
+  tar_target(
+    name = rd_outcome_plot_slides,
+    command = make_rd_outcome_plot_slides(rd_data)
+  ),
+  tar_target(
+    name = take_up_path_slides,
+    command = make_take_up_path_slides(take_up)
+  ),
+  tar_target(
+    name = fuzzy_path_slides,
+    command = make_fuzzy_path_slides(survival_iv)
+  ),
+  tar_target(
+    name = het_diff_plot_slides,
+    command = make_het_diff_plot_slides(heterogeneidad_esp)
+  ),
+  tar_target(
+    name = eligibility_plot_slides,
+    command = make_eligibility_plot_slides(eligibility_plot)
+  ),
+  tar_target(
+    name = sample_selection_plot_slides,
+    command = make_sample_selection_plot_slides(sample_selection_plot)
+  ),
+  tar_target(
+    name = density_plot_slides,
+    command = make_density_plot_slides(density_plot)
+  ),
+  tar_target(
+    name = rpd_usage_plot_slides,
+    command = make_rpd_usage_plot_slides(rpd_data_path)
+  ),
+  tar_target(
+    name = bw_plot_slides,
+    command = make_bw_plot_slides(bw_sensitivity_esp)
+  ),
+  tar_target(
+    name = pension_cost_en,
+    command = compute_pension_cost_en(muestra_stats_esp, resultados_principales_esp)
+  ),
+  tar_target(
+    name = fig_pension_channels_en,
+    command = make_fig_pension_channels_en(pension_cost_en)
+  ),
+  tar_target(
+    name = fig_retiro_saldo_en,
+    command = make_fig_retiro_saldo_en(retiro_saldo_shares_esp)
+  ),
+  tar_target(
+    name = fig_retiro_semanas_en,
+    command = make_fig_retiro_semanas_en(retiro_saldo_shares_esp)
   )
 )

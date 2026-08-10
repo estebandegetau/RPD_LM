@@ -1,0 +1,191 @@
+%% slides/beamer-rpd.tex ------------------------------------------------------------
+%% Flat beamer theme for the RPD conference talk.
+%%
+%% Loaded through `include-in-header:` in rpd-talk.qmd. Pandoc appends this file to
+%% the `header-includes` variable, which Quarto's beamer template expands at
+%% template.tex:90 -- i.e. AFTER \usetheme (l.72) and AFTER the package named by
+%% `fontfamily:` (l.89), and BEFORE \begin{document} (l.99). That ordering is the
+%% whole reason the plain \setbeamertemplate overrides below win without needing
+%% \AtBeginDocument.
+%%
+%% Dependencies: beamer, xcolor, graphicx -- all in collection-latexrecommended,
+%% already installed by .devcontainer/Dockerfile. Nothing else is used, because the
+%% deck must render under `docker run --network none`. In particular metropolis,
+%% pgfopts, fira, adjustbox, tcolorbox and appendixnumberbeamer are NOT in the image
+%% and are deliberately worked around rather than required.
+\makeatletter
+
+%% ---- palette -----------------------------------------------------------------------
+%% Near-black ink, one cool accent for structure, one warm accent for emphasis. Both
+%% accents clear 4.5:1 against white and stay distinguishable under deuteranopia.
+%% R/slides_en.R defines the same hex values, so figures and chrome match exactly.
+\definecolor{rpdink}{HTML}{1A2028}
+\definecolor{rpdmute}{HTML}{6E7884}
+\definecolor{rpdrule}{HTML}{DADEE2}
+\definecolor{rpdaccent}{HTML}{00506B}
+\definecolor{rpdalert}{HTML}{B4532A}
+
+\setbeamercolor{normal text}{fg=rpdink, bg=white}
+\setbeamercolor{structure}{fg=rpdaccent}
+\setbeamercolor{alerted text}{fg=rpdalert}
+\setbeamercolor{frametitle}{fg=rpdink, bg=}      % empty bg => no title band
+\setbeamercolor{framesubtitle}{fg=rpdmute, bg=}
+\setbeamercolor{title}{fg=rpdink}
+\setbeamercolor{subtitle}{fg=rpdaccent}
+\setbeamercolor{author}{fg=rpdink}
+\setbeamercolor{institute}{fg=rpdmute}
+\setbeamercolor{date}{fg=rpdmute}
+\setbeamercolor{section page}{fg=rpdink}
+\setbeamercolor{itemize item}{fg=rpdaccent}
+\setbeamercolor{itemize subitem}{fg=rpdmute}
+\setbeamercolor{enumerate item}{fg=rpdaccent}
+\setbeamercolor{block title}{fg=white, bg=rpdaccent}
+\setbeamercolor{block body}{fg=rpdink, bg=rpdaccent!7}
+\setbeamercolor{caption name}{fg=rpdmute}
+\setbeamercolor{footline}{fg=rpdmute}
+\setbeamercolor{footnote}{fg=rpdmute}
+\setbeamercolor{bibliography entry author}{fg=rpdink}
+\setbeamercolor{bibliography entry title}{fg=rpdink}
+\setbeamercolor{bibliography entry location}{fg=rpdmute}
+\setbeamercolor{bibliography entry note}{fg=rpdmute}
+
+%% ---- fonts -------------------------------------------------------------------------
+%% `fontfamily: libertinus` has already loaded libertinus-otf (libertinus.sty branches
+%% on \iftutex), so \sffamily is Libertinus Sans, \rmfamily is Libertinus Serif, and
+%% unicode-math points at LibertinusMath-Regular.otf. Do NOT use `mainfont:` in the
+%% YAML instead: Libertinus is invisible to fontconfig -- it lives only in the texmf
+%% tree -- so \setmainfont would fail to find it, and setting it also triggers
+%% \usefonttheme{serif} at template.tex:81, turning the whole deck serif.
+%% `professionalfonts` stops beamer from overriding the math setup unicode-math just made.
+\usefonttheme{professionalfonts}
+\setbeamerfont{title}{family=\sffamily, size=\LARGE, series=\bfseries}
+\setbeamerfont{subtitle}{family=\sffamily, size=\large, series=\mdseries}
+\setbeamerfont{author}{family=\sffamily, size=\normalsize}
+\setbeamerfont{institute}{family=\sffamily, size=\small}
+\setbeamerfont{date}{family=\sffamily, size=\small}
+\setbeamerfont{frametitle}{family=\sffamily, size=\large, series=\bfseries}
+\setbeamerfont{framesubtitle}{family=\sffamily, size=\small, series=\mdseries}
+\setbeamerfont{section page}{family=\sffamily, size=\LARGE, series=\bfseries}
+\setbeamerfont{block title}{family=\sffamily, size=\normalsize, series=\bfseries}
+\setbeamerfont{footline}{family=\sffamily, size=\scriptsize}
+\setbeamerfont{caption}{size=\scriptsize}
+\setbeamerfont{caption name}{size=\scriptsize, series=\mdseries}
+\setbeamerfont{footnote}{size=\scriptsize}
+
+%% ---- rhythm ------------------------------------------------------------------------
+\setbeamersize{text margin left=0.9cm, text margin right=0.9cm}
+\setlength{\parskip}{0.55em}          % parskip.sty is already loaded by common.latex
+\renewcommand{\arraystretch}{1.08}    % breathing room for dense kableExtra tables
+
+%% ---- chrome ------------------------------------------------------------------------
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{sidebar right}{}
+
+%% The headline is where a themed deck puts its navigation bar. Emptying it entirely
+%% leaves the frame title flush against the paper edge, so it carries the top margin
+%% instead. This is the reliable place for that space: a \vspace* at the start of the
+%% frametitle beamercolorbox lands *below* the title, not above it.
+\setbeamertemplate{headline}{\vspace*{0.45cm}}
+
+%% Page number only, muted, bottom right; nothing on the title frame.
+\setbeamertemplate{footline}{%
+  \ifnum\value{framenumber}>1\relax
+    \hfill\usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+    \insertframenumber\hspace*{0.9cm}%
+  \fi
+  \vspace*{0.9ex}%
+}
+
+%% ---- frame title + short accent rule -----------------------------------------------
+%% \rule rather than TikZ: no pgfpicture per frame, so compile time and PDF size stay
+%% flat across ~35 frames.
+%% No beamercolorbox: a full-width box has to re-derive the text margins by hand
+%% (its leftskip/rightskip do not pick up \setbeamersize), which is what pushed the
+%% title flush against the left edge. Typeset directly instead and beamer's own text
+%% margins apply, so the title aligns with the body text on every frame. The trailing
+%% negative skip claws back part of beamer's fixed frametitle-to-body separation,
+%% which is tuned for themes whose title sits inside a filled band.
+\setbeamertemplate{frametitle}{%
+  \vspace*{0.30cm}%
+  {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}%
+   \raggedright\insertframetitle\par}%
+  \ifx\insertframesubtitle\@empty\else
+    \vspace*{0.35ex}%
+    {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}%
+     \raggedright\insertframesubtitle\par}%
+  \fi
+  \vspace*{0.9ex}%
+  {\color{rpdaccent}\rule{2.4em}{1.1pt}}\par
+  \vspace*{-0.10cm}%
+}
+
+%% ---- title page --------------------------------------------------------------------
+%% Flush left, no band, no logo. Quarto's before-body.tex emits \frame{\titlepage}
+%% automatically whenever `title` is set, so this template is the whole story.
+\setbeamertemplate{title page}{%
+  \vfill
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\raggedright\inserttitle\par}%
+  \vspace{0.7em}{\color{rpdaccent}\rule{3.4em}{1.2pt}}\par
+  \vspace{0.8em}%
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\raggedright\insertsubtitle\par}%
+  \vspace{1.8em}%
+  {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}%
+  \vspace{0.15em}%
+  {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}%
+  \vspace{0.8em}%
+  {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%
+  \vfill
+}
+
+%% ---- section dividers --------------------------------------------------------------
+%% Quarto's template already installs
+%%   \AtBeginSection{\ifbibliography\else\frame{\sectionpage}\fi}      (l.57-63)
+%% \AtBeginSection *replaces* rather than appends (beamerbasesection.sty:233,
+%% \def\beamer@atbeginsection{#2}), so re-issuing it here swaps in a plain, unnumbered
+%% divider instead of producing two. The \ifbibliography guard must be kept, or the
+%% references section gets a divider of its own.
+\AtBeginSection{\ifbibliography\else
+  \begin{frame}[plain,noframenumbering]\sectionpage\end{frame}\fi}
+\AtBeginSubsection{}
+\setbeamertemplate{section page}{%
+  \vfill
+  {\usebeamerfont{section page}\usebeamercolor[fg]{section page}%
+   \raggedright\insertsectionhead\par}%
+  \vspace{0.6em}{\color{rpdaccent}\rule{3.4em}{1.2pt}}\par
+  \vfill
+}
+
+%% ---- lists, blocks, captions -------------------------------------------------------
+\setbeamertemplate{itemize item}{\raisebox{0.18ex}{\scriptsize\textbullet}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.20ex}{\tiny\textbullet}}
+\setbeamertemplate{itemize subsubitem}{--}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamertemplate{blocks}[default]        % flat: no shadow, no rounded corners
+\setbeamertemplate{bibliography item}{}
+
+%% Slides are not a paper: drop the "Figure 1:" / "Table 1:" label and keep captions
+%% as quiet notes. This has to go through \captionsetup rather than
+%% \setbeamertemplate{caption}: Quarto's beamer template loads the caption package,
+%% which takes over \caption entirely and leaves beamer's caption template unused.
+%% Consequence: do NOT use @fig-/@tbl- cross references anywhere in the deck.
+\captionsetup{
+  labelformat = empty,
+  labelsep    = none,
+  font        = {scriptsize, color = rpdmute},
+  justification = raggedright,
+  singlelinecheck = false,
+  skip        = 3pt
+}
+
+%% ---- helpers -----------------------------------------------------------------------
+%% Full-bleed image on a {.plain} frame without adjustbox: an overwide box centred in
+%% \textwidth spills symmetrically into both margins.
+\newcommand{\bleed}[1]{\makebox[\textwidth][c]{#1}}
+
+%% appendixnumberbeamer is not installed. Freeze the counter instead, so the backup
+%% frames do not inflate the number the audience sees on the last content slide.
+\newcounter{rpdmainframes}
+\newcommand{\backupstart}{\setcounter{rpdmainframes}{\value{framenumber}}}
+\newcommand{\backupend}{\setcounter{framenumber}{\value{rpdmainframes}}}
+
+\makeatother

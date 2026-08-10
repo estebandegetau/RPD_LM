@@ -1,0 +1,9 @@
+# Profile for the conference deck. Deliberately a render list and nothing else:
+# the default profile is `wp` (see _quarto.yml), whose project-level `format: pdf:`
+# block would otherwise be in scope and produce a second, unwanted PDF alongside
+# the beamer output. The deck declares its own `format: beamer:` block, which wins.
+#
+#   quarto render slides/rpd-talk.qmd --profile slides
+project:
+  render:
+    - slides/rpd-talk.qmd

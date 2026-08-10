@@ -1,0 +1,852 @@
+---
+title: "Insuring Unemployment Out of Your Own Pension"
+subtitle: "Causal Evidence from Mexico's *Retiro Parcial por Desempleo*"
+author: Esteban Degetau
+email: estebandegetau@gmail.com
+institute:  |
+  Instituto Mexicano del Seguro Social, Barcelona School of Economics
+date: 2026-08-14
+date-format: long
+bibliography: ../references.bib
+csl: ../amafore/apa.csl
+format:
+  beamer:
+    # xelatex, not the lualatex default: under LuaTeX the beamer template loads
+    # selnolig whenever `lang:` is set, selnolig is absent from the image, and
+    # tlmgr's auto-install then dies on fmtutil-sys (the container user is uid
+    # 1000 and /usr/local/texlive is root-owned). Same fix as iab/_metadata.yml.
+    # For the same reason `lang:` is deliberately not set here.
+    pdf-engine: xelatex
+    aspectratio: 169
+    # `t` top-aligns frame content; without it beamer centres it vertically and a
+    # table ends up floating in the middle of the slide. `notheorems` is Quarto's
+    # own default, repeated here because supplying classoption replaces it.
+    classoption: [t, notheorems]
+    fontsize: 11pt
+    # NOT `mainfont:`. Libertinus is invisible to fontconfig -- it lives only in
+    # the texmf tree -- so \setmainfont cannot find it, and setting it would also
+    # switch the whole deck to serif. See slides/beamer-rpd.tex.
+    fontfamily: libertinus
+    section-titles: true
+    slide-level: 2
+    fig-align: center
+    keep-tex: true
+    latex-clean: false
+    include-in-header: beamer-rpd.tex
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: false
+  # The PDFs/PNGs in _figuras/ are the cache; a second knitr cache on top of them
+  # only adds a way for the two to disagree.
+  cache: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+pacman::p_load(targets, here, knitr, kableExtra, dplyr, tidyr, purrr, stringr, scales)
+here::i_am("slides/rpd-talk.qmd")
+
+# The store is passed explicitly to every read, and tar_config_set() is never
+# called: that function WRITES a _targets.yaml into the working directory, which is
+# how presentations/_targets.yaml came to point at a Windows OneDrive path that has
+# not existed for a year.
+.store <- here::here("_targets")
+.figdir <- "_figuras"
+dir.create(.figdir, showWarnings = FALSE, recursive = TRUE)
+
+# Figures are built in a subprocess that dies afterwards ----------------------------
+# A ggplot built on rdrobust::rdplot() drags the whole rdplot frame along through the
+# plot object's environment -- ~600 MB of RSS per figure once deserialised -- and
+# neither gc() nor reassigning plot_env releases it, because the layers' quosures
+# keep the reference. Half a dozen of them in one knitr session is an OOM kill on a
+# 7.6 GB machine. So no plot object is ever created in this session: each is rendered
+# to file in a callr child that exits, and only the image is included here.
+#
+# This is the amafore/index.qmd pattern with three fixes: `.store` is actually
+# defined (that version passes an undefined symbol and survives only because its
+# cache is already warm), the child attaches ggpubr (ggarrange objects print through
+# print.ggarrange, so ggsave silently produces nothing without it), and staleness is
+# keyed on the target's own hash rather than on mere existence.
+# `show` is the width the image occupies on the slide. It defaults to the width the
+# figure is drawn at, which is what you want for the slide-themed targets: they are
+# designed at final size and must not be rescaled. The backup slides reuse the
+# working paper's figures, whose panel titles are sized for a page; drawing those on
+# a big canvas and showing them smaller keeps every label intact, where drawing them
+# at slide size simply cuts the titles off.
+fig_slides <- function(target, width = 5.5, height = 2.6, res = 300, show = width) {
+  img <- file.path(.figdir, paste0(target, ".png"))
+  stamp <- file.path(.figdir, paste0(target, ".hash"))
+
+  # The stamp carries the requested geometry as well as the target's data hash.
+  # Keying on the hash alone silently reuses an image drawn at a different size when
+  # only the call site changes, which is exactly how a frame ends up overfull by a
+  # constant that no amount of resizing removes.
+  meta <- targets::tar_meta(names = tidyselect::all_of(target), fields = "data",
+                            store = .store)
+  hash <- paste(
+    if (nrow(meta)) meta$data[[1]] else NA_character_,
+    width, height, res, show
+  )
+  stale <- !file.exists(img) || !file.exists(stamp) ||
+    !identical(readLines(stamp, warn = FALSE), hash)
+
+  if (stale) {
+    callr::r(
+      function(target, store, dest, width, height, res) {
+        library(ggplot2)
+        library(ggpubr) # ggarrange objects need this to print
+        # Libertinus lives only in the texmf tree, so fontconfig cannot see it and
+        # cairo devices cannot use it. Registering the OTFs with systemfonts and
+        # drawing through ragg is what makes the figures share the slides' typeface.
+        kp <- function(f) system2("kpsewhich", f, stdout = TRUE)
+        try(systemfonts::register_font(
+          "Libertinus Sans",
+          plain = kp("LibertinusSans-Regular.otf"),
+          bold = kp("LibertinusSans-Bold.otf"),
+          italic = kp("LibertinusSans-Italic.otf")
+        ), silent = TRUE)
+        p <- targets::tar_read_raw(target, store = store)
+        ggplot2::ggsave(dest, p, width = width, height = height,
+                        device = ragg::agg_png, res = res, units = "in")
+      },
+      args = list(target, .store, normalizePath(img, mustWork = FALSE),
+                  width, height, res),
+      libpath = .libPaths()
+    )
+    writeLines(hash, stamp)
+  }
+  # Emit the \includegraphics directly rather than going through
+  # knitr::include_graphics(). Quarto wraps that in \pandocbounded{} with no width
+  # argument, which ignores the dpi entirely and instead rescales the image to
+  # \linewidth -- so an intentionally oversized canvas came back 0.27in too tall and
+  # overflowed the frame. Stating the width here makes the displayed size exact.
+  knitr::asis_output(sprintf(
+    "\\noindent\\makebox[\\textwidth][c]{\\includegraphics[width=%.3fin]{%s}}",
+    show, img
+  ))
+}
+
+# Small numeric targets, read once -------------------------------------------------
+# None of these loads rd_data; the largest is a few kilobytes. Every number on every
+# slide comes from one of them, so the deck cannot drift from the paper.
+tr <- function(n) targets::tar_read_raw(n, store = .store)
+
+res_main <- tr("resultados_principales_esp")
+het      <- tr("heterogeneidad_esp")
+pe       <- tr("primera_etapa_esp")
+tu_path  <- tr("take_up_path_data_esp")
+muestra  <- tr("muestra_stats_esp")
+itt      <- tr("itt_table_esp")
+balance  <- tr("balance_table_esp")
+bw       <- tr("bw_sensitivity_esp")
+shares   <- tr("retiro_saldo_shares_esp")
+cost     <- tr("pension_cost_en")
+costo_ag <- tr("costo_agregado_esp")
+resumen  <- tr("tabla_resumen_esp")
+n_retiros <- tr("rpd_usage")
+n_usuarios <- tr("rpd_users")
+
+# Accessors, as in iab/abstract.qmd. `het` is keyed on the Spanish subgroup labels of
+# the AMAFORE companion paper; only the numeric columns are used here.
+rp    <- function(n, col = "coef") res_main[[col]][res_main$name == n]
+itv   <- function(n, col = "coef") itt[[col]][itt$name == n]
+hetv  <- function(g, s, col)       het[[col]][het$grupo == g & het$subgrupo == s]
+difp  <- function(g)               unique(het$dif_pv[het$grupo == g])
+fs_pp <- function(m)               tu_path$point[tu_path$months == m] * 100
+cst   <- function(col, r = 0.04, c = 0.065) cost[[col]][cost$rate == r & cost$c_rate == c]
+agg   <- function(col, r = 0.04, c = 0.065) {
+  costo_ag[[col]][costo_ag$tasa == r & costo_ag$c_rate == c]
+}
+
+f1 <- function(x) formatC(x, format = "f", digits = 1)
+f2 <- function(x) formatC(x, format = "f", digits = 2)
+f3 <- function(x) formatC(x, format = "f", digits = 3)
+fm <- function(x) formatC(round(x), format = "d", big.mark = ",")
+bn <- function(x) formatC(x / 1e9, format = "f", digits = 0, big.mark = ",")
+# Tables below are built with escape = FALSE so that $p$ renders as maths rather
+# than as three literal characters. That makes a bare % a LaTeX comment, so every
+# percentage that reaches a cell has to go through this.
+pct <- function(x, d = 1) paste0(formatC(x * 100, format = "f", digits = d), "\\%")
+
+# Slide-local note strings. R/results.R's rdd_footnote_beamer and
+# fuzzy_rd_footnote_beamer hard-code "Equation 1" and "Equation 3", which do not
+# match this deck's numbering, and editing them would touch the working paper.
+note_fuzzy <- paste(
+  "Fuzzy RD estimates of the effect of RPD take-up on compliers. Local linear,",
+  "triangular kernel, MSE-optimal bandwidth; robust bias-corrected inference.",
+  "Currencies in 2024 Mexican pesos."
+)
+```
+
+## The prediction this paper tests
+
+When a benefit is funded from the worker's own savings, the behavioural response
+should be muted: no risk pooling, no fiscal outlay, the worker internalises the cost.
+That is what individual accounts were designed to deliver [@feldstein2007], and what
+Chile appears to show — its duration response sits in the solidarity-funded tranche,
+not in the worker's own account [@hartley2011].
+
+Mexico's *Retiro Parcial por Desempleo* is a clean test: displaced formal workers
+withdraw part of their own pension savings, and nothing else changes.
+
+::: {.block}
+### The answer
+Take-up causes **`r f1(rp("duration_36"))` additional weeks** out of formal employment
+over three years, with **no** offsetting gain in wages, job stability or earnings.
+:::
+
+Whether that is moral hazard or liquidity decides its welfare content [@chetty2008].
+
+# Setting
+
+## Mexico has no unemployment insurance
+
+Severance is the *de jure* income substitute: 90 days of wages, owed by the employer.
+It is *de facto* close to unenforceable [@sadka2024]:
+
+- More than **half** of dismissed workers report never receiving it
+- Only **13%** file a claim — they correctly read the process as ineffective
+- **30%** of lawsuits are unresolved four years later
+- Among workers who *won*, only **20%** collected the full award
+
+So the RPD is not one option among several. For most displaced formal workers it is
+the only income substitute that actually arrives.
+
+## What the RPD is
+
+::: {.columns}
+::: {.column width="52%"}
+Withdraw part of your pension savings after **46 days** without a registered formal
+job.
+
+**Scheme A** — 3 years since entry *and* 2 years of contributions. Pays the lesser of
+10 months of minimum wage or one month of own wage.
+
+**Scheme B** — 5 years since entry, no contribution test. Pays the lesser of 3 monthly
+wages or 11.5% of the balance.
+
+Usable once every 5 years. Under Art. 198 LSS the withdrawal also **discounts
+contribution weeks in the same proportion** as the balance.
+:::
+::: {.column width="48%"}
+```{r}
+#| label: fig-elig
+fig_slides("eligibility_plot_slides", width = 2.5, height = 2.2)
+```
+:::
+:::
+
+## The program is large, and its use is crisis-driven
+
+```{r}
+#| label: fig-usage
+fig_slides("rpd_usage_plot_slides", width = 5.2, height = 1.82)
+```
+
+`r fm(n_retiros)` withdrawals by `r fm(n_usuarios)` workers since 1997, totalling
+\$`r bn(agg("monto_2024"))` bn. The steps are 2009 and 2020: rate of adoption increases when the labor
+market deteriorates.
+
+## Data and sample
+
+::: {.columns}
+::: {.column width="52%"}
+Two confidential IMSS sources linked by social-security number: the matched
+employer–employee panel (14.8 M workers, 406.8 M contracts) and the universe of RPD
+withdrawal records.
+
+Analysis sample: **`r fm(muestra$n_muestra)`** workers with exactly **one** non-employment spell of
+46+ days *during their third year* in formal work.
+
+The withdrawal is small at the moment of use — \$`r fm(muestra$w_retiro)`, about
+`r f2(muestra$w_retiro / muestra$wbar)` months of the prior wage, a median of
+`r f1(shares$p50_total[1] * 100)`% of the balance.
+
+**Scope condition:** these data observe *formal* employment and only formal employment.
+:::
+::: {.column width="48%"}
+```{r}
+#| label: fig-sample
+fig_slides("sample_selection_plot_slides", width = 2.5, height = 2.2)
+```
+:::
+:::
+
+# Design
+
+## Fuzzy regression discontinuity
+
+Eligibility jumps at two years of contributions; take-up does not jump all the way.
+So eligibility instruments for take-up.
+
+$$
+T_{i} = \alpha + \beta D_i + f(C_i - 2) + u_i, \qquad
+Y_i = \gamma + \tau \hat T_i + f(C_i - 2) + v_i
+$$
+
+for $|C_i - 2| \le h$, where $D_i = \mathbb{1}\{C_i \ge 2\}$.
+
+$\tau$ is the local average treatment effect on **compliers** — workers who withdraw
+because the rule let them, and would not have otherwise.
+
+Local linear, triangular kernel, MSE-optimal bandwidth [@calonico2020], robust
+bias-corrected inference [@calonico2014].
+
+## First stage
+
+::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| label: fig-fs
+fig_slides("rd_take_up_plot_slides", width = 2.8, height = 2.2)
+```
+:::
+::: {.column width="45%"}
+Crossing the threshold raises take-up within 12 months by
+**`r f1(pe$coef * 100)` pp** (s.e. `r f1(pe$se * 100)`).
+
+$F = `r round(pe$f)`$, on `r fm(pe$n_efectivo)` observations inside a bandwidth of
+±`r round(pe$h)` days.
+
+Strong instrument, small effect — which is what a self-financed, partial withdrawal
+from your own account should look like.
+:::
+:::
+
+## Take-up over the horizon
+
+```{r}
+#| label: fig-fspath
+fig_slides("take_up_path_slides", width = 5.2, height = 1.6)
+```
+
+`r f1(fs_pp(2))` pp at two months, `r f1(fs_pp(12))` at twelve, `r f1(fs_pp(24))` by
+month 24. The flattening after month 12 is **not** non-compliance: ineligible workers
+reach Scheme B's five-year threshold and become eligible on their own.
+
+## Design validity
+
+::: {.columns}
+::: {.column width="52%"}
+```{r}
+#| label: fig-density
+fig_slides("density_plot_slides", width = 2.5, height = 2.1)
+```
+:::
+::: {.column width="48%"}
+**No manipulation** [@cattaneo2020]. Landing on the eligible side means postponing
+your own dismissal by days — not a margin workers control.
+
+**Balance.** Of `r nrow(balance)` covariates, `r sum(balance$pv < 0.05)` reject at 5%
+individually; under Holm **none** survives. The largest jump is age — about 1.5 months
+against a mean of `r f1(muestra$edad_media)` years.
+
+**Bandwidth.** Positive across ×0.5–×2 of the optimal width.
+:::
+:::
+
+## How to read what follows
+
+The first stage *is* the complier share: about **4 in 100** workers near the threshold.
+
+The LATE describes *them* — not the average worker, and not the average program user.
+Two consequences:
+
+- Effects look large against population means, because they are concentrated in a
+  small and specific group.
+- The **reduced form is correspondingly small**: the ITT on 36-month duration is
+  `r f2(itv("duration_36"))` weeks ($p$ = `r f2(itv("duration_36", "pv"))`).
+
+The reduced form is not in tension with the LATE. It is the same evidence expressed
+per capita rather than per user.
+
+# Results
+
+## Take-up lengthens time out of formal work
+
+```{r}
+#| label: fig-fuzzypath
+fig_slides("fuzzy_path_slides", width = 5.2, height = 2.25)
+```
+
+## Take-up lengthens time out of formal work
+
+```{r}
+#| label: tbl-duration
+dur <- tibble::tibble(
+  Outcome = c("Still out of formal work at 3 months (pp)",
+              "Weeks out of formal work over 36 months"),
+  Effect = c(f1(rp("survival_3") * 100), f1(rp("duration_36"))),
+  SE = paste0("(", c(f1(rp("survival_3", "se") * 100), f1(rp("duration_36", "se"))), ")"),
+  p = c(f3(rp("survival_3", "pv")), f3(rp("duration_36", "pv"))),
+  Base = c(pct(rp("survival_3", "media")), f1(rp("duration_36", "media")))
+)
+
+kbl(dur, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+    col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Ineligible mean"),
+    align = c("l", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 8, latex_options = "hold_position") |>
+  column_spec(1, width = "6.2cm") |>
+  column_spec(2:5, width = "1.7cm")
+```
+
+Both significant at 5%. The 36-month effect is `r round(rp("duration_36") / rp("duration_36", "media") * 100)`%
+of the `r f1(rp("duration_36", "media"))` weeks an ineligible worker spends out of
+formal work — a reference for scale, not a rate: the two are not additive, because
+compliers' spells are plausibly longer to begin with.
+
+Consistent with the UI literature, and with lump-sum severance in Brazil
+[@britto2022].
+
+## Nothing compensates the extra weeks
+
+```{r}
+#| label: tbl-nogain
+gains <- tibble::tibble(
+  Outcome = c("Monthly earnings, next job",
+              "Total earnings, next job",
+              "Next job duration (weeks)",
+              "Cumulative earnings, 3 years",
+              "Months worked, 3 years"),
+  key = c("next_job_av_earnings", "next_job_cum_earnings", "next_job_duration",
+          "earnings_total", "months_worked_total")
+) |>
+  mutate(
+    Effect = map_chr(key, ~ fm(rp(.x))),
+    SE = map_chr(key, ~ paste0("(", fm(rp(.x, "se")), ")")),
+    p = map_chr(key, ~ f3(rp(.x, "pv"))),
+    Base = map_chr(key, ~ fm(rp(.x, "media")))
+  ) |>
+  select(-key)
+
+kbl(gains, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+    col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Ineligible mean"),
+    align = c("l", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 8, latex_options = "hold_position") |>
+  column_spec(1, width = "5.4cm") |>
+  column_spec(2:5, width = "1.9cm") |>
+  footnote(general = note_fuzzy, general_title = "Note: ",
+           threeparttable = TRUE, escape = FALSE, footnote_as_chunk = TRUE)
+```
+
+The next-job wage estimate is sizeable but misses 5% ($p$ = `r f3(rp("next_job_av_earnings", "pv"))`);
+everything else is zero. Against @acemoglu2000; with @britto2022, @gonzález-rozada2023.
+
+## Who pays — and which contrasts survive a test
+
+```{r}
+#| label: fig-het
+fig_slides("het_diff_plot_slides", width = 5.2, height = 2.25)
+```
+
+## Who pays — and which contrasts survive a test
+
+Each split is estimated on **disjoint** subsamples, each with its own bandwidth. A
+large coefficient in one half and a small one in the other does *not* establish that
+the halves differ. So test the difference directly:
+
+- **Prior earnings.** Below median `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))` weeks
+  vs. above median `r f1(hetv("Ingreso previo", "Por arriba de la mediana", "dur_coef"))`.
+  Difference $p$ = `r f3(difp("Ingreso previo"))` — **distinguishable**.
+- **Sex.** Men `r round(hetv("Sexo", "Hombres", "dur_coef"))` weeks vs. women
+  `r f1(hetv("Sexo", "Mujeres", "dur_coef"))`. Difference $p$ = `r f3(difp("Sexo"))` — **distinguishable**.
+- **Age** ($p$ = `r f3(difp("Edad"))`) and **COVID-19 exposure** ($p$ = `r f2(difp("Exposición a COVID-19"))`)
+  point the same way but are **not** distinguishable. Suggestive, not findings.
+
+No subgroup shows a detectable three-year earnings gain. The *only* reemployment-wage
+gain significant at 5% accrues to workers already **above** the median
+(\$`r fm(hetv("Ingreso previo", "Por arriba de la mediana", "wage_coef"))`,
+$p$ = `r f3(hetv("Ingreso previo", "Por arriba de la mediana", "wage_pv"))`).
+
+## Longer search, or exit into informality?
+
+These data cannot tell the two apart. A worker who withdraws and then works informally
+or on her own account looks exactly like one still searching.
+
+There is reason to think the second margin is real: @britto2022 finds 57% of the
+displaced formal employment offset informally; @gerard2021 shows the efficiency cost
+is lower where formal reentry is unlikely; and for Mexico, @carreñogodínez2025 finds
+RPD eligibility raises transitions into **self-employment**.
+
+::: {.block}
+### The retirement conclusion is invariant
+If much of the `r f1(rp("duration_36"))` weeks is informal work, the *consumption*
+cost is smaller than it looks. The *pension* cost is identical either way: neither
+informal work nor self-employment generates contributions or accrues weeks.
+:::
+
+# What it costs at retirement
+
+## Two channels, one compounding factor
+
+::: {.columns}
+::: {.column width="46%"}
+**Channel 1** — the withdrawal stops compounding:
+$W(1+r)^n$
+
+**Channel 2** — contributions never made during the induced non-employment:
+$\bar{w} \cdot c \cdot \Delta \cdot (1+r)^n$
+
+Both compound at the same rate, so channel 2's *share* is invariant to $r$ — no need
+to take a stand on returns.
+:::
+::: {.column width="54%"}
+```{r}
+#| label: fig-channels
+fig_slides("fig_pension_channels_en", width = 2.8, height = 1.6)
+```
+:::
+:::
+
+At the sample's own values (\$`r fm(cst("withdrawal"))` withdrawn, \$`r fm(cst("wage"))`
+monthly wage, `r f1(cst("weeks"))` extra weeks, `r f1(0.065 * 100)`% contribution rate,
+40 years): the loss is **`r f1(min(cost$multiple[cost$c_rate == 0.065]))`–`r f1(max(cost$multiple[cost$c_rate == 0.065]))`×
+the amount withdrawn**, `r round(cst("share2") * 100)`% of it from the unemployment.
+
+## The burden is regressive in the ratio
+
+```{r}
+#| label: fig-quintiles
+#| layout-ncol: 2
+fig_slides("fig_retiro_saldo_en", width = 2.5, height = 1.78)
+fig_slides("fig_retiro_semanas_en", width = 2.5, height = 1.78)
+```
+
+Low-wage users withdraw a **larger share** of a smaller balance:
+`r f1(shares$prop_25[1] * 100)`% of Q1 withdrawals take a quarter or more of the account,
+against `r f1(shares$prop_25[5] * 100)`% in Q5.
+
+# Takeaways
+
+## Takeaways
+
+1. **The individual-account prediction does not survive.** A benefit funded entirely
+   from the worker's own savings still produces a large duration response —
+   `r f1(rp("duration_36"))` weeks — with no matching gain.
+
+2. **The pattern looks like liquidity, not classical moral hazard.** A large response,
+   no compensating improvement, and a cost concentrated among below-median earners and
+   among men — the two contrasts that survive a formal test.
+
+3. **The cost is paid in the pension, and most of it is invisible.**
+   `r f1(cst("multiple"))`× the withdrawal at a 4% real return, of which
+   `r round(cst("share2") * 100)`% comes from the induced unemployment rather than the
+   withdrawal itself.
+
+4. **The cost moves with the cycle; the program's parameters do not.** How much
+   reemployment the liquidity displaces depends on how much reemployment is available
+   to displace [@chetty2008].
+
+## References {.allowframebreaks}
+
+::: {#refs}
+:::
+
+```{=latex}
+\backupstart
+```
+
+# Backup
+
+```{r}
+#| label: summary-prep
+#| include: false
+
+# tabla_resumen_esp is the AMAFORE companion paper's summary target: Spanish labels,
+# raw numerics. Translate the labels here and pick a formatter per row, since the
+# same column mixes proportions, calendar years, weeks and pesos.
+resumen_en <- tibble::tribble(
+  ~etiqueta,                                      ~Variable,                              ~kind,
+  "Mujer (proporción)",                           "Female",                               "prop",
+  "Fecha de nacimiento (año)",                    "Year of birth",                        "year",
+  "Inicio de vida laboral formal (año)",          "Year of entry to formal work",         "year",
+  "Fecha de separación (año)",                    "Year of displacement",                 "year",
+  "Edad a la separación (años)",                  "Age at displacement",                  "num",
+  "Días desde la apertura de la cuenta",          "Days since account opened",            "int",
+  "Sin CURP (proporción)",                        "No CURP",                              "prop",
+  "Duración del empleo previo (semanas)",         "Previous job duration (weeks)",        "num",
+  "Salario mensual, empleo previo (MXN 2024)",    "Previous job, monthly wage",           "int",
+  "Ingresos totales, empleo previo (MXN 2024)",   "Previous job, total earnings",         "int",
+  "Monto retirado (MXN 2024)",                    "Amount withdrawn",                     "int",
+  "Saldo RCV al momento del retiro (MXN 2024)",   "RCV balance at withdrawal",            "int",
+  "Semanas cotizadas al momento del retiro",      "Contribution weeks at withdrawal",     "num",
+  "Días entre la separación y el retiro",         "Days from displacement to withdrawal", "int",
+  "Días de salario retirados",                    "Days of wages withdrawn",              "int",
+  "Sigue desempleado a 3 meses (proporción)",     "Still out of formal work, 3 months",   "prop",
+  "Sigue desempleado a 36 meses (proporción)",    "Still out of formal work, 36 months",  "prop",
+  "Semanas de desempleo, censuradas a 3 meses",   "Weeks out of formal work, 3 months",   "num",
+  "Semanas de desempleo, censuradas a 36 meses",  "Weeks out of formal work, 36 months",  "num",
+  "Duración del siguiente empleo (semanas)",      "Next job duration (weeks)",            "num",
+  "Salario mensual, siguiente empleo (MXN 2024)", "Next job, monthly wage",               "int",
+  "Ingresos totales, siguiente empleo (MXN 2024)","Next job, total earnings",             "int",
+  "Ingresos totales a 3 años (MXN 2024)",         "Cumulative earnings, 3 years",         "int",
+  "Salario mensual promedio a 3 años (MXN 2024)", "Average monthly wage, 3 years",        "int",
+  "Meses trabajados a 3 años",                    "Months worked, 3 years",               "int"
+)
+
+fmt_kind <- function(x, kind) {
+  out <- character(length(x))
+  out[kind == "prop"] <- f3(x[kind == "prop"])
+  out[kind == "year"] <- formatC(x[kind == "year"], format = "f", digits = 1)
+  out[kind == "num"]  <- f1(x[kind == "num"])
+  out[kind == "int"]  <- fm(x[kind == "int"])
+  out
+}
+
+summary_slide <- function(groups) {
+  resumen |>
+    filter(grupo %in% groups) |>
+    left_join(resumen_en, by = "etiqueta") |>
+    mutate(
+      Mean = fmt_kind(media, kind),
+      Median = fmt_kind(mediana, kind),
+      SD = fmt_kind(de, kind),
+      N = fm(n)
+    ) |>
+    select(Variable, Mean, Median, SD, N) |>
+    kbl(format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+        col.names = c("Variable", "Mean", "Median", "Std. dev.", "N"),
+        align = c("l", "r", "r", "r", "r")) |>
+    kable_styling(font_size = 6, latex_options = "hold_position") |>
+    column_spec(1, width = "6.0cm") |>
+    column_spec(2:5, width = "1.7cm")
+}
+```
+
+## Summary statistics: covariates and previous job
+
+```{r}
+#| label: tbl-summary
+summary_slide(c("Covariables", "Empleo previo"))
+```
+
+## Summary statistics: the withdrawal and job search
+
+```{r}
+#| label: tbl-summary2
+summary_slide(c("Retiro (RPD)", "Búsqueda de empleo"))
+```
+
+Withdrawal variables are defined on the subsample that used the program.
+
+## Summary statistics: next job and medium term
+
+```{r}
+#| label: tbl-summary3
+summary_slide(c("Siguiente empleo", "Mediano plazo"))
+```
+
+Monetary values in 2024 Mexican pesos.
+
+## Covariate balance, with the Holm correction
+
+```{r}
+#| label: tbl-balance
+balance |>
+  mutate(
+    holm = p.adjust(pv, method = "holm"),
+    Covariate = c("Female", "Date of birth", "Entry to formal work",
+                  "Date of displacement", "Age", "Days since account opened",
+                  "No CURP", "Previous job duration (wks)",
+                  "Previous job total earnings", "Previous job monthly wage"),
+    Effect = fm(coef), SE = paste0("(", fm(se), ")"),
+    p = f3(pv), Holm = f3(holm)
+  ) |>
+  select(Covariate, Effect, SE, p, Holm) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+      col.names = c("Covariate", "Effect", "Std. err.", "$p$", "Holm $p$"),
+      align = c("l", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 7, latex_options = "hold_position") |>
+  column_spec(1, width = "5.0cm") |>
+  column_spec(2:5, width = "1.9cm") |>
+  footnote(general = paste("Sharp RD estimates of the eligibility effect on each",
+                           "covariate. Holm-adjusted p-values across the 10 tests."),
+           general_title = "Note: ", threeparttable = TRUE, escape = FALSE,
+           footnote_as_chunk = TRUE)
+```
+
+## Reduced-form (ITT) estimates
+
+```{r}
+#| label: tbl-itt
+itt |>
+  mutate(
+    Outcome = c("RPD take-up at 12 months (first stage)",
+                "Still out of formal work at 3 months",
+                "Weeks out of formal work, 36 months",
+                "Monthly earnings, next job",
+                "Total earnings, next job",
+                "Next job duration (weeks)",
+                "Cumulative earnings, 3 years",
+                "Months worked, 3 years"),
+    Effect = ifelse(abs(coef) < 1, f3(coef), fm(coef)),
+    SE = paste0("(", ifelse(abs(se) < 1, f3(se), fm(se)), ")"),
+    p = f3(pv), N = fm(n_efectivo)
+  ) |>
+  select(Outcome, Effect, SE, p, N) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+      col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Eff. N"),
+      align = c("l", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 6, latex_options = "hold_position") |>
+  column_spec(1, width = "5.6cm") |>
+  column_spec(2:5, width = "1.9cm")
+```
+
+No reduced-form effect is significant at 5% — what a `r f1(pe$coef * 100)` pp first
+stage implies. Reduced form ÷ first stage ≠ the LATE: each estimate picks its own
+bandwidth.
+
+## Sensitivity to the bandwidth
+
+```{r}
+#| label: fig-bw
+fig_slides("bw_plot_slides", width = 4.9, height = 1.82)
+```
+
+Positive throughout; significance concentrates near the optimal bandwidth, and the
+estimate attenuates as the window widens.
+
+## Discontinuities in the two main outcomes
+
+```{r}
+#| label: fig-rdoutcome
+fig_slides("rd_outcome_plot_slides", width = 5.2, height = 2.25)
+```
+
+## Take-up at every horizon
+
+```{r}
+#| label: fig-takeup-panels
+fig_slides("take_up_plots_long", width = 8.6, height = 3.61, show = 5.2)
+```
+
+## Covariate continuity
+
+```{r}
+#| label: fig-cov
+fig_slides("covariates_plots_long", width = 8.6, height = 3.61, show = 5.2)
+```
+
+## Previous-job continuity
+
+```{r}
+#| label: fig-prevjob
+fig_slides("prev_job_plots", width = 7.2, height = 3.57, show = 4.4)
+```
+
+## Survival in non-employment, by horizon
+
+```{r}
+#| label: fig-surv
+fig_slides("survival_plots_long", width = 8.6, height = 3.61, show = 5.2)
+```
+
+## Duration of non-employment, by horizon
+
+```{r}
+#| label: fig-dur
+fig_slides("duration_plots_long", width = 8.6, height = 3.61, show = 5.2)
+```
+
+## Heterogeneity: the underlying estimates
+
+```{r}
+#| label: tbl-het
+het |>
+  mutate(
+    Split = unname(c("Ingreso previo" = "Prior earnings", "Edad" = "Age",
+                     "Sexo" = "Sex", "Exposición a COVID-19" = "COVID-19")[grupo]),
+    Subgroup = unname(c(
+      "Por debajo de la mediana" = "Below median",
+      "Por arriba de la mediana" = "Above median",
+      "Hombres" = "Men", "Mujeres" = "Women",
+      "Separación antes de marzo 2019" = "Before Mar 2019",
+      "Separación después de marzo 2020" = "After Mar 2020")[subgrupo]),
+    Duration = paste0(f1(dur_coef), " (", f1(dur_se), ")"),
+    `Dur. p` = f3(dur_pv),
+    Earnings = paste0(fm(ing_coef), " (", fm(ing_se), ")"),
+    Wage = paste0(fm(wage_coef), " (", fm(wage_se), ")"),
+    `Diff. p` = f3(dif_pv)
+  ) |>
+  select(Split, Subgroup, Duration, `Dur. p`, Earnings, Wage, `Diff. p`) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+      align = c("l", "l", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 6.5, latex_options = "hold_position") |>
+  footnote(general = paste(
+    "Duration is weeks out of formal work over 36 months; Earnings is cumulative",
+    "three-year earnings; Wage is monthly earnings in the next job. Standard errors",
+    "in parentheses. Diff. p tests the difference between the two halves of each",
+    "split on the duration outcome; subsamples are disjoint, so the variance of the",
+    "difference is the sum of the variances."),
+    general_title = "Note: ", threeparttable = TRUE, escape = FALSE,
+    footnote_as_chunk = TRUE)
+```
+
+## Pension cost: the full grid
+
+```{r}
+#| label: tbl-pension
+cost |>
+  mutate(
+    Rate = pct(rate, 0),
+    `Contrib. rate` = pct(c_rate, 1),
+    `Channel 1` = fm(channel1), `Channel 2` = fm(channel2),
+    Total = fm(total), Multiple = paste0(f1(multiple), "x"),
+    `Ch. 2 share` = pct(share2, 1)
+  ) |>
+  select(Rate, `Contrib. rate`, `Channel 1`, `Channel 2`, Total, Multiple,
+         `Ch. 2 share`) |>
+  kbl(format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
+      linesep = "",
+      align = c("r", "r", "r", "r", "r", "r", "r")) |>
+  kable_styling(font_size = 7, latex_options = "hold_position") |>
+  footnote(general = paste(
+    "Illustrative, not actuarial: constant real return, no fees, no partial recovery",
+    "of contributions after reemployment. It combines a complier LATE (the extra",
+    "weeks) with sample means (the withdrawal and the prior wage), so it describes a",
+    "worker of average characteristics induced by the eligibility rule. The 6.5%",
+    "contribution rate is the one in force over the estimation window; 15% is the",
+    "2020 reform ceiling."),
+    general_title = "Note: ", threeparttable = TRUE, escape = FALSE,
+    footnote_as_chunk = TRUE)
+```
+
+## Aggregate cost of the program to date
+
+Applying the same two channels to the whole withdrawal registry, at a
+`r f1(0.04 * 100)`% real return and the `r f1(0.065 * 100)`% contribution rate:
+
+- \$`r bn(agg("monto_2024"))` bn withdrawn (2024 pesos), across `r fm(agg("n_retiros"))` withdrawals
+- \$`r bn(agg("canal1"))` bn once capitalised — channel 1
+- \$`r bn(agg("canal2"))` bn of contributions never made — channel 2
+- **\$`r bn(agg("total"))` bn total**, a markup of `r f2(agg("markup"))`× on the capitalised withdrawals alone
+
+Note the channel-2 share here is `r round(agg("canal2") / agg("total") * 100)`%, not
+the `r round(cst("share2") * 100)`% of the individual calculation: the registry uses
+its own wage distribution rather than the estimation sample's mean, and the estimation
+sample sits at the two-year threshold where withdrawals are small relative to wages.
+
+## Limitations
+
+- **External validity.** The LATE describes compliers displaced in their third year of
+  formal work. Not the average user, not the average worker.
+- **Informality is unobserved.** See the discussion above; it bounds the consumption
+  interpretation but not the pension one.
+- **Precision.** The second-stage confidence intervals are wide
+  (36-month duration: `r f1(rp("duration_36") - 1.96 * rp("duration_36", "se"))`–`r f1(rp("duration_36") + 1.96 * rp("duration_36", "se"))` weeks).
+- **Control-group contamination.** Ineligible workers become eligible under Scheme B
+  within the three-year window, so long-horizon estimates are a lower bound.
+
+```{=latex}
+\backupend
+```

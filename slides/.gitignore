@@ -1,0 +1,9 @@
+# Figure cache: regenerated on demand from the targets store (see fig_slides()
+# in rpd-talk.qmd). Safe to delete; the next render rebuilds it.
+_figuras/
+/.quarto/
+**/*.quarto_ipynb
+
+# The repo root ignores *.tex, which would swallow the beamer theme. It is
+# source, not build output.
+!beamer-rpd.tex
