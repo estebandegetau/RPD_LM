@@ -7,6 +7,9 @@ institute:  |
   Instituto Mexicano del Seguro Social, Barcelona School of Economics
 date: 2026-08-14
 date-format: long
+# The venue printed alongside the date is \rpdvenue in slides/beamer-rpd.tex. It cannot
+# live here: the title page renders only title/subtitle/author/institute/date, so a
+# `venue:` key would be dropped without a warning -- as `email:` above already is.
 bibliography: ../references.bib
 csl: ../amafore/apa.csl
 format:

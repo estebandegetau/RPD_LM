@@ -122,6 +122,14 @@
 %% ---- title page --------------------------------------------------------------------
 %% Flush left, no band, no logo. Quarto's before-body.tex emits \frame{\titlepage}
 %% automatically whenever `title` is set, so this template is the whole story.
+%%
+%% The venue lives here rather than in the qmd front matter because the title page can
+%% only print the five variables beamer knows about (title, subtitle, author, institute,
+%% date); an invented `venue:` key in the YAML is dropped in silence, exactly as the
+%% deck's existing `email:` key already is. \providecommand, not \newcommand, so the
+%% deck still compiles if the string is ever supplied from somewhere else. Blank it for
+%% a non-conference showing and the date prints on its own -- see the guard below.
+\providecommand{\rpdvenue}{ITAM Alumni Conference, Mexico City}
 \setbeamertemplate{title page}{%
   \vfill
   {\usebeamerfont{title}\usebeamercolor[fg]{title}\raggedright\inserttitle\par}%
@@ -133,7 +141,11 @@
   \vspace{0.15em}%
   {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}%
   \vspace{0.8em}%
-  {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%
+  %% Venue and date share one line, and so share the `date' element's muted colour and
+  %% \small sans face: no separate beamercolor/beamerfont is wanted here. The guard
+  %% keeps an empty \rpdvenue from leaving a dangling separator in front of the date.
+  {\usebeamerfont{date}\usebeamercolor[fg]{date}%
+   \ifx\rpdvenue\@empty\else\rpdvenue{}\ \textperiodcentered\ \fi\insertdate\par}%
   \vfill
 }
 
