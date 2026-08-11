@@ -19,6 +19,33 @@ abstract: |
   I study the labor market effects of Mexico’s Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw pension savings. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I first show that eligibility increases program take-up by 3.6 percentage points twelve months after displacement. Leveraging these take-up data, I estimate the local average treatment effect on compliers and find that RPD use prolongs time out of formal employment by 36 weeks over three years, without gains in reemployment wages, job stability, or cumulative formal earnings. Testing differences between subgroups directly, the cost concentrates on workers with below-median prior earnings and on men; the analogous gradients by age and by pandemic exposure are suggestive but not statistically distinguishable. No subgroup shows a detectable gain in three-year cumulative earnings, and the only reemployment-wage gain significant at the 5% level accrues to workers already above the median. Because the additional weeks are weeks without pension contributions, the cost compounds until retirement: the loss in accumulated balance is several times the sum withdrawn, and roughly two fifths of it stems from the induced unemployment rather than from the withdrawal itself. The results suggest that while RPD provides short-term liquidity, it does not improve long-term outcomes and may exacerbate inequalities.
 thanks: |
   This paper began as my dissertation at the Instituto Tecnológico Autónomo de México for the MS in Applied Economics, and is now part of my doctoral research. I thank Adrián Rubli for guidance and valuable discussions. I am also grateful to Horacio Larreguy, Enrique Seira, Claudia Aburto and Martha Angélica León Alvarado for comments and suggestions, as well as to participants in Horacio’s research seminar for helpful feedback.
+format:
+  # html:
+  #   comments:
+  #     hypothesis: true
+  #   title-block-banner: true
+  #   toc: true
+  #   code-links:
+  #     - icon: github
+  #       text: Source Code
+  #       href: https://github.com/estebandegetau/RPD_LM
+  #   fig-cap-location: top
+  pdf:
+    fontfamily: libertinus
+    dpi: 300
+    colorlinks: true
+    include-in-header:
+      text: |
+        \usepackage{lscape}
+        \newcommand{\blandscape}{\begin{landscape}}
+        \newcommand{\elandscape}{\end{landscape}}
+        \usepackage{amsmath}
+    includes:
+      in_header: 'gt_packages.sty'
+    number-sections: false
+    link-citations: true
+    notebook-links: false
+    fig-cap-location: top
 ---
 
 {{< include sections/intro.qmd >}}

@@ -1,6 +1,7 @@
 project:
   render:
     - wp.qmd
+    - slides/rpd-talk.qmd
 
 
 format:

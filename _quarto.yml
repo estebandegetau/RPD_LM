@@ -1,13 +1,11 @@
 project:
   type: default
   output-dir: _manuscript
-  # render: 
-  #   - "sections/"
-  # - "notebooks/thesis.qmd"
-    # - "presentations/full_slides.qmd"
+  render:
+      - wp.qmd
+      - slides/rpd-talk.qmd
 
-# manuscript:
-#   article: index.qmd
+
 
 profile:
   default: wp
@@ -19,6 +17,7 @@ execute:
   message: false
 
 bibliography: references.bib
+citeproc: true
 
-# Add the wp profile
-
+license: "CC BY-NC"
+keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
