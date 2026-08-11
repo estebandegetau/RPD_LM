@@ -10,6 +10,60 @@ fuzzy_rd_footnote <- "This table reports the estimated coefficient of interest f
 
 fuzzy_rd_footnote_beamer <- "This table presents the estimated coefficient of interest from Equation 3, using program take-up at 12 months after displacement as the treatment variable. Estimates are obtained using a local linear regression with a triangular kernel, optimal bandwidth selection, and a linear polynomial. Bias-corrected point estimates and robust standard errors are computed following the method of Cattaneo, Idrobo, and Titiunik (2024)."
 
+
+# --- tinytable helpers for the working paper ---------------------------------------
+#
+# The WP renders through Typst (see wp.qmd), where kableExtra cannot be used: it
+# selects its backend with knitr::is_latex_output(), gets FALSE, and emits HTML,
+# which halts the render. These wrappers standardise the tinytable equivalents of
+# the kable_styling()/column_spec()/footnote() chains they replace.
+
+#' Table note, formatted as the WP's tables expect it
+#'
+#' Replaces `kableExtra::footnote(general = , general_title = "Note:", ...)`.
+#' The markup is Typst: `_x_` is emphasis and `#text(size:)` sets the size, both
+#' of which pass through tinytable untouched because it does not escape cells.
+my_note <- function(...) {
+    paste0("#text(size: 0.85em)[_Note:_ ", paste0(..., collapse = ""), "]")
+}
+
+#' Make data-derived cell contents safe for Typst
+#'
+#' tinytable deliberately does not escape cells -- that is what lets the notes
+#' and group labels above carry Typst markup -- so anything coming out of the
+#' data has to be neutralised by hand. `<` is the one that actually bites: Typst
+#' reads `<0.001` as the opening of a label and the render dies with "unclosed
+#' label". The rest are included because they would misfire the same way if they
+#' ever appeared. Do NOT apply this to columns that hold hand-written `$...$`
+#' math -- those are meant to reach Typst intact.
+my_escape <- function(x) {
+    stringr::str_replace_all(as.character(x), "([\\\\#$<>@*_])", "\\\\\\1")
+}
+
+#' Attach a note to a table that has already been built
+#'
+#' `my_note()` covers the case where the note is passed to `tt(notes = )`; this
+#' one covers tables that arrive already assembled, as everything coming out of
+#' `my_modelsummary()` does.
+my_add_note <- function(x, ...) {
+    x@notes <- list(my_note(...))
+    x
+}
+
+#' Column widths as fractions of the text width
+#'
+#' Replaces `column_spec(1, width = "11em")` etc. `first` is the share taken by
+#' the outcome-label column; the remaining estimate columns split what is left
+#' evenly. Setting explicit widths also does the job that
+#' `kable_styling(latex_options = "scale_down")` used to do, since Typst has no
+#' equivalent of scale_down: the table is laid out to the text width instead of
+#' being shrunk to fit after the fact.
+my_widths <- function(x, first = 0.28) {
+    n <- x@ncol
+    x@width <- c(first, rep((1 - first) / (n - 1), n - 1))
+    x
+}
+
 make_eligibility_plot <- function() {
     a <- ggplot() +
         geom_rect(aes(
@@ -419,11 +473,9 @@ my_medium_table <- function(x) {
     x |>
         mutate(label = unemp_year) |>
         my_modelsummary() |>
-        kable_styling(
-            latex_options = "scale_down",
-        ) |>
-        column_spec(1, width = "11em") |>
-        column_spec(2:5, width = "6em")
+        my_widths(first = 0.28) |>
+        tinytable::style_tt(j = 1, align = "l") |>
+        tinytable::style_tt(fontsize = 0.8)
 }
 
 
@@ -446,12 +498,11 @@ clean_hate <- function(x) {
 }
 
 print_hate <- function(x) {
+    # Nine columns. A narrower label column and 0.7em type are what keep this
+    # inside the text block now that scale_down is gone.
     x |>
         my_modelsummary() |>
-        kable_styling(
-            latex_options = "scale_down",
-            font_size = 8
-        ) |>
-        column_spec(1, width = "12em") |>
-        column_spec(2:9, width = "4.5em")
+        my_widths(first = 0.22) |>
+        tinytable::style_tt(j = 1, align = "l") |>
+        tinytable::style_tt(fontsize = 0.7)
 }

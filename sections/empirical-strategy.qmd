@@ -10,14 +10,13 @@ gc()
 pacman::p_load(
   tidyverse,
   here,
-  gt,
   gtsummary,
   fixest,
   arrow,
   ggpubr,
   modelsummary,
   knitr,
-  kableExtra,
+  tinytable,
   targets
 )
 
@@ -27,7 +26,9 @@ tar_config_set(store = here("_targets"))
 
 tar_source(files = here("R"))
 
-theme_set(theme_minimal())
+# TeX Gyre Heros is the sansfont in wp.qmd, and is visible to both Typst and R.
+# Setting it here is what makes figure text match the captions around it.
+theme_set(theme_minimal(base_family = "TeX Gyre Heros"))
 
 ```
 
@@ -120,22 +121,23 @@ tar_read(balance_table_esp) |>
         h          = round(h)
     ) |>
     select(covariable, coef, se, pv, pv_holm, n_efectivo, h) |>
-    kbl(
-        booktabs = TRUE, escape = FALSE,
-        col.names = c("Covariate", "RD effect", "Std. err.", "$p$",
-                      "$p$ (Holm)", "Eff. $N$", "$h$ (days)"),
-        align = c("l", "r", "r", "r", "r", "r", "r")
+    # The `$...$` spans in the column names and in the p-value cells are Typst
+    # math, and happen to be spelled the same way they were in LaTeX. tinytable
+    # does not escape cell contents, so they pass through as written.
+    setNames(c("Covariate", "RD effect", "Std. err.", "$p$",
+               "$p$ (Holm)", "Eff. $N$", "$h$ (days)")) |>
+    tt(
+        width = c(0.28, rep(0.12, 6)),
+        notes = my_note(
+            "Sharp RD (reduced form) estimates for each predetermined covariate, with a ",
+            "local linear polynomial, triangular kernel, optimal bandwidth (Calonico et ",
+            "al., 2020) and robust bias-corrected p-values (Calonico et al., 2014). The ",
+            "Holm column corrects for the ten simultaneous tests; under that adjustment ",
+            "no covariate retains significance at the 5 percent level."
+        )
     ) |>
-    kable_styling(latex_options = "hold_position", font_size = 9) |>
-    column_spec(1, width = "13em") |>
-    footnote(
-        # No literal percent sign: this string is passed through with escape = FALSE, and
-        # LaTeX would read it as a comment, silently truncating the note.
-        general = "Sharp RD (reduced form) estimates for each predetermined covariate, with a local linear polynomial, triangular kernel, optimal bandwidth (Calonico et al., 2020) and robust bias-corrected p-values (Calonico et al., 2014). The Holm column corrects for the ten simultaneous tests; under that adjustment no covariate retains significance at the 5 percent level.",
-        general_title = "Note:",
-        threeparttable = TRUE,
-        escape = FALSE,
-        footnote_as_chunk = TRUE
-    )
+    style_tt(j = 1, align = "l") |>
+    style_tt(j = 2:7, align = "r") |>
+    style_tt(fontsize = 0.8)
 
 ```

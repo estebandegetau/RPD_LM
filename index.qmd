@@ -1,0 +1,14 @@
+---
+format: html
+other-links:
+    - icon: file-earmark-pdf
+      text: "Article"
+      href: https://www.estebandegetau.com/RPD_LM/wp.pdf
+    - icon: file-earmark-slides
+      text: "Slides"
+      href: https://www.estebandegetau.com/RPD_LM/slides/rpd-talk.pdf
+code-links:
+      - text: Source Code
+        icon: file-code
+        href: https://github.com/estebandegetau/RPD_LM
+---

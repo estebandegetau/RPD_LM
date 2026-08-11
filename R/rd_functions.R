@@ -276,11 +276,17 @@ my_modelsummary <- function(x, digits = 2) {
 
   named_list <- as.list(setNames(models, names))
 
+  # tinytable, not kableExtra: kableExtra picks its backend from
+  # knitr::is_latex_output(), which is FALSE under Typst, so it emits HTML and
+  # knitr aborts the render ("Functions that produce HTML output found in
+  # document targeting typst output"). tinytable has a native Typst writer and
+  # detects the target itself via knitr::pandoc_to(), so the output format is
+  # deliberately left unset here.
   y <- modelsummary::modelsummary(
     named_list,
     escape = FALSE,
     fmt = digits,
-    output = "kableExtra"
+    output = "tinytable"
   )
   y
 }

@@ -4,34 +4,12 @@ project:
     - slides/rpd-talk.qmd
 
 
-format:
-  # html:
-  #   comments:
-  #     hypothesis: true
-  #   title-block-banner: true
-  #   toc: true
-  #   code-links:
-  #     - icon: github
-  #       text: Source Code
-  #       href: https://github.com/estebandegetau/RPD_LM
-  #   fig-cap-location: top
-  pdf:
-    fontfamily: libertinus
-    dpi: 300
-    colorlinks: true
-    include-in-header:
-      text: |
-        \usepackage{lscape}
-        \newcommand{\blandscape}{\begin{landscape}}
-        \newcommand{\elandscape}{\end{landscape}}
-        \usepackage{amsmath}
-    includes:
-      in_header: 'gt_packages.sty'
-    number-sections: false
-    link-citations: true
-    notebook-links: false
-    fig-cap-location: top
-
+# Deliberately no project-level `format:` block. Both documents in the render
+# list declare their own -- wp.qmd `academic-typst`, the deck `beamer` -- and a
+# document-level format replaces the project-level one entirely, so anything set
+# here would be dead config for both. The LaTeX block that used to live here
+# (lscape macros, gt_packages.sty, fontfamily: libertinus) went with the move to
+# Typst; gt_packages.sty is still needed by the thesis, which renders via LaTeX.
 
 keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
 

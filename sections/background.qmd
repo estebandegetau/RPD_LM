@@ -9,14 +9,13 @@ gc()
 pacman::p_load(
   tidyverse,
   here,
-  gt,
   gtsummary,
   fixest,
   arrow,
   ggpubr,
   modelsummary,
   knitr,
-  kableExtra,
+  tinytable,
   targets
 )
 
@@ -26,7 +25,9 @@ tar_config_set(store = here("_targets"))
 
 tar_source(files = here("R"))
 
-theme_set(theme_minimal())
+# TeX Gyre Heros is the sansfont in wp.qmd, and is visible to both Typst and R.
+# Setting it here is what makes figure text match the captions around it.
+theme_set(theme_minimal(base_family = "TeX Gyre Heros"))
 
 ```
 

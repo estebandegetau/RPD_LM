@@ -340,13 +340,19 @@ list(
     name = duration_plots_long,
     command = make_duration_plots(rd_data, nrow = 2, ncol = 3)
   ),
-  tar_quarto(
-    thesis,
-    quiet = F,
-    execute = T,
-    cache_refresh = T,
-    profile = "thesis"
-    ),
+  # La tesis de maestría ya no se renderiza desde el pipeline. Comparte
+  # sections/*.qmd con el WP, y esas secciones ahora producen tablas de
+  # tinytable para Typst en lugar de kableExtra para LaTeX, de modo que el
+  # render en PDF de la tesis fallaría. La tesis es reproducible desde el
+  # historial de git a partir de e932286 ("WP is now the default rendering;
+  # Master's thesis will only be reproducible through git history").
+  # tar_quarto(
+  #   thesis,
+  #   quiet = F,
+  #   execute = T,
+  #   cache_refresh = T,
+  #   profile = "thesis"
+  #   ),
   tar_quarto(
     wp,
     quiet = F,

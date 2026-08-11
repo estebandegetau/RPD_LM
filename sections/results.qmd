@@ -9,14 +9,13 @@ gc()
 pacman::p_load(
   tidyverse,
   here,
-  gt,
   gtsummary,
   fixest,
   arrow,
   ggpubr,
   modelsummary,
   knitr,
-  kableExtra,
+  tinytable,
   targets
 )
 
@@ -26,7 +25,9 @@ tar_config_set(store = here("_targets"))
 
 tar_source(files = here("R"))
 
-theme_set(theme_minimal())
+# TeX Gyre Heros is the sansfont in wp.qmd, and is visible to both Typst and R.
+# Setting it here is what makes figure text match the captions around it.
+theme_set(theme_minimal(base_family = "TeX Gyre Heros"))
 
 # --- Figures quoted in the prose --------------------------------------------------------
 # Numbers in the text are read from the pipeline rather than typed. They used to be
@@ -81,7 +82,7 @@ This section presents evidence that workers eligible to the RPD program (with at
 
 @fig-first-stage shows that displaced workers just above the eligibility threshold are more likely to access the RPD program to withdraw funds from their pension account. Crossing the threshold raises the probability of using the program within twelve months by `r f1(pe$coef * 100)` percentage points (standard error `r f1(pe$se * 100)`), estimated on `r fm(pe$n_efectivo)` observations inside an optimal bandwidth of ±`r round(pe$h)` days. The first stage is strong: the $t$ statistic of `r f1(pe$t)` corresponds to an $F$ statistic of `r round(pe$f)`, far above conventional weak-instrument thresholds, so the second-stage estimates are not contaminated by a weak instrument. Inference from @fig-first-stage-path and @tbl-take-up confirms that the take-up discontinuity rises from `r f1(fs_pp(2))` percentage points two months after displacement to `r f1(fs_pp(12))` points at twelve months, and stabilizes near `r f1(fs_pp(24))` points by month 24.
 
-Interestingly, @fig-first-stage shows that take-up increases among initially ineligible workers after the twelfth month following displacement. This pattern should not be interpreted as conventional non-compliance. Rather, it reflects a change in eligibility status over time. Under Eligibility Mode B, workers become eligible for the RPD program once they accumulate at least five years of participation in the formal labor market, regardless of their contribution history (see @sec-context and @fig-eligibility). Given that the analytic sample is restricted to individuals displaced between their third and fourth year in the formal sector, these workers only reach the five-year threshold approximately one year after displacement. Once eligible, they take up the program at rates comparable to the original compliers, which accounts for the observed stabilization in the intent-to-treat (ITT) effect after month 12 (see @fig-first-stage-path).
+Interestingly, @fig-first-stage shows that take-up increases among initially ineligible workers after the twelfth month following displacement. This pattern should not be interpreted as conventional non-compliance. Rather, it reflects a change in eligibility status over time. Under Eligibility Mode B, workers become eligible for the RPD program once they accumulate at least five years of participation in the formal labor market, regardless of their contribution history (see [the institutional background section](#sec-context) and @fig-eligibility). Given that the analytic sample is restricted to individuals displaced between their third and fourth year in the formal sector, these workers only reach the five-year threshold approximately one year after displacement. Once eligible, they take up the program at rates comparable to the original compliers, which accounts for the observed stabilization in the intent-to-treat (ITT) effect after month 12 (see @fig-first-stage-path).
 
 @tbl-take-up confirms that the ITT effect on program take-up is highly statistically significant, albeit small in magnitude. This justifies the use of a fuzzy RDD strategy to estimate the local average treatment effect of RPD on labor market outcomes among compliers. The modest size of the first-stage effect is consistent with the institutional design of the RPD program: unlike traditional unemployment insurance schemes, RPD allows only a partial withdrawal from workers’ own pension accounts. It is, by design, a self-financed benefit that internalizes the cost of unemployment support.
 
@@ -135,19 +136,10 @@ take_up_table <- tar_read(take_up) |>
 
 take_up_table |>
     my_modelsummary(digits = 3) |>
-    kable_styling(
-        latex_options = "scale_down",
-        full_width = F
-    ) |>
-    column_spec(1, width = "11em") |>
-    column_spec(2:6, width = "5em") |>
-    footnote(
-        general = rdd_footnote,
-        general_title = "Note:",
-        threeparttable = T,
-        escape = F,
-        footnote_as_chunk = T
-    )
+    my_widths(first = 0.24) |>
+    my_add_note(rdd_footnote) |>
+    style_tt(j = 1, align = "l") |>
+    style_tt(fontsize = 0.8)
 
 ```
 
@@ -160,7 +152,7 @@ I now turn to the effects of RPD take-up on labor market outcomes, estimated usi
 
 For completeness, Appendix @fig-survival, @fig-duration, and @fig-path, along with @tbl-job-search, present intention-to-treat (ITT) estimates for the same outcomes, as described in @eq-1s, as well as the corresponding RD plots. The ITT estimates show smaller effects than those reported in comparable international settings. For instance, @britto2022 finds that a lump-sum unemployment benefit program in Brazil increased employment survival by 1.9 percentage points after three months, whereas the estimated effect of RPD is just 0.7 percentage points over the same period. Similarly, @velázquezguadarrama2023, using ENOE survey data, reports that eligibility to RPD increases unemployment duration by 11.8 weeks (or 82.85 days), while the ITT estimate from this study points to a much smaller increase of just 0.65 weeks over a three-year horizon. Importantly, none of the ITT estimates reported here are statistically significant at the 5% level.
 
-Turning to employment quality, Table @tbl-fuzzy-job-search-2 reports the estimated effects of RPD take-up on post-displacement outcomes such as earnings and job duration. The composition of re-employed workers appears similar around the eligibility threshold in terms of prior earnings (see column 4), suggesting no substantial selection effects. However, there is limited evidence that RPD take-up improves subsequent job quality. The point estimate for monthly earnings in the next job is sizeable — \$`r fm(rp("next_job_av_earnings"))` MXN, against a mean of \$`r fm(rp("next_job_av_earnings", "media"))` among ineligible workers — but it does not reach significance at the 5% level ($p$ = `r f3(rp("next_job_av_earnings", "pv"))`). The effects on next job cumulative earnings and job duration are statistically indistinguishable from zero. The robust finding is the absence of a systematic improvement rather than the presence of a wage gain.
+Turning to employment quality, @tbl-fuzzy-job-search-2 reports the estimated effects of RPD take-up on post-displacement outcomes such as earnings and job duration. The composition of re-employed workers appears similar around the eligibility threshold in terms of prior earnings (see column 4), suggesting no substantial selection effects. However, there is limited evidence that RPD take-up improves subsequent job quality. The point estimate for monthly earnings in the next job is sizeable — \$`r fm(rp("next_job_av_earnings"))` MXN, against a mean of \$`r fm(rp("next_job_av_earnings", "media"))` among ineligible workers — but it does not reach significance at the 5% level ($p$ = `r f3(rp("next_job_av_earnings", "pv"))`). The effects on next job cumulative earnings and job duration are statistically indistinguishable from zero. The robust finding is the absence of a systematic improvement rather than the presence of a wage gain.
 
 When placed in context with the existing literature, these ITT results point to a mixed picture. @britto2022 finds a statistically significant 1.7% decline in annual earnings associated with Brazil’s program, while eligibility for RPD is associated with a non-significant 4.6% increase. @velázquezguadarrama2023, using ENOE data, finds a smaller yet statistically significant increase of 2.47% in wage income among eligible workers. Overall, while some point estimates suggest potentially positive effects of RPD on earnings, the lack of statistical significance and the inconsistency with prior studies call for cautious interpretation.
 
@@ -200,13 +192,10 @@ tar_read(survival_iv) |>
         str_detect(name, "duration") ~ str_c("Duration - ", months, " months (wks)")
     )) |>
     my_modelsummary() |>
-    kable_styling(
-        latex_options = "scale_down",
-        font_size = 8
-    ) |>
-    column_spec(1, width = "11em") |>
-    column_spec(2:5, width = "6em")
-  
+    my_widths(first = 0.28) |>
+    style_tt(j = 1, align = "l") |>
+    style_tt(fontsize = 0.8)
+
 tar_read(next_job_iv) |>
     arrange(name) |>
     mutate(
@@ -218,19 +207,10 @@ tar_read(next_job_iv) |>
         )
     ) |>
     my_modelsummary() |>
-    kable_styling(
-        latex_options = "scale_down",
-        font_size = 8
-    ) |>
-    column_spec(1, width = "11em") |>
-    column_spec(2:5, width = "6em") |>
-    footnote(
-        general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
-        general_title = "Note:",
-        threeparttable = T,
-        escape = F,
-        footnote_as_chunk = T
-    )
+    my_widths(first = 0.28) |>
+    my_add_note(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos.") |>
+    style_tt(j = 1, align = "l") |>
+    style_tt(fontsize = 0.8)
 ```
 
 ### Medium Term Effects {#sec-medium-run}
@@ -278,13 +258,7 @@ medium_table |>
 medium_table |>
         filter(label == "Average monthly earnings") |>
         my_medium_table() |>
-        footnote(
-            general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
-            general_title = "Note:",
-            threeparttable = T,
-            escape = F,
-            footnote_as_chunk = T
-        )
+        my_add_note(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos.")
 ```
 
 
@@ -314,21 +288,20 @@ het |>
     Verdict    = ifelse(dif_pv < 0.05, "Distinguishable", "Not distinguishable")
   ) |>
   select(Split, Difference, SE, p, Verdict) |>
-  kbl(
-    booktabs = TRUE,
-    col.names = c("Split", "Difference (wks)", "Std. err.", "$p$", "Verdict"),
-    align = c("l", "r", "r", "r", "l"),
-    escape = FALSE
+  setNames(c("Split", "Difference (wks)", "Std. err.", "$p$", "Verdict")) |>
+  tt(
+    width = c(0.28, 0.18, 0.16, 0.12, 0.26),
+    notes = my_note(
+      "Difference between the two subgroup estimates of the effect of RPD take-up on ",
+      "unemployment duration 36 months after displacement. Subsamples are disjoint, so ",
+      "the standard error of the difference is the square root of the sum of the ",
+      "subgroup variances."
+    )
   ) |>
-  kable_styling(latex_options = "hold_position", font_size = 9) |>
-  column_spec(1, width = "13em") |>
-  footnote(
-    general = "Difference between the two subgroup estimates of the effect of RPD take-up on unemployment duration 36 months after displacement. Subsamples are disjoint, so the standard error of the difference is the square root of the sum of the subgroup variances.",
-    general_title = "Note:",
-    threeparttable = TRUE,
-    escape = FALSE,
-    footnote_as_chunk = TRUE
-  )
+  style_tt(j = 1, align = "l") |>
+  style_tt(j = 2:4, align = "r") |>
+  style_tt(j = 5, align = "l") |>
+  style_tt(fontsize = 0.8)
 ```
 
 **Income.** @tbl-income explores heterogeneous effects of the RPD program by pre-displacement income, dividing the sample at the median wage in the previous job (\$`r fm(muestra$mediana_ingreso)` MXN). Take-up rates do not differ significantly between the above- and below-median wage groups, suggesting comparable levels of program engagement across income levels.
@@ -360,12 +333,14 @@ results |>
 results |>
   filter(split == 2) |>
   print_hate() |>
-  footnote(
-    general = str_c(rdd_footnote, " Panel A reports results for individuals whose earnings in their previous job were below the sample median wage ($", fm(muestra$mediana_ingreso), "), while Panel B reports results for those above the median. All monetary values are expressed in 2024 Mexican Pesos."),
-    general_title = "Note:",
-    threeparttable = T,
-    escape = T,
-    footnote_as_chunk = T
+  my_add_note(
+    rdd_footnote,
+    " Panel A reports results for individuals whose earnings in their previous job were ",
+    # Escaped: an unescaped $ opens math mode in Typst and swallows the rest of
+    # the document.
+    "below the sample median wage (\\$", fm(muestra$mediana_ingreso), "), while Panel B ",
+    "reports results for those above the median. All monetary values are expressed in ",
+    "2024 Mexican Pesos."
   )
 
 ```
@@ -399,15 +374,12 @@ results |>
 results |>
   filter(split == 2) |>
   print_hate() |>
-  footnote(
-    general = str_c(
-      fuzzy_rd_footnote,
-      " Panel A shows the results for the below median age group (", f1(muestra$mediana_edad), " years), while panel B shows the results for the above median age group. Currencies are expressed in 2024 Mexican Pesos."
-    ),
-    general_title = "Note:",
-    threeparttable = T,
-    escape = F,
-    footnote_as_chunk = T
+  my_add_note(
+    fuzzy_rd_footnote,
+    " Panel A shows the results for the below median age group (",
+    f1(muestra$mediana_edad),
+    " years), while panel B shows the results for the above median age group. ",
+    "Currencies are expressed in 2024 Mexican Pesos."
   )
 
 ```
@@ -441,12 +413,10 @@ results |>
 results |>
   filter(split == 1) |>
   print_hate() |>
-  footnote(
-    general = str_c(fuzzy_rd_footnote, " Panel A shows the results for the male group, while panel B shows the results for the female group. Currencies are expressed in 2024 Mexican Pesos."),
-    general_title = "Note:",
-    threeparttable = T,
-    escape = F,
-    footnote_as_chunk = T
+  my_add_note(
+    fuzzy_rd_footnote,
+    " Panel A shows the results for the male group, while panel B shows the results ",
+    "for the female group. Currencies are expressed in 2024 Mexican Pesos."
   )
 
 ```
@@ -480,13 +450,7 @@ results |>
 results |>
   filter(split == "Full Exposure") |>
   print_hate() |>
-  footnote(
-    general = str_c(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos."),
-    general_title = "Note:",
-    threeparttable = T,
-    escape = F,
-    footnote_as_chunk = T
-  )
+  my_add_note(fuzzy_rd_footnote, " Currencies are expressed in 2024 Mexican Pesos.")
 
 ```
 

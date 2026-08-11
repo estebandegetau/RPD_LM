@@ -9,14 +9,13 @@ gc()
 pacman::p_load(
   tidyverse,
   here,
-  gt,
   gtsummary,
   fixest,
   arrow,
   ggpubr,
   modelsummary,
   knitr,
-  kableExtra,
+  tinytable,
   targets
 )
 
@@ -26,7 +25,9 @@ tar_config_set(store = here("_targets"))
 
 tar_source(files = here("R"))
 
-theme_set(theme_minimal())
+# TeX Gyre Heros is the sansfont in wp.qmd, and is visible to both Typst and R.
+# Setting it here is what makes figure text match the captions around it.
+theme_set(theme_minimal(base_family = "TeX Gyre Heros"))
 
 ```
 
@@ -44,7 +45,7 @@ It is worth fixing the exact scope of this variable at the outset, because it go
 
 [^5]: A gap could result from voluntary separation, a transition into informal work, or involuntary displacement.
 
-The second data source is the administrative registry of partial withdrawals from individual pension accounts. This registry includes every instance of RPD usage and records the date of withdrawal, amount withdrawn, account balance, weeks contributed to social security at that point, the last employer’s ID, and the worker’s unique identifier (Número de Seguridad Social, NSS). Crucially, I use the NSS to match the two data sets, enabling me to track the labor market trajectories of RPD users before and after its use. See @sec-usage for a detailed overview of the RPD program and its adoption.
+The second data source is the administrative registry of partial withdrawals from individual pension accounts. This registry includes every instance of RPD usage and records the date of withdrawal, amount withdrawn, account balance, weeks contributed to social security at that point, the last employer’s ID, and the worker’s unique identifier (Número de Seguridad Social, NSS). Crucially, I use the NSS to match the two data sets, enabling me to track the labor market trajectories of RPD users before and after its use. See [the section on usage and adoption](#sec-usage) for a detailed overview of the RPD program and its adoption.
 
 ### Sample Selection {#sec-sample-selection}
 
@@ -63,7 +64,7 @@ workers <- tar_read(rpd_data) |>
 
 ```
 
-To estimate the effect of RPD on labor market outcomes, I leverage the eligibility criterion of having at least two years of contributions to social security at the moment of unemployment as s source of quasi-exogenous variation, (See @sec-context for context on the eligibility criteria.). Hence, I restrict the analysis sample to workers who (i) faced exactly one unemployment spell of at least 46 days during the third year since they joined the formal labor marked, and who (ii) had accumulated between one and three years worth of contributions to the social security system.
+To estimate the effect of RPD on labor market outcomes, I leverage the eligibility criterion of having at least two years of contributions to social security at the moment of unemployment as s source of quasi-exogenous variation, (See [the institutional background section](#sec-context) for context on the eligibility criteria.). Hence, I restrict the analysis sample to workers who (i) faced exactly one unemployment spell of at least 46 days during the third year since they joined the formal labor marked, and who (ii) had accumulated between one and three years worth of contributions to the social security system.
 
 Additionally, I restricted the analysis sample to workers with (a) ages between 18 and 65 years old, (b) who were registered in the *Régimen obligatorio* as permanent or eventual workers, (c) were not self-employed, (d) were not registered to an agrarian firm, and (e) were not in the top 1% of the unemployment duration distribution.
 
@@ -83,30 +84,47 @@ Note: This figure provides a conceptual representation of eligibility for the RP
 Sample Selection
 :::
 
-Within the analysis sample, only those workers who had accumulated at least two years of contributions to the social security system by the time they become displaced are eligible to withdraw funds from their pension account. @tbl-balance shows workers' features across eligibility status at the moment of displacement. Indeed, there is a systematic positive selection of workers into eligibility, as workers who are eligible have contributed more to social security, had higher wages and longer tenures before displacement. This is expected and is not a threat to identification: the comparison that matters is not between all eligible and all ineligible workers, but between workers just on either side of the threshold. Critically for my identification strategy, I show in @sec-assumptions that these differences are smooth around the eligibility threshold of two years of contributions, and that no predetermined covariate exhibits a discontinuity there once the multiplicity of tests is accounted for.
+Within the analysis sample, only those workers who had accumulated at least two years of contributions to the social security system by the time they become displaced are eligible to withdraw funds from their pension account. @tbl-balance shows workers' features across eligibility status at the moment of displacement. Indeed, there is a systematic positive selection of workers into eligibility, as workers who are eligible have contributed more to social security, had higher wages and longer tenures before displacement. This is expected and is not a threat to identification: the comparison that matters is not between all eligible and all ineligible workers, but between workers just on either side of the threshold. Critically for my identification strategy, I show in [the section on design validity](#sec-assumptions) that these differences are smooth around the eligibility threshold of two years of contributions, and that no predetermined covariate exhibits a discontinuity there once the multiplicity of tests is accounted for.
 
 ```{r}
 #| label: tbl-balance
 #| tbl-cap: "Balance of Outcomes and Covariates by Eligibility Status"
 
-a <- tar_read(balance_table)
+# gtsummary 2.4.0 has no as_tinytable(), so the table is taken out as the tibble
+# of already-formatted display strings and rebuilt. The header labels arrive
+# carrying pandoc markdown and a hard newline; both are translated to Typst
+# markup (`*bold*`, `\` for a line break) since tinytable passes cells through
+# without escaping them.
+bal <- tar_read(balance_table) |>
+  remove_footnote_header(columns = everything()) |>
+  gtsummary::as_tibble() |>
+  mutate(across(everything(), my_escape))
 
-a |>
-remove_footnote_header(columns = everything()) |>
-  gtsummary::as_kable_extra(booktabs = T) |>
-  kableExtra::kable_styling(latex_options = c("scale_down")) |>
-  kableExtra::pack_rows("Outcomes", 2, 5) |>
-  kableExtra::pack_rows("Eligibility criteria", 6, 7) |>
-  kableExtra::pack_rows("Previous job", 8, 9) |>
-  kableExtra::pack_rows("Demographics", 10, 12) |>
-  footnote(
-    general = c("
-    This table reports means and standard deviations (in parentheses) for key characteristics in the analysis sample, disaggregated by eligibility status at the date of displacement. For binary variables—such as *Take-up*, *Survival*, Female, and *No CURP*—the table reports the count and the corresponding percentage (in parentheses). *No CURP* indicates that the worker does not have a unique population identification number (CURP) registered with the IMSS. The p-value column reports the results from hypothesis tests of individual differences of means across eligible and ineligible groups.
-    "),
-    general_title = "Note:",
-    threeparttable = T,
-    escape = F,
-    footnote_as_chunk = T
-  )
+names(bal) <- names(bal) |>
+  str_replace_all("\\*\\*(.*?)\\*\\*", "*\\1*") |>
+  str_replace_all("\\s*\\n\\s*", " \\\\ ")
+
+bal |>
+  tt(
+    width = c(0.40, 0.20, 0.20, 0.20),
+    notes = my_note(
+      "This table reports means and standard deviations (in parentheses) for key ",
+      "characteristics in the analysis sample, disaggregated by eligibility status at ",
+      "the date of displacement. For binary variables—such as _Take-up_, _Survival_, ",
+      "Female, and _No CURP_—the table reports the count and the corresponding ",
+      "percentage (in parentheses). _No CURP_ indicates that the worker does not have ",
+      "a unique population identification number (CURP) registered with the IMSS. The ",
+      "p-value column reports the results from hypothesis tests of individual ",
+      "differences of means across eligible and ineligible groups."
+    )
+  ) |>
+  group_tt(i = list(
+    "*Outcomes*"             = 2,
+    "*Eligibility criteria*" = 6,
+    "*Previous job*"         = 8,
+    "*Demographics*"         = 10
+  )) |>
+  style_tt(j = 1, align = "l") |>
+  style_tt(fontsize = 0.85)
 
 ```
