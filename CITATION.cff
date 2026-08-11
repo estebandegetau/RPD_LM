@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this code or refer to this work, please cite the paper below."
+title: >-
+  Insuring Unemployment Out of Your Own Pension: Causal Evidence from Mexico's
+  Retiro Parcial por Desempleo
+abstract: >-
+  Analysis code and manuscripts for a study of the labor market effects of Mexico's
+  Retiro Parcial por Desempleo (RPD), which allows unemployed workers to withdraw
+  pension savings. The estimates come from administrative social-security records
+  and a fuzzy regression discontinuity design around the two-year contribution
+  eligibility threshold.
+type: software
+authors:
+  - family-names: Degetau
+    given-names: Esteban
+    email: estebandegetau@gmail.com
+    orcid: "https://orcid.org/0009-0004-4095-8819"
+    affiliation: "Instituto Mexicano del Seguro Social; Barcelona School of Economics"
+repository-code: "https://github.com/estebandegetau/RPD_LM"
+url: "https://www.estebandegetau.com/RPD_LM/"
+license: MIT
+keywords:
+  - unemployment insurance
+  - income substitution
+  - Mexico
+  - RPD
+  - labor economics
+  - regression discontinuity
+preferred-citation:
+  type: article
+  title: >-
+    Insuring Unemployment Out of Your Own Pension: Causal Evidence from Mexico's
+    Retiro Parcial por Desempleo
+  authors:
+    - family-names: Degetau
+      given-names: Esteban
+      email: estebandegetau@gmail.com
+      orcid: "https://orcid.org/0009-0004-4095-8819"
+      affiliation: "Instituto Mexicano del Seguro Social; Barcelona School of Economics"
+  year: 2026
+  url: "https://www.estebandegetau.com/RPD_LM/"
+  notes: Working paper
