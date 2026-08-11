@@ -323,23 +323,13 @@ list(
 
   
 
-  # Presentation ----
-  tar_target(
-    name = covariates_plots_long,
-    command = make_covariates_plots(rd_data, nrow = 2, ncol = 3)
-  ),
-  tar_target(
-    name = take_up_plots_long,
-    command = make_take_up_plots(rd_data, nrow = 2, ncol = 3)
-  ),
-  tar_target(
-    name = survival_plots_long,
-    command = make_survival_plots(rd_data, nrow = 2, ncol = 3)
-  ),
-  tar_target(
-    name = duration_plots_long,
-    command = make_duration_plots(rd_data, nrow = 2, ncol = 3)
-  ),
+  # Los targets *_plots_long ya no existen. Sólo se distinguían de los originales
+  # en nrow/ncol, y desde que make_*_plots() regresa la lista de paneles en vez de
+  # la cuadrícula armada, el acomodo lo decide quien consume el target:
+  # arrange_rd_panels(nrow = 3, ncol = 2) en sections/ para el WP y
+  # fig_slides(..., nrow = 2, ncol = 3) en slides/rpd-talk.qmd para la
+  # presentación. Ver R/results.R.
+
   # La tesis de maestría ya no se renderiza desde el pipeline. Comparte
   # sections/*.qmd con el WP, y esas secciones ahora producen tablas de
   # tinytable para Typst en lugar de kableExtra para LaTeX, de modo que el

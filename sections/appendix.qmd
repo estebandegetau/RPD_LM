@@ -102,7 +102,7 @@ summary_table |>
 #| fig-height: 10
 #| fig-width: 9
 
-tar_read(survival_plots)
+tar_read(survival_plots) |> arrange_rd_panels(nrow = 3, ncol = 2)
 
 ```
 
@@ -116,7 +116,7 @@ Eligibility Effect: Survival in Unemployment
 #| fig-height: 10
 #| fig-width: 9
 
-tar_read(duration_plots)
+tar_read(duration_plots) |> arrange_rd_panels(nrow = 3, ncol = 2)
 
 ```
 

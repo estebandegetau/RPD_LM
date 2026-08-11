@@ -200,12 +200,19 @@ compute_fuzzy_rd_group <- function(data) {
 }
 
 
+# Labels only -- no theme. The theme is applied by arrange_rd_panels() in R/results.R,
+# at the point of use, because the working paper and the conference deck need different
+# fonts from the same stored panel. It used to end in theme_minimal(), which was a bug
+# in the paper as well as the deck: theme_minimal() is a *complete* theme, so ggplot2
+# does not merge the global default into it, and the
+# theme_set(theme_minimal(base_family = "TeX Gyre Heros")) in the section setup chunks
+# never reached these panels -- their text came out in the device default sans against
+# captions set in Heros.
 label_plots <- function(plot, outcome) {
   p <- plot +
-    labs(title = outcome, 
+    labs(title = outcome,
          x = "Contribution days to eligibility",
-         y = "") +
-    theme_minimal() 
+         y = "")
 
   # q <- ggplot_build(p)
   # q$data[[5]]$fill <- "lightblue"

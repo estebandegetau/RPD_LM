@@ -212,7 +212,71 @@ append_all_covariates <- function(x, y) {
         arrange(label)
 }
 
-make_covariates_plots <- function(x, nrow = 3, ncol = 2) {
+# --- RD panel figures ---------------------------------------------------------------
+#
+# The make_*_plots() functions below return a *named list of panels*, not an arranged
+# grid. Arrangement and theme are the caller's business: the working paper wants 3x2 in
+# TeX Gyre Heros, the conference deck wants 2x3 in Libertinus Sans, and both read the
+# same target. Baking either choice into the target is what produced the
+# `*_plots_long` duplicates that used to sit alongside these -- ~1 GB of _targets store
+# whose only difference was nrow/ncol.
+#
+# Panels therefore leave label_plots() carrying no theme of their own (see
+# R/rd_functions.R); arrange_rd_panels() supplies one. This is the arrangement the
+# `_esp` family already uses -- cf. arrange_covariates_plots_esp() in R/amafore_esp.R.
+
+#' Theme for the RD binned-scatter panels in the working paper
+#'
+#' Deliberately close to tema_esp() in R/amafore_esp.R. base_family is named
+#' explicitly rather than left to theme_set(): these panels used to inherit a
+#' complete theme_minimal() from label_plots(), and a complete theme is not merged
+#' with the global default, so the `theme_set(theme_minimal(base_family = "TeX Gyre
+#' Heros"))` in the section setup chunks was silently doing nothing to them. TeX Gyre
+#' Heros is the WP's sansfont and is visible to both Typst and R (see CLAUDE.md).
+#' `base_size = 11` matches theme_minimal()'s own default, which is what these panels
+#' had before -- the point of this theme is the font, the gridlines and the title
+#' weight, not a size change. The WP chunks draw at fig-width 9 and display at about
+#' 6.5in, so 11pt lands near 8pt on the page; dropping it to 9 shrank that to 6.5pt.
+theme_rd_panel <- function(base_size = 11, base_family = "TeX Gyre Heros") {
+    theme_minimal(base_size = base_size, base_family = base_family) +
+        theme(
+            panel.grid.minor = element_blank(),
+            plot.title = element_text(face = "bold", size = rel(1)),
+            plot.title.position = "plot",
+            strip.text = element_text(face = "bold")
+        )
+}
+
+#' Theme a list of RD panels and arrange them into a grid
+#'
+#' `lapply()` rather than `purrr::map()` on purpose: this also runs inside the callr
+#' child of fig_slides() in slides/rpd-talk.qmd, which attaches only ggplot2 and
+#' ggpubr. Adding a complete theme replaces whatever rdplot() left on the panel, so
+#' nothing leaks through from the stored object.
+arrange_rd_panels <- function(plots, nrow = 3, ncol = 2, theme = theme_rd_panel()) {
+    # Insist on a bare list of panels. A ggplot is itself list-like, so a target that
+    # still holds the pre-refactor ggarrange sends lapply() over the *internals* of a
+    # ggplot -- its layers, scales, coordinates -- and the render dies with "Cannot add
+    # <ggproto> objects together", which points nowhere near the real problem. That is
+    # not hypothetical: rendering while `targets` has not caught up is the normal state
+    # of this project, because the panel targets each load rd_data and are rebuilt by
+    # hand.
+    if (!is.list(plots) || inherits(plots, "gg") ||
+        !all(vapply(plots, inherits, logical(1), "ggplot"))) {
+        stop(
+            "arrange_rd_panels() expects a list of ggplot panels, got <",
+            paste(class(plots), collapse = "/"), ">. If this came from tar_read(), the ",
+            "target predates the panel-list refactor -- rebuild it with tar_make().",
+            call. = FALSE
+        )
+    }
+    ggarrange(
+        plotlist = lapply(plots, function(p) p + theme),
+        nrow = nrow, ncol = ncol
+    )
+}
+
+make_covariates_plots <- function(x) {
     plots <- x |>
         filter(group == "Covariates") |>
         filter(name != "wage_rpd") |>
@@ -228,10 +292,10 @@ make_covariates_plots <- function(x, nrow = 3, ncol = 2) {
             plot = map(plot, "rdplot"),
             plot = map2(plot, label, label_plots)
         ) |>
-        select(name, label, plot) 
-       
+        select(name, label, plot)
 
-    ggarrange(plotlist = labeled$plot, nrow = nrow, ncol = ncol)
+
+    setNames(labeled$plot, as.character(labeled$label))
 }
 
 make_previous_job_plots <- function(x) {
@@ -248,12 +312,12 @@ make_previous_job_plots <- function(x) {
         ) |>
         select(name, label, plot)
 
-    ggarrange(plotlist = labeled$plot, nrow = 2, ncol = 2)
+    setNames(labeled$plot, as.character(labeled$label))
 }
 
 
 
-make_take_up_plots <- function(x, nrow = 3, ncol = 2) {
+make_take_up_plots <- function(x) {
     plots <- x |>
         filter(str_detect(name, "take_up")) |>
         filter(!str_detect(name, "days")) |>
@@ -279,8 +343,7 @@ make_take_up_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(name, label, plot)
 
-    res <- ggarrange(plotlist = labeled$plot, nrow = nrow, ncol = ncol)
-    return(res)
+    setNames(labeled$plot, as.character(labeled$label))
 }
 
 make_take_up_path <- function(x) {
@@ -310,7 +373,7 @@ make_take_up_path <- function(x) {
 }
 
 
-make_survival_plots <- function(x, nrow = 3, ncol = 2) {
+make_survival_plots <- function(x) {
     plots <- x |>
         filter(str_detect(name, "survival")) |>
         mutate(
@@ -332,11 +395,10 @@ make_survival_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(plot, months, label)
 
-    a <- ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow) 
-    return(a)
+    setNames(labeled$plot, as.character(labeled$label))
 }
 
-make_duration_plots <- function(x, nrow = 3, ncol = 2) {
+make_duration_plots <- function(x) {
     plots <- x |>
         filter(str_detect(name, "duration")) |>
         mutate(
@@ -358,8 +420,7 @@ make_duration_plots <- function(x, nrow = 3, ncol = 2) {
         ) |>
         select(plot, months, label)
 
-    a <- ggarrange(plotlist = labeled$plot, ncol = ncol, nrow = nrow)
-    return(a)
+    setNames(labeled$plot, as.character(labeled$label))
 }
 
 make_survival_path <- function(x) {

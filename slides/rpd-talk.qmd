@@ -74,32 +74,42 @@ dir.create(.figdir, showWarnings = FALSE, recursive = TRUE)
 # cache is already warm), the child attaches ggpubr (ggarrange objects print through
 # print.ggarrange, so ggsave silently produces nothing without it), and staleness is
 # keyed on the target's own hash rather than on mere existence.
-# `show` is the width the image occupies on the slide. It defaults to the width the
-# figure is drawn at, which is what you want for the slide-themed targets: they are
-# designed at final size and must not be rescaled. The backup slides reuse the
-# working paper's figures, whose panel titles are sized for a page; drawing those on
-# a big canvas and showing them smaller keeps every label intact, where drawing them
-# at slide size simply cuts the titles off.
-fig_slides <- function(target, width = 5.5, height = 2.6, res = 300, show = width) {
+#
+# `nrow`/`ncol` are for the RD panel targets in the backup section. Those targets
+# store a *list of panels* rather than an arranged grid, precisely so the deck and the
+# working paper can lay the same estimates out differently -- 2x3 in Libertinus Sans
+# here, 3x2 in TeX Gyre Heros in sections/. When they are supplied, the child sources
+# R/ and calls arrange_rd_panels() with the slide theme.
+#
+# Every figure is drawn at the size it is displayed at. There used to be a `show`
+# argument that let the panel figures be drawn on a big canvas and scaled down, because
+# their titles were sized for a page and got clipped at slide size; now that
+# `base_size` sets the panel type directly there is nothing to compensate for, and
+# rescaling only thinned the strokes.
+fig_slides <- function(target, width = 5.5, height = 2.6, res = 300,
+                       nrow = NULL, ncol = NULL, base_size = 7) {
   img <- file.path(.figdir, paste0(target, ".png"))
   stamp <- file.path(.figdir, paste0(target, ".hash"))
 
   # The stamp carries the requested geometry as well as the target's data hash.
   # Keying on the hash alone silently reuses an image drawn at a different size when
   # only the call site changes, which is exactly how a frame ends up overfull by a
-  # constant that no amount of resizing removes.
+  # constant that no amount of resizing removes. The layout belongs in here for the
+  # same reason: changing nrow/ncol changes the image without changing the target.
   meta <- targets::tar_meta(names = tidyselect::all_of(target), fields = "data",
                             store = .store)
+  # length(meta$data), not nrow(meta): `nrow` is a parameter of this function now, and
+  # relying on R skipping a non-function binding in call position is not worth it.
   hash <- paste(
-    if (nrow(meta)) meta$data[[1]] else NA_character_,
-    width, height, res, show
+    if (length(meta$data)) meta$data[[1]] else NA_character_,
+    width, height, res, nrow %||% "-", ncol %||% "-", base_size
   )
   stale <- !file.exists(img) || !file.exists(stamp) ||
     !identical(readLines(stamp, warn = FALSE), hash)
 
   if (stale) {
     callr::r(
-      function(target, store, dest, width, height, res) {
+      function(target, store, dest, width, height, res, nrow, ncol, base_size, root) {
         library(ggplot2)
         library(ggpubr) # ggarrange objects need this to print
         # Libertinus lives only in the texmf tree, so fontconfig cannot see it and
@@ -113,11 +123,22 @@ fig_slides <- function(target, width = 5.5, height = 2.6, res = 300, show = widt
           italic = kp("LibertinusSans-Italic.otf")
         ), silent = TRUE)
         p <- targets::tar_read_raw(target, store = store)
+        if (!is.null(nrow)) {
+          # A panel-list target. These three files are pure definitions -- no
+          # library() calls, no top-level code needing dplyr -- so sourcing them
+          # with only ggplot2 and ggpubr attached is safe. tar_source() is not used
+          # because it would pull in the whole R/ tree for two functions.
+          for (f in c("rd_functions.R", "results.R", "slides_en.R")) {
+            source(file.path(root, "R", f))
+          }
+          p <- arrange_rd_panels(p, nrow = nrow, ncol = ncol,
+                                 theme = theme_slides(base_size = base_size))
+        }
         ggplot2::ggsave(dest, p, width = width, height = height,
                         device = ragg::agg_png, res = res, units = "in")
       },
       args = list(target, .store, normalizePath(img, mustWork = FALSE),
-                  width, height, res),
+                  width, height, res, nrow, ncol, base_size, here::here()),
       libpath = .libPaths()
     )
     writeLines(hash, stamp)
@@ -129,7 +150,7 @@ fig_slides <- function(target, width = 5.5, height = 2.6, res = 300, show = widt
   # overflowed the frame. Stating the width here makes the displayed size exact.
   knitr::asis_output(sprintf(
     "\\noindent\\makebox[\\textwidth][c]{\\includegraphics[width=%.3fin]{%s}}",
-    show, img
+    width, img
   ))
 }
 
@@ -729,35 +750,35 @@ fig_slides("rd_outcome_plot_slides", width = 5.2, height = 2.25)
 
 ```{r}
 #| label: fig-takeup-panels
-fig_slides("take_up_plots_long", width = 8.6, height = 3.61, show = 5.2)
+fig_slides("take_up_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
 ```
 
 ## Covariate continuity
 
 ```{r}
 #| label: fig-cov
-fig_slides("covariates_plots_long", width = 8.6, height = 3.61, show = 5.2)
+fig_slides("covariates_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
 ```
 
 ## Previous-job continuity
 
 ```{r}
 #| label: fig-prevjob
-fig_slides("prev_job_plots", width = 7.2, height = 3.57, show = 4.4)
+fig_slides("prev_job_plots", width = 4.4, height = 2.6, nrow = 2, ncol = 2)
 ```
 
 ## Survival in non-employment, by horizon
 
 ```{r}
 #| label: fig-surv
-fig_slides("survival_plots_long", width = 8.6, height = 3.61, show = 5.2)
+fig_slides("survival_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
 ```
 
 ## Duration of non-employment, by horizon
 
 ```{r}
 #| label: fig-dur
-fig_slides("duration_plots_long", width = 8.6, height = 3.61, show = 5.2)
+fig_slides("duration_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
 ```
 
 ## Heterogeneity: the underlying estimates

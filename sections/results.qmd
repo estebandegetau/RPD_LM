@@ -93,7 +93,7 @@ It is worth pausing on what that magnitude implies for everything that follows, 
 #| fig-height: 10
 #| fig-width: 9
 
-tar_read(take_up_plots)
+tar_read(take_up_plots) |> arrange_rd_panels(nrow = 3, ncol = 2)
 
 
 ```
