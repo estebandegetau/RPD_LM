@@ -5,8 +5,8 @@ abstract: |
   Unemployment insurance (UI) programs aim to protect workers from income loss while they search for new jobs, but they often involve trade-offs: benefits can help workers hold out for better opportunities, yet may also discourage job search and delay re-employment. These dynamics are especially complex in developing countries, where formal UI is rare and informality is widespread. This paper studies Mexico’s *Retiro Parcial por Desempleo* (RPD), which allows unemployed workers to withdraw savings from their individual pension accounts. Using rich administrative data and a fuzzy regression discontinuity design exploiting a sharp eligibility threshold, I find that eligibility for RPD increases program take-up by approximately four percentage points. RPD take-up significantly prolongs unemployment duration—by up to 36 weeks over a three-year horizon—but does not lead to improvements in reemployment wages, job stability, or cumulative formal earnings. Heterogeneity analyses show that these adverse effects are concentrated among younger, lower-income, and female workers, while some better-off groups experience modest earnings gains. These findings suggest that while the RPD provides short-term liquidity, it does not enhance long-term labor market outcomes and may reinforce existing inequalities. Nonetheless, the program’s self-financed structure and minimal take-up may help limit moral hazard, offering a pragmatic—but limited—approach to unemployment protection in settings with high informality and constrained state capacity.
 thanks: |
   I am deeply grateful to Adrián Rubli for his guidance throughout the research process that culminated in this work. His generous time and thoughtful discussions undoubtedly improved the quality of this project. I also thank Horacio Larreguy, whose characteristic rigor and persistence were instrumental in strengthening the research. I am also thankful to Enrique Seira for his thoughtful comments and suggestions. I further benefited from the insightful feedback and support of peers in Horacio’s research seminar, whose input helped shape this project at every stage.
-format: 
-  pdf: 
+format:
+  pdf:
     geometry: paperheight=22.5cm,paperwidth=17cm
     documentclass: report
     linestretch: 1.25
@@ -14,7 +14,7 @@ format:
     fontsize: 4pt
     dpi: 300
     colorlinks: false
-    include-in-header: 
+    include-in-header:
       text: |
         \usepackage{lscape}
         \newcommand{\blandscape}{\begin{landscape}}
@@ -203,16 +203,16 @@ Eligibility Criteria
 
 ```{r}
 
-usage <- tar_read(rpd_usage) |> 
+usage <- tar_read(rpd_usage) |>
   # Format number
   format(
     number = TRUE,
     decimal.mark = ".",
     big.mark = ",",
     scientific = FALSE
-  ) 
+  )
 
-users <- tar_read(rpd_users) |> 
+users <- tar_read(rpd_users) |>
   # Format number
   format(
     number = TRUE,
@@ -246,7 +246,7 @@ The core issue lies in the functioning of Mexico’s labor courts. In particular
 
 Further compounding these problems is the widespread information asymmetry among litigants. @sadka2024 demonstrate that plaintiffs in labor disputes often have unrealistic expectations about the outcomes of their cases, which leads to protracted litigation and missed opportunities for settlement. Their randomized controlled trial shows that providing plaintiffs with predictive information about expected case duration, probability of success, and likely monetary outcomes significantly increases same-day settlement rates and improves short-term financial well-being. However, this intervention also reveals the deep dysfunction of the system: only when plaintiffs are given external tools to navigate uncertainty can they extract meaningful value from the legal process.
 
-The statistical odds of a dismissed worker successfully enforcing their severance rights are vanishingly low. As @sadka2024 document, more than half of all dismissed workers in Mexico report never receiving severance pay, yet only 13% pursue legal action—a striking indication of the widespread perception that litigation is futile . And with good reason: nearly 30% of lawsuits remain unresolved four years after being filed, leaving workers in legal limbo with no income and no resolution. Even among the rare plaintiffs who persist through the full litigation process and win a favorable judgment, only 20% ever collect the full amount awarded. The practical message is devastatingly clear: in Mexico’s current labor justice system, even winning your case is no guarantee of receiving what the law promises. For the average worker facing dismissal, the path to severance is not just slow and bureaucratic—it is overwhelmingly stacked against them.
+The statistical odds of a dismissed worker successfully enforcing their severance rights are vanishingly low. As @sadka2024 document, more than half of all dismissed workers in Mexico report never receiving severance pay, yet only 15% pursue legal action—a striking indication of the widespread perception that litigation is futile . And with good reason: nearly 30% of lawsuits remain unresolved four years after being filed, leaving workers in legal limbo with no income and no resolution. Even among the rare plaintiffs who persist through the full litigation process and win a favorable judgment, only 20% ever collect the full amount awarded. The practical message is devastatingly clear: in Mexico’s current labor justice system, even winning your case is no guarantee of receiving what the law promises. For the average worker facing dismissal, the path to severance is not just slow and bureaucratic—it is overwhelmingly stacked against them.
 
 Taken together, these findings paint a troubling picture: while Mexico’s legal framework nominally guarantees severance pay as income support for the unemployed, the institutions tasked with enforcing this right often fail to deliver. Procedural inefficiencies, the potential for corruption, and severe information gaps all contribute to a de facto collapse of enforcement. As a result, many dismissed workers are left without effective legal recourse, and severance pay—despite being codified in law—cannot be relied upon as a real source of income during unemployment.
 
@@ -387,7 +387,7 @@ Covariates around Eligibility Threshold
 #| fig-height: 8
 #| fig-width: 9
 
-tar_read(prev_job_plots) 
+tar_read(prev_job_plots)
 
 
 ```
@@ -572,7 +572,7 @@ tar_read(survival_iv) |>
     ) |>
     column_spec(1, width = "11em") |>
     column_spec(2:5, width = "6em")
-  
+
 tar_read(next_job_iv) |>
     arrange(name) |>
     mutate(
@@ -699,14 +699,14 @@ These results suggest that the macroeconomic context at the time of displacement
 #| label: tbl-income
 #| tbl-cap: "RPD Effect: Heterogeneity over Wage"
 #| layout-ncol: 1
-#| tbl-subcap: 
+#| tbl-subcap:
 #|  - "Below Median Wage"
 #|  - "Above Median Wage"
 
 
 results <- tar_read(income_results) |>
   clean_hate()
-  
+
 
 results |>
   filter(split == 1) |>
@@ -762,7 +762,7 @@ results |>
 #| label: tbl-gender
 #| tbl-cap: "RPD Effect: Heterogeneity over Gender"
 #| layout-ncol: 1
-#| tbl-subcap: 
+#| tbl-subcap:
 #|  - "Males"
 #|  - "Females"
 
@@ -790,7 +790,7 @@ results |>
 #| label: tbl-covid
 #| tbl-cap: "RPD Effect: Heterogeneity over Exposure to COVID-19"
 #| layout-ncol: 1
-#| tbl-subcap: 
+#| tbl-subcap:
 #|  - "No Exposure (Displaced before March 2019)"
 #|  - "Full Exposure (Displaced after March 2020)"
 
@@ -831,7 +831,7 @@ Several limitations of the study should be acknowledged. First, the fuzzy RD des
 
 My results underscore the institutional tensions in Mexico’s fragmented income protection system. Severance pay, the de jure main income substitute, is often inaccessible due to weak legal enforcement [@sadka2024; @degetau2023]. In this context, the RPD emerges as a second-best option: it is self-financed, administratively simple, and unlikely to induce fraud. Yet this model shifts the burden of income protection onto workers themselves—especially those with fewer savings—thereby reinforcing labor market inequalities.
 
-A more ambitious policy agenda would involve developing a publicly funded unemployment insurance system that ensures risk-sharing beyond individual savings. However, such a system would require overcoming institutional barriers: effective delivery depends not only on eligibility design but also on credible enforcement and administrative capacity. 
+A more ambitious policy agenda would involve developing a publicly funded unemployment insurance system that ensures risk-sharing beyond individual savings. However, such a system would require overcoming institutional barriers: effective delivery depends not only on eligibility design but also on credible enforcement and administrative capacity.
 
 The findings point to several promising directions for future research. First, aggregate behavioral effects—such as changes in employer hiring or firing practices—remain an open question. Second, the observed heterogeneity by income, age, gender, and macroeconomic context calls for richer models of household and labor market behavior under liquidity constraints. Finally, the intersection between legal institutions and social protection policy in low-capacity states remains an underexplored but vital area for understanding the design and implementation of unemployment assistance in developing countries.
 
@@ -904,7 +904,7 @@ summary_table |>
     escape = F,
     footnote_as_chunk = T
   )
-  
+
 ```
 
 

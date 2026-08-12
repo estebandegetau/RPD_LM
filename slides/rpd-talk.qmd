@@ -234,7 +234,7 @@ Severance is the *de jure* income substitute: 90 days of wages, owed by the empl
 It is *de facto* close to unenforceable [@sadka2024]:
 
 - More than **half** of dismissed workers report never receiving it
-- Only **13%** file a claim — they correctly read the process as ineffective
+- Only **15%** file a claim — they correctly read the process as ineffective
 - **30%** of lawsuits are unresolved four years later
 - Among workers who *won*, only **20%** collected the full award
 
