@@ -12,28 +12,31 @@ format:
     # TeX Gyre Heros comes from TeX Live and is visible to both Typst and R,
     # which is what lets figure text match the captions. Check with
     # `quarto typst fonts` before changing any of these names.
-    mainfont: "Libertinus Serif"
-    sansfont: "TeX Gyre Heros"
-    mathfont: "New Computer Modern Math"
+    # mainfont: "Libertinus Serif"
+    # sansfont: "TeX Gyre Heros"
+    # mathfont: "New Computer Modern Math"
     fontsize: 11pt
     papersize: us-letter
-    margin:
-      x: 1.25in
-      y: 1.25in
+    # margin:
+    #   x: 1.25in
+    #   y: 1.25in
     fig-cap-location: top
     fig-format: svg
     fig-dpi: 300
-    number-sections: false
+    number-sections: true
+    header: Click [HERE](https://www.estebandegetau.com/RPD_LM/index.html) for the latest version.
+    date-format: full
+    csl: chicago-author-date
 
-execute:
-  # svglite writes real <text> elements, which Typst resolves against the fonts
-  # above; the cairo `svg` device would emit outlines instead.
-  dev: svglite
+# execute:
+#   # svglite writes real <text> elements, which Typst resolves against the fonts
+#   # above; the cairo `svg` device would emit outlines instead.
+#   dev: svglite
 ---
 
 {{< include sections/intro.qmd >}}
 
-The remainder of the paper proceeds as follows. The [background section](#sec-context) provides institutional background on the RPD program and Mexico’s broader unemployment protection framework. The [data section](#sec-data) describes the data and sample construction. The [empirical strategy section](#sec-empirical-strategy) outlines the approach. The [results section](#sec-results) presents the main findings, including heterogeneity analysis. I finish with a discussion of the findings and their implications for policy.
+The remainder of the paper proceeds as follows. @sec-context provides institutional background on the RPD program and Mexico’s broader unemployment protection framework. @sec-data describes the data and sample construction. @sec-empirical-strategy outlines the approach. @sec-results presents the main findings, including heterogeneity analysis. I finish with a discussion of the findings and their implications for policy.
 
 {{< include sections/background.qmd >}}
 
@@ -61,7 +64,7 @@ where $Y_{i}$ is an outcome of interest, $\hat T_i$ is the predicted value of th
 
 I provide two main tests on the validity of the sharp design in @eq-1s plus an additional test on the validity of the fuzzy design in @eq-2s. First, I show that there is no evidence of manipulation around the eligibility threshold. Second, I show that the covariates are balanced around the eligibility threshold. Finally, I show that the first stage is strong.
 
-First, @fig-density shows the result of the @cattaneo2020 test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, @fig-covariates-pre, @fig-pre_unemp show the continuity of covariates of workers around the eligibility threshold. Crucially, @tbl-covariates-bal shows the estimation and inference of @eq-1s, showing the covariates do not jump across the eligibility threshold systematically [@cattaneo2019]. Finally, I present evidence on the strength of the first stage in the [first-stage results](#sec-take-up).
+First, @fig-density shows the result of the @cattaneo2020 test for manipulation of the running variable. The figure shows no significant bunching around the eligibility threshold, consistent with the absence of manipulation. Second, @fig-covariates-pre, @fig-pre_unemp show the continuity of covariates of workers around the eligibility threshold. Crucially, @tbl-covariates-bal shows the estimation and inference of @eq-1s, showing the covariates do not jump across the eligibility threshold systematically [@cattaneo2019]. Finally, I present evidence on the strength of the first stage in the @sec-take-up.
 
 {{< include sections/empirical-strategy.qmd >}}
 
@@ -69,15 +72,12 @@ First, @fig-density shows the result of the @cattaneo2020 test for manipulation 
 
 {{< include sections/conclusion.qmd >}}
 
-## References {.unnumbered}
-
-::: {#refs}
-:::
 
 <!-- Restarts heading numbering at A.1 and renumbers the appendix floats as
      Table A.1 / Figure A.1. Supplied by the academic-typst extension's
      shortcodes.lua; it issues its own pagebreak and prints its own "Appendix"
      title, so neither belongs here. -->
+
 {{< appendix >}}
 
 {{< include sections/appendix.qmd >}}

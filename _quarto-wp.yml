@@ -1,6 +1,7 @@
 project:
   render:
     - wp.qmd
+    - index.qmd
     - slides/rpd-talk.qmd
 
 
@@ -17,5 +18,5 @@ bibliography: references.bib
 license: "CC BY-NC"
 
 references: references.bib
-citeproc: true
+# citeproc: true
 # csl: https://www.zotero.org/styles/begell-house-chicago-author-date
