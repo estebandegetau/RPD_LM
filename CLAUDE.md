@@ -73,7 +73,6 @@ Targets group into: data loading & descriptive tables → RD assumption checks (
 - **Figures are SVG via `svglite`** (`dev: svglite` in `wp.qmd`), so figure text is real `<text>` that Typst resolves against those fonts. The cairo `svg` device would emit outlines instead.
 - **`sections/*.qmd` are now Typst-only.** They are shared with `thesis.qmd`, whose `tar_quarto()` target is commented out in `_targets.R` for exactly that reason: the thesis renders through LaTeX and would fail on tinytable-styled tables. The thesis is reproducible from git history as of `e932286`.
 - The `{{< appendix >}}` shortcode restarts heading numbering at A and renumbers appendix floats as Table A.1 / Figure A.1. It prints its own "Appendix" title and issues its own pagebreak, so `sections/appendix.qmd` must not add either, and its headings must not be `{.unnumbered}`.
-- Section cross-references must be markdown links (`[the background section](#sec-context)`), not `@sec-*`. With `number-sections: false` there is no number to print and Typst errors with "cannot reference heading without numbering".
 - `notebooks/`, `presentations/` — supplementary Quarto docs and Beamer slides.
 - `references.bib` — bibliography.
 

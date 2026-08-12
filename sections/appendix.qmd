@@ -1,3 +1,4 @@
+## Descriptive statistics
 
 ```{r}
 #| include: false
@@ -37,6 +38,8 @@ rp <- function(n, col = "coef") res_main[[col]][res_main$name == n]
 f1 <- function(x) formatC(x, format = "f", digits = 1)
 
 ```
+
+## Reduced-form estimates
 
 ```{r}
 #| label: tbl-summary
@@ -93,7 +96,7 @@ summary_table |>
   style_tt(j = 1, align = "l") |>
   style_tt(j = 2:7, align = "r") |>
   style_tt(fontsize = 0.7)
-  
+
 ```
 
 
@@ -180,7 +183,7 @@ tar_read(next_job) |>
 ```
 
 
-## Reduced-Form Estimates and Their Relation to the LATE
+### Reduced-Form Estimates and Their Relation to the LATE
 
 @tbl-job-search reports the effect of *eligibility* rather than of use — the reduced form, or intent-to-treat. No reduced-form effect on a labor market outcome is significant at the 5% level, and this is exactly what a first stage of `r f1(pe$coef * 100)` percentage points implies. An effect of `r f1(rp("duration_36"))` weeks concentrated on compliers dilutes to well under a week once averaged over the entire population near the threshold, the overwhelming majority of whom never use the program. The reduced form is therefore not in tension with the LATE; it is the same evidence expressed per capita rather than per user.
 
