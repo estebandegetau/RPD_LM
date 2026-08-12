@@ -24,7 +24,7 @@ format:
     fig-format: svg
     fig-dpi: 300
     number-sections: true
-    header: Click [HERE](https://www.estebandegetau.com/RPD_LM/index.html) for the latest version.
+    header: Click [HERE](https://www.estebandegetau.com/RPD_LM/) for the latest version.
     date-format: full
     csl: chicago-author-date
 
