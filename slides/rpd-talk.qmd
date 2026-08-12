@@ -233,10 +233,11 @@ Whether that is moral hazard or liquidity decides its welfare content [@chetty20
 Severance is the *de jure* income substitute: 90 days of wages, owed by the employer.
 It is *de facto* close to unenforceable [@sadka2024]:
 
-- More than **half** of dismissed workers report never receiving it
-- Only **15%** file a claim — they correctly read the process as ineffective
+- **Half** of dismissed workers report never receiving it, despite being entitled to
+- Only **15%** of dismissed workers whose employers fail to pay severande file a claim
+  - A majority of the remaining 85% views the process as either "useless" or "too expensive"
 - **30%** of lawsuits are unresolved four years later
-- Among workers who *won*, only **20%** collected the full award
+- Among workers who *won*, only **20%** collected the full award, while 54% of them failed to collect anything
 
 So the RPD is not one option among several. For most displaced formal workers it is
 the only income substitute that actually arrives.
