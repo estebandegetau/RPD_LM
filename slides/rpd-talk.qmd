@@ -1,6 +1,7 @@
 ---
 title: "Insuring Unemployment Out of Your Own Pension"
 subtitle: "Causal Evidence from Mexico's *Retiro Parcial por Desempleo*"
+thanks: ""
 author: Esteban Degetau
 email: estebandegetau@gmail.com
 institute:  |
@@ -11,7 +12,7 @@ date-format: long
 # live here: the title page renders only title/subtitle/author/institute/date, so a
 # `venue:` key would be dropped without a warning -- as `email:` above already is.
 bibliography: ../references.bib
-csl: ../amafore/apa.csl
+# csl: ../amafore/apa.csl
 format:
   beamer:
     # xelatex, not the lualatex default: under LuaTeX the beamer template loads
@@ -415,7 +416,7 @@ kbl(dur, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
     col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Ineligible mean"),
     align = c("l", "r", "r", "r", "r")) |>
   kable_styling(font_size = 8, latex_options = "hold_position") |>
-  column_spec(1, width = "6.2cm") |>
+  column_spec(1, width = "5cm") |>
   column_spec(2:5, width = "1.7cm")
 ```
 
@@ -453,7 +454,7 @@ kbl(gains, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
     col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Ineligible mean"),
     align = c("l", "r", "r", "r", "r")) |>
   kable_styling(font_size = 8, latex_options = "hold_position") |>
-  column_spec(1, width = "5.4cm") |>
+  column_spec(1, width = "4.5cm") |>
   column_spec(2:5, width = "1.9cm") |>
   footnote(general = note_fuzzy, general_title = "Note: ",
            threeparttable = TRUE, escape = FALSE, footnote_as_chunk = TRUE)
@@ -567,14 +568,18 @@ against `r f1(shares$prop_25[5] * 100)`% in Q5.
    reemployment the liquidity displaces depends on how much reemployment is available
    to displace [@chetty2008].
 
-## References {.allowframebreaks}
+## Limitations
 
-::: {#refs}
-:::
+- **External validity.** The LATE describes compliers displaced in their third year of
+  formal work. Not the average user, not the average worker.
+- **Informality is unobserved.** See the discussion above; it bounds the consumption
+  interpretation but not the pension one.
+- **Precision.** The second-stage confidence intervals are wide
+  (36-month duration: `r f1(rp("duration_36") - 1.96 * rp("duration_36", "se"))`–`r f1(rp("duration_36") + 1.96 * rp("duration_36", "se"))` weeks).
+- **Control-group contamination.** Ineligible workers become eligible under Scheme B
+  within the three-year window, so long-horizon estimates are a lower bound.
 
-```{=latex}
-\backupstart
-```
+
 
 # Backup
 
@@ -638,9 +643,9 @@ summary_slide <- function(groups) {
       linesep = "",
         col.names = c("Variable", "Mean", "Median", "Std. dev.", "N"),
         align = c("l", "r", "r", "r", "r")) |>
-    kable_styling(font_size = 6, latex_options = "hold_position") |>
-    column_spec(1, width = "6.0cm") |>
-    column_spec(2:5, width = "1.7cm")
+    kable_styling(font_size = 7, latex_options = "hold_position") |>
+    column_spec(1, width = "5.0cm") |>
+    column_spec(2:5, width = "1.5cm")
 }
 ```
 
@@ -689,7 +694,7 @@ balance |>
       col.names = c("Covariate", "Effect", "Std. err.", "$p$", "Holm $p$"),
       align = c("l", "r", "r", "r", "r")) |>
   kable_styling(font_size = 7, latex_options = "hold_position") |>
-  column_spec(1, width = "5.0cm") |>
+  column_spec(1, width = "4.0cm") |>
   column_spec(2:5, width = "1.9cm") |>
   footnote(general = paste("Sharp RD estimates of the eligibility effect on each",
                            "covariate. Holm-adjusted p-values across the 10 tests."),
@@ -720,8 +725,8 @@ itt |>
       linesep = "",
       col.names = c("Outcome", "Effect", "Std. err.", "$p$", "Eff. N"),
       align = c("l", "r", "r", "r", "r")) |>
-  kable_styling(font_size = 6, latex_options = "hold_position") |>
-  column_spec(1, width = "5.6cm") |>
+  kable_styling(font_size = 7, latex_options = "hold_position") |>
+  column_spec(1, width = "4.6cm") |>
   column_spec(2:5, width = "1.9cm")
 ```
 
@@ -860,17 +865,8 @@ the `r round(cst("share2") * 100)`% of the individual calculation: the registry 
 its own wage distribution rather than the estimation sample's mean, and the estimation
 sample sits at the two-year threshold where withdrawals are small relative to wages.
 
-## Limitations
 
-- **External validity.** The LATE describes compliers displaced in their third year of
-  formal work. Not the average user, not the average worker.
-- **Informality is unobserved.** See the discussion above; it bounds the consumption
-  interpretation but not the pension one.
-- **Precision.** The second-stage confidence intervals are wide
-  (36-month duration: `r f1(rp("duration_36") - 1.96 * rp("duration_36", "se"))`–`r f1(rp("duration_36") + 1.96 * rp("duration_36", "se"))` weeks).
-- **Control-group contamination.** Ineligible workers become eligible under Scheme B
-  within the three-year window, so long-horizon estimates are a lower bound.
+## References {.allowframebreaks}
 
-```{=latex}
-\backupend
-```
+::: {#refs}
+:::
