@@ -293,7 +293,13 @@ fig_slides("eligibility_plot_slides", width = 2.5, height = 2.2)
 :::
 :::
 
-## The program is large, and its use is crisis-driven
+## The program is large, and its use is crisis-driven {label="mn-usage"}
+
+<!-- Frames with no vertical slack put their evidence links in the footline strip
+(\alsosee) instead of inline at the claim (\evid); both are defined in beamer-rpd.tex.
+Here the paragraph below is already three lines and an inline marker wraps it to four.
+The two results figures further down are figure-only, so they use the strip as well. -->
+\alsosee{bk-aggregate}{aggregate cost}
 
 ```{r}
 #| label: fig-usage
@@ -304,7 +310,7 @@ fig_slides("rpd_usage_plot_slides", width = 5.2, height = 1.82)
 \$`r bn(agg("monto_2024"))` bn. The steps are 2009 and 2020: rate of adoption increases when the labor
 market deteriorates.
 
-## Data and sample
+## Data and sample {label="mn-data"}
 
 ::: {.columns}
 ::: {.column width="52%"}
@@ -313,11 +319,11 @@ employer–employee panel (14.8 M workers, 406.8 M contracts) and the universe o
 withdrawal records.
 
 Analysis sample: **`r fm(muestra$n_muestra)`** workers with exactly **one** non-employment spell of
-46+ days *during their third year* in formal work.
+46+ days *during their third year* in formal work.\evid{bk-summary1}{covariates}
 
 The withdrawal is small against the wage but large against the account —
 \$`r fm(muestra$w_retiro)`, about `r f2(escala$meses_salario)` months of the prior wage
-and `r f1(escala$share_saldo * 100)`% of the balance.
+and `r f1(escala$share_saldo * 100)`% of the balance.\evid{bk-summary2}{withdrawal}
 
 **Scope condition:** these data observe *formal* employment and only formal employment.
 :::
@@ -360,17 +366,16 @@ fig_slides("rd_take_up_plot_slides", width = 2.8, height = 2.2)
 :::
 ::: {.column width="45%"}
 Crossing the threshold raises take-up within 12 months by
-**`r f1(pe$coef * 100)` pp** (s.e. `r f1(pe$se * 100)`).
+**`r f1(pe$coef * 100)` pp** (s.e. `r f1(pe$se * 100)`).\evid{bk-takeup}{by horizon}
 
 $F = `r round(pe$f)`$, on `r fm(pe$n_efectivo)` observations inside a bandwidth of
-±`r round(pe$h)` days.
+±`r round(pe$h)` days.\evid{bk-itt}{ITT}
 
-Strong instrument, small effect — which is what a self-financed, partial withdrawal
-from your own account should look like.
+Strong instrument, small effect — consistent with cost internalization.
 :::
 :::
 
-## Take-up over the horizon
+## Take-up over the horizon {label="mn-fspath"}
 
 ```{r}
 #| label: fig-fspath
@@ -378,10 +383,10 @@ fig_slides("take_up_path_slides", width = 5.2, height = 1.6)
 ```
 
 `r f1(fs_pp(2))` pp at two months, `r f1(fs_pp(12))` at twelve, `r f1(fs_pp(24))` by
-month 24. The flattening after month 12 is **not** non-compliance: ineligible workers
+month 24.\evid{bk-takeup}{by horizon} The flattening after month 12 is **not** non-compliance: ineligible workers
 reach Scheme B's five-year threshold and become eligible on their own.
 
-## Design validity
+## Design validity {label="mn-design"}
 
 ::: {.columns}
 ::: {.column width="52%"}
@@ -391,22 +396,22 @@ fig_slides("density_plot_slides", width = 2.5, height = 2.1)
 ```
 :::
 ::: {.column width="48%"}
-**No manipulation** [@cattaneo2020]. Landing on the eligible side means postponing
+**No manipulation** [@cattaneo2020]. Landing on the eligible side entails postponing
 your own dismissal by days — not a margin workers control.
 
 **Balance.** Of `r nrow(balance)` covariates, `r sum(balance$pv < 0.05)` reject at 5%
 individually; under Holm **none** survives. The largest jump is age — about 1.5 months
-against a mean of `r f1(muestra$edad_media)` years.
+against a mean of `r f1(muestra$edad_media)` years.\evid{bk-balance}{balance}\evid{bk-cov}{continuity}
 
-**Bandwidth.** Positive across ×0.5–×2 of the optimal width.
+**Bandwidth.** Positive across ×0.5–×2 of the optimal width.\evid{bk-bw}{sensitivity}
 :::
 :::
 
 
 
-## How to read what follows
+## How to read what follows {label="mn-howtoread"}
 
-The first stage *is* the complier share: about **4 in 100** workers near the threshold.
+The first stage *is* the complier share after 12 months of displacement: about **4 in 100** workers near the threshold.
 
 The LATE describes *them* — not the average worker, and not the average program user.
 Two consequences:
@@ -414,21 +419,24 @@ Two consequences:
 - Effects look large against population means, because they are concentrated in a
   small and specific group.
 - The **reduced form is correspondingly small**: the ITT on 36-month duration is
-  `r f2(itv("duration_36"))` weeks ($p$ = `r f2(itv("duration_36", "pv"))`).
+  `r f2(itv("duration_36"))` weeks ($p$ = `r f2(itv("duration_36", "pv"))`).\evid{bk-itt}{all ITT estimates}
 
 The reduced form is not in tension with the LATE. It is the same evidence expressed
 per capita rather than per user.
 
 # Results
 
-## Take-up lengthens time out of formal work
+## Take-up lengthens time out of formal work {label="mn-durfig"}
+
+\alsosee{bk-surv}{survival}
+\alsosee{bk-dur}{duration}
 
 ```{r}
 #| label: fig-fuzzypath
 fig_slides("fuzzy_path_slides", width = 5.2, height = 2.25)
 ```
 
-## Take-up lengthens time out of formal work
+## Take-up lengthens time out of formal work {label="mn-durtab"}
 
 ```{r}
 #| label: tbl-duration
@@ -447,17 +455,19 @@ kbl(dur, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
     align = c("l", "r", "r", "r", "r")) |>
   kable_styling(font_size = 8, latex_options = "hold_position") |>
   column_spec(1, width = "5cm") |>
-  column_spec(2:5, width = "1.7cm")
+  column_spec(2:5, width = "1.7cm") |>
+  footnote(general = note_fuzzy, general_title = "Note: ",
+           threeparttable = TRUE, escape = FALSE, footnote_as_chunk = TRUE)
 ```
 
-Both significant at 5%. The 36-month effect is `r round(rp("duration_36") / rp("duration_36", "media") * 100)`%
+Both significant at 5%.\evid{bk-rdoutcome}{discontinuities}\evid{bk-bw}{bandwidth} The 36-month effect is `r round(rp("duration_36") / rp("duration_36", "media") * 100)`%
 of the `r f1(rp("duration_36", "media"))` weeks an ineligible worker spends out of
 formal work.
 
 Consistent with the UI literature, with the previous RPD evidence from surveys [@velázquezguadarrama2023], as well as with lump-sum severance in Brazil
 [@britto2022].
 
-## Nothing compensates the extra weeks
+## Nothing compensates the extra weeks {label="mn-nogain"}
 
 ```{r}
 #| label: tbl-nogain
@@ -490,20 +500,22 @@ kbl(gains, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
 ```
 
 The next-job wage estimate is sizeable but misses 5% ($p$ = `r f3(rp("next_job_av_earnings", "pv"))`);
-everything else is zero. Against @acemoglu2000 and @velázquezguadarrama2023; consistent with @britto2022, @gonzález-rozada2023.
+everything else is zero.\evid{bk-summary3}{means}\evid{bk-itt}{ITT} Against @acemoglu2000 and @velázquezguadarrama2023; consistent with @britto2022, @gonzález-rozada2023.
 
 ## Who pays — and which contrasts survive a test
+
+\alsosee{bk-het}{estimates}
 
 ```{r}
 #| label: fig-het
 fig_slides("het_diff_plot_slides", width = 5.2, height = 2.25)
 ```
 
-## Who pays — and which contrasts survive a test
+## Who pays — and which contrasts survive a test {label="mn-het"}
 
 Each split is estimated on **disjoint** subsamples, each with its own bandwidth. A
 large coefficient in one half and a small one in the other does *not* establish that
-the halves differ. So test the difference directly:
+the halves differ. So test the difference directly:\evid{bk-het}{estimates}
 
 - **Prior earnings.** Below median `r round(hetv("Ingreso previo", "Por debajo de la mediana", "dur_coef"))` weeks
   vs. above median `r f1(hetv("Ingreso previo", "Por arriba de la mediana", "dur_coef"))`.
@@ -511,7 +523,7 @@ the halves differ. So test the difference directly:
 - **Sex.** Men `r round(hetv("Sexo", "Hombres", "dur_coef"))` weeks vs. women
   `r f1(hetv("Sexo", "Mujeres", "dur_coef"))`. Difference $p$ = `r f3(difp("Sexo"))` — **distinguishable**.
 - **Age** ($p$ = `r f3(difp("Edad"))`) and **COVID-19 exposure** ($p$ = `r f2(difp("Exposición a COVID-19"))`)
-  point the same way but are **not** distinguishable. Suggestive, not findings.
+  point the same way but are **not** distinguishable.
 
 No subgroup shows a detectable three-year earnings gain. The *only* reemployment-wage
 gain significant at 5% accrues to workers already **above** the median
@@ -537,7 +549,7 @@ informal work nor self-employment generates contributions or accrues weeks.
 
 # What it costs at retirement
 
-## Two channels, one compounding factor
+## Two channels, one compounding factor {label="mn-channels"}
 
 ::: {.columns}
 ::: {.column width="46%"}
@@ -561,9 +573,9 @@ fig_slides("fig_pension_channels_en", width = 2.8, height = 1.6)
 At the sample's own values (\$`r fm(cst("withdrawal"))` withdrawn, \$`r fm(cst("wage"))`
 monthly wage, `r f1(cst("weeks"))` extra weeks, `r f1(0.065 * 100)`% contribution rate,
 40 years): the loss is **`r f1(min(cost$multiple[cost$c_rate == 0.065]))`–`r f1(max(cost$multiple[cost$c_rate == 0.065]))`×
-the amount withdrawn**, `r round(cst("share2") * 100)`% of it from the unemployment.
+the amount withdrawn**, `r round(cst("share2") * 100)`% of it from the unemployment.\evid{bk-pension}{full grid}
 
-## The burden is regressive in the ratio
+## The withdrawn burden is regressive in the ratio
 
 ```{r}
 #| label: fig-quintiles
@@ -574,7 +586,7 @@ fig_slides("fig_retiro_semanas_en", width = 2.5, height = 1.78)
 
 Low-wage users withdraw a **larger share** of a smaller balance:
 `r f1(shares$prop_25[1] * 100)`% of Q1 withdrawals take a quarter or more of the account,
-against `r f1(shares$prop_25[5] * 100)`% in Q5.
+against `r f1(shares$prop_25[5] * 100)`% in Q5.\evid{bk-summary2}{withdrawal}
 
 # Takeaways
 
@@ -586,12 +598,12 @@ against `r f1(shares$prop_25[5] * 100)`% in Q5.
 
 2. **The pattern looks like liquidity, not classical moral hazard.** A large response,
    no compensating improvement, and a cost concentrated among below-median earners and
-   among men — the two contrasts that survive a formal test.
+   among men.
 
 3. **The cost is paid in the pension, and most of it is invisible.**
    `r f1(cst("multiple"))`× the withdrawal at a 4% real return, of which
    `r round(cst("share2") * 100)`% comes from the induced unemployment rather than the
-   withdrawal itself.
+   withdrawal itself.\evid{bk-pension}{full grid}
 
 4. **The cost moves with the cycle; the program's parameters do not.** How much
    reemployment the liquidity displaces depends on how much reemployment is available
@@ -601,10 +613,13 @@ against `r f1(shares$prop_25[5] * 100)`% in Q5.
 
 - **External validity.** The LATE describes compliers displaced in their third year of
   formal work. Not the average user, not the average worker.
+
 - **Informality is unobserved.** See the discussion above; it bounds the consumption
   interpretation but not the pension one.
+
 - **Precision.** The second-stage confidence intervals are wide
   (36-month duration: `r f1(rp("duration_36") - 1.96 * rp("duration_36", "se"))`–`r f1(rp("duration_36") + 1.96 * rp("duration_36", "se"))` weeks).
+  
 - **Control-group contamination.** Ineligible workers become eligible under Scheme B
   within the three-year window, so long-horizon estimates are a lower bound.
 
@@ -678,14 +693,18 @@ summary_slide <- function(groups) {
 }
 ```
 
-## Summary statistics: covariates and previous job
+## Summary statistics: covariates and previous job {label="bk-summary1"}
+
+\backto{mn-data}{Data and sample}
 
 ```{r}
 #| label: tbl-summary
 summary_slide(c("Covariables", "Empleo previo"))
 ```
 
-## Summary statistics: the withdrawal and job search
+## Summary statistics: the withdrawal and job search {label="bk-summary2"}
+
+\backto{mn-data}{Data and sample}
 
 ```{r}
 #| label: tbl-summary2
@@ -694,7 +713,9 @@ summary_slide(c("Retiro (RPD)", "Búsqueda de empleo"))
 
 Withdrawal variables are defined on the subsample that used the program.
 
-## Summary statistics: next job and medium term
+## Summary statistics: next job and medium term {label="bk-summary3"}
+
+\backto{mn-nogain}{Nothing compensates}
 
 ```{r}
 #| label: tbl-summary3
@@ -703,7 +724,9 @@ summary_slide(c("Siguiente empleo", "Mediano plazo"))
 
 Monetary values in 2024 Mexican pesos.
 
-## Covariate balance, with the Holm correction
+## Covariate balance, with the Holm correction {label="bk-balance"}
+
+\backto{mn-design}{Design validity}
 
 ```{r}
 #| label: tbl-balance
@@ -731,7 +754,9 @@ balance |>
            footnote_as_chunk = TRUE)
 ```
 
-## Reduced-form (ITT) estimates
+## Reduced-form (ITT) estimates {label="bk-itt"}
+
+\backto{mn-howtoread}{How to read}
 
 ```{r}
 #| label: tbl-itt
@@ -763,7 +788,9 @@ No reduced-form effect is significant at 5% — what a `r f1(pe$coef * 100)` pp 
 stage implies. Reduced form ÷ first stage ≠ the LATE: each estimate picks its own
 bandwidth.
 
-## Sensitivity to the bandwidth
+## Sensitivity to the bandwidth {label="bk-bw"}
+
+\backto{mn-design}{Design validity}
 
 ```{r}
 #| label: fig-bw
@@ -773,49 +800,65 @@ fig_slides("bw_plot_slides", width = 4.9, height = 1.82)
 Positive throughout; significance concentrates near the optimal bandwidth, and the
 estimate attenuates as the window widens.
 
-## Discontinuities in the two main outcomes
+## Discontinuities in the two main outcomes {label="bk-rdoutcome"}
+
+\backto{mn-durtab}{the duration results}
 
 ```{r}
 #| label: fig-rdoutcome
 fig_slides("rd_outcome_plot_slides", width = 5.2, height = 2.25)
 ```
 
-## Take-up at every horizon
+## Take-up at every horizon {label="bk-takeup"}
+
+\backto{mn-fspath}{Take-up over the horizon}
 
 ```{r}
 #| label: fig-takeup-panels
-fig_slides("take_up_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
+fig_slides("take_up_plots", width = 5.2, height = 2.25, nrow = 2, ncol = 3)
 ```
 
-## Covariate continuity
+## Covariate continuity {label="bk-cov"}
+
+\backto{mn-design}{Design validity}
+\alsosee{bk-prevjob}{previous job}
 
 ```{r}
 #| label: fig-cov
-fig_slides("covariates_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
+fig_slides("covariates_plots", width = 5.2, height = 2.25, nrow = 2, ncol = 3)
 ```
 
-## Previous-job continuity
+## Previous-job continuity {label="bk-prevjob"}
+
+\backto{mn-design}{Design validity}
 
 ```{r}
 #| label: fig-prevjob
-fig_slides("prev_job_plots", width = 4.4, height = 2.6, nrow = 2, ncol = 2)
+fig_slides("prev_job_plots", width = 4.4, height = 2.25, nrow = 2, ncol = 2)
 ```
 
-## Survival in non-employment, by horizon
+## Survival in non-employment, by horizon {label="bk-surv"}
+
+\backto{mn-durfig}{the duration results}
+\alsosee{bk-dur}{duration}
 
 ```{r}
 #| label: fig-surv
-fig_slides("survival_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
+fig_slides("survival_plots", width = 5.2, height = 2.25, nrow = 2, ncol = 3)
 ```
 
-## Duration of non-employment, by horizon
+## Duration of non-employment, by horizon {label="bk-dur"}
+
+\backto{mn-durfig}{the duration results}
 
 ```{r}
 #| label: fig-dur
-fig_slides("duration_plots", width = 5.2, height = 2.6, nrow = 2, ncol = 3)
+fig_slides("duration_plots", width = 5.2, height = 2.25, nrow = 2, ncol = 3)
 ```
 
-## Heterogeneity: the underlying estimates
+## Heterogeneity: the underlying estimates {label="bk-het"}
+
+\backto{mn-het}{Who pays}
 
 ```{r}
 #| label: tbl-het
@@ -850,7 +893,9 @@ het |>
     footnote_as_chunk = TRUE)
 ```
 
-## Pension cost: the full grid
+## Pension cost: the full grid {label="bk-pension"}
+
+\backto{mn-channels}{Two channels}
 
 ```{r}
 #| label: tbl-pension
@@ -869,17 +914,20 @@ cost |>
       align = c("r", "r", "r", "r", "r", "r", "r")) |>
   kable_styling(font_size = 7, latex_options = "hold_position") |>
   footnote(general = paste(
-    "Illustrative, not actuarial: constant real return, no fees, no partial recovery",
+    "Constant real return, no fees, no partial recovery",
     "of contributions after reemployment. It combines a complier LATE (the extra",
     "weeks) with sample means (the withdrawal and the prior wage), so it describes a",
-    "worker of average characteristics induced by the eligibility rule. The 6.5%",
-    "contribution rate is the one in force over the estimation window; 15% is the",
-    "2020 reform ceiling."),
+    "worker of average characteristics induced by the eligibility rule."
+    # "contribution rate is the one in force over the estimation window; 15% is the",
+    # "2020 reform ceiling."
+    ),
     general_title = "Note: ", threeparttable = TRUE, escape = FALSE,
     footnote_as_chunk = TRUE)
 ```
 
-## Aggregate cost of the program to date
+## Aggregate cost of the program to date {label="bk-aggregate"}
+
+\backto{mn-usage}{Program use}
 
 Applying the same two channels to the whole withdrawal registry, at a
 `r f1(0.04 * 100)`% real return and the `r f1(0.065 * 100)`% contribution rate:

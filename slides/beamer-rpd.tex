@@ -87,10 +87,12 @@
 %% frametitle beamercolorbox lands *below* the title, not above it.
 \setbeamertemplate{headline}{\vspace*{0.45cm}}
 
-%% Page number only, muted, bottom right; nothing on the title frame.
+%% Page number bottom right, muted; nothing on the title frame. Bottom left is the
+%% return link of a backup frame, when it set one -- see \backto below.
 \setbeamertemplate{footline}{%
   \ifnum\value{framenumber}>1\relax
-    \hfill\usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+    \usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+    \hspace*{0.9cm}\ifnum\rpdfootpage=\the\c@page\relax\rpdfootlinks\fi\hfill%
     \insertframenumber\hspace*{0.9cm}%
   \fi
   \vspace*{0.9ex}%
@@ -193,6 +195,62 @@
 %% Full-bleed image on a {.plain} frame without adjustbox: an overwide box centred in
 %% \textwidth spills symmetrically into both margins.
 \newcommand{\bleed}[1]{\makebox[\textwidth][c]{#1}}
+
+%% ---- evidence cross-links ----------------------------------------------------------
+%% Two shapes, both plain \hyperlink: \evid marks a claim on a main frame with a link to
+%% the backup frame that supports it, and \backto puts one return link on that backup
+%% frame. The targets are the frames' own `label=` option, which Quarto passes through
+%% from a heading attribute (`## Title {label="bk-balance"}`): beamer's \label is
+%% \beamer@label, which calls \beamer@nameslide, which IS a \hypertarget
+%% (beamerbaseoverlay.sty:858, beamerbasenavigation.sty:623). So no \hypertarget belongs
+%% in a frame body -- one there would open a paragraph and cost \parskip on frames that
+%% have none to spare.
+%%
+%% Both must carry their own colour: the preamble Quarto generates sets hyperref's
+%% `hidelinks`, so a link is otherwise indistinguishable from body text.
+%%
+%% \mbox keeps the marker from breaking across lines; the leading \ allows a break in
+%% front of it, which matters inside the 48%-wide columns.
+\newcommand{\evid}[2]{\ \mbox{\hyperlink{#1}{%
+  \textcolor{rpdaccent}{\scriptsize[#2\,\guilsinglright]}}}}
+
+%% Not every frame has room for an inline marker. Five backup frames (the 2x3 RD panels)
+%% already report a ~24pt overfull \vbox, the usage and results frames are figure-only,
+%% and one extra line of body text is exactly what none of them can afford. Those carry
+%% their links in the footline instead, next to the frame number: no height at all, and
+%% always the same place on the slide. \backto and \alsosee only set a macro -- as a raw
+%% block each stays in vertical mode and contributes nothing, so neither opens a
+%% paragraph or costs \parskip.
+%%
+%% The strip is global state, so it needs clearing between frames -- but NOT from a
+%% template hook. Beamer expands the frametitle template at shipout, after the body has
+%% run, so a reset hung there wipes the links before the footline can print them (it
+%% produced an empty strip on every frame). Stamp the page number instead and have the
+%% footline print the strip only on the page that set it: \c@page is the same during the
+%% body and during shipout, one frame is one page here, and a stale value can never leak
+%% because it no longer matches.
+\newcommand{\rpdfootlinks}{}
+\newcommand{\rpdfootpage}{-1}
+\newcommand{\rpdfootclear}{%
+  \ifnum\rpdfootpage=\the\c@page\relax\else\gdef\rpdfootlinks{}\fi
+  \xdef\rpdfootpage{\the\c@page}}
+\newcommand{\rpdfwd}[2]{\hyperlink{#1}{\textcolor{rpdaccent}{#2\,\guilsinglright}}}
+
+\newcommand{\backto}[2]{\rpdfootclear\gdef\rpdfootlinks{\hyperlink{#1}{%
+  \textcolor{rpdaccent}{\guilsinglleft\,back to #2}}}}
+
+%% Forward link in the strip: on a figure-only main frame it is the only marker, and on
+%% a backup frame that continues into the next one it follows the return link. The
+%% \expandafter chain expands \rpdfootlinks exactly once before redefining it -- a plain
+%% \gdef naming itself would recurse, and \xdef would expand the \hyperlink too.
+\newcommand{\alsosee}[2]{%
+  \rpdfootclear
+  \ifx\rpdfootlinks\@empty
+    \gdef\rpdfootlinks{\rpdfwd{#1}{#2}}%
+  \else
+    \expandafter\gdef\expandafter\rpdfootlinks\expandafter{%
+      \rpdfootlinks\hskip1.2em\rpdfwd{#1}{#2}}%
+  \fi}
 
 %% appendixnumberbeamer is not installed. Freeze the counter instead, so the backup
 %% frames do not inflate the number the audience sees on the last content slide.
