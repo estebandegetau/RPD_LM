@@ -218,23 +218,30 @@ Mexico's *Retiro Parcial por Desempleo* is a clean test: displaced formal worker
 withdraw part of their own pension savings, and the only thing that changes is their
 own retirement wealth.
 
-::: {.block}
+In the best of worlds, UI could even allow displaced workers to find better jobs that they otherwise could have [@acemoglu2000].
+
+
+
+
+<!-- ::: {.block}
 ### The answer
 Take-up causes **`r f1(rp("duration_36"))` additional weeks** out of formal employment
 over three years, with **no** offsetting gain in wages, job stability or earnings. The
 bill arrives at retirement: **`r f1(cst("multiple"))`× the sum withdrawn**,
-`r round(cst("share2") * 100)`% of it from the weeks, not the withdrawal.
-:::
+`r round(cst("share2") * 100)`% of it from the additional weeks out of formal employment.
+::: -->
 
-Whether that is moral hazard or liquidity decides its welfare content [@chetty2008].
+
+
+<!-- Whether that is moral hazard or liquidity decides its welfare content [@chetty2008]. -->
 
 ## Four literatures meet here; none of them answers this
 
-**Pooled UI lengthens spells** [@katz1990; @schmieder2012]; whether that buys a better job
+**Pooled UI lengthens spells, universally** [@katz1990; @schmieder2012]; whether that buys a better job
 is contested [@nekoei2017; @acemoglu2000]. But the money is someone else's: insurance and
 transfer move together.
 
-**Individual accounts were designed to separate them** [@feldstein2007]: Chile's
+**Individual accounts (UISA) were designed to separate them** [@feldstein2007]: Chile's
 self-funded tranche shows no duration response [@hartley2011].
 
 **Where UI is unaffordable, the substitute is a lump sum.** Brazil's severance lengthens
@@ -242,8 +249,8 @@ formal spells, over half of it worked informally [@britto2022; @gerard2021] — 
 the *employer's* money.
 
 **The RPD is the worker's own retirement wealth.** Prior causal work uses survey data and
-eligibility alone [@velázquezguadarrama2023; @carreñogodínez2025]; one reads the same
-duration increase as *better* matching. Here take-up is observed — and so is its price at
+eligibility alone [@velázquezguadarrama2023; @carreñogodínez2025]; one reads an increase in future wages
+as *better* matching. Here take-up is observed — and so is its projected price at
 retirement.
 
 # Setting
@@ -395,6 +402,8 @@ against a mean of `r f1(muestra$edad_media)` years.
 :::
 :::
 
+
+
 ## How to read what follows
 
 The first stage *is* the complier share: about **4 in 100** workers near the threshold.
@@ -443,10 +452,9 @@ kbl(dur, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
 
 Both significant at 5%. The 36-month effect is `r round(rp("duration_36") / rp("duration_36", "media") * 100)`%
 of the `r f1(rp("duration_36", "media"))` weeks an ineligible worker spends out of
-formal work — a reference for scale, not a rate: the two are not additive, because
-compliers' spells are plausibly longer to begin with.
+formal work.
 
-Consistent with the UI literature, and with lump-sum severance in Brazil
+Consistent with the UI literature, with the previous RPD evidence from surveys [@velázquezguadarrama2023], as well as with lump-sum severance in Brazil
 [@britto2022].
 
 ## Nothing compensates the extra weeks
@@ -482,7 +490,7 @@ kbl(gains, format = "latex", booktabs = TRUE, escape = FALSE, longtable = FALSE,
 ```
 
 The next-job wage estimate is sizeable but misses 5% ($p$ = `r f3(rp("next_job_av_earnings", "pv"))`);
-everything else is zero. Against @acemoglu2000; with @britto2022, @gonzález-rozada2023.
+everything else is zero. Against @acemoglu2000 and @velázquezguadarrama2023; consistent with @britto2022, @gonzález-rozada2023.
 
 ## Who pays — and which contrasts survive a test
 
