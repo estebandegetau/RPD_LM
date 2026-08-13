@@ -261,7 +261,7 @@ Severance is the *de jure* income substitute: 90 days of wages, owed by the empl
 It is *de facto* close to unenforceable [@sadka2024]:
 
 - **Half** of dismissed workers report never receiving it, despite being entitled to
-- Only **15%** of dismissed workers whose employers fail to pay severande file a claim
+- Only **15%** of dismissed workers whose employers fail to pay severance file a claim
   - A majority of the remaining 85% views the process as either "useless" or "too expensive"
 - **30%** of lawsuits are unresolved four years later
 - Among workers who *won*, only **20%** collected the full award, while 54% of them failed to collect anything
@@ -619,10 +619,11 @@ against `r f1(shares$prop_25[5] * 100)`% in Q5.\evid{bk-summary2}{withdrawal}
 
 - **Precision.** The second-stage confidence intervals are wide
   (36-month duration: `r f1(rp("duration_36") - 1.96 * rp("duration_36", "se"))`–`r f1(rp("duration_36") + 1.96 * rp("duration_36", "se"))` weeks).
-  
-- **Control-group contamination.** Ineligible workers become eligible under Scheme B
-  within the three-year window, so long-horizon estimates are a lower bound.
 
+- **Control-group contamination.** Ineligible workers become eligible under Scheme B
+  within two years after displacement, so long-horizon estimates are a lower bound.
+
+- **I don't allow for a second unemployment spell.** This assumption restricts a likely differential outcome.
 
 
 # Backup
