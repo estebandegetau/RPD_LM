@@ -32,3 +32,22 @@ Rodrigo/
 *.tex
 *.html
 R-scripts/DID
+
+# LaTeX intermediates. The deck, the thesis and the AMAFORE documents all render
+# through LaTeX; *.tex, *.pdf and *.log are already ignored above, and these are
+# the rest of what a Beamer run leaves behind. They churn on every render.
+*.aux
+*.nav
+*.snm
+*.toc
+*.out
+*.vrb
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.bcf
+*.run.xml
