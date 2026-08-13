@@ -547,6 +547,10 @@ list(
     command = make_bw_plot_slides(bw_sensitivity_esp)
   ),
   tar_target(
+    name = withdrawal_scale_en,
+    command = compute_withdrawal_scale_en(rpd_data)
+  ),
+  tar_target(
     name = pension_cost_en,
     command = compute_pension_cost_en(muestra_stats_esp, resultados_principales_esp)
   ),

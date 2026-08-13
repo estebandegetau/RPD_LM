@@ -365,6 +365,41 @@ make_fig_retiro_semanas_en <- function(shares) {
     )
 }
 
+# How big the withdrawal is relative to what the worker had -----------------------
+# Both ratios the Data slide quotes -- months of prior wage, and share of the RCV
+# balance -- as means over the SAME subsample: the workers who actually withdrew.
+# Neither is available from an existing target, and both were previously taken from
+# sources defined on a different population:
+#
+#   * muestra_stats_esp$wbar averages the prior wage over all 877,749 workers in the
+#     analysis sample, users and non-users alike, while the numerator (w_retiro) is a
+#     mean over the 62,632 users. The slide divided one by the other.
+#   * retiro_saldo_shares_esp is built on the whole withdrawal registry (24.3 M
+#     withdrawals since 1997), where balances are an order of magnitude larger than at
+#     the two-year contribution threshold this sample sits on. Its median share, 11.6%,
+#     was quoted as if it described the analysis sample; the sample's own figure is
+#     35.9%. iab/abstract.qmd already reports the sample figure, so the deck and the
+#     abstract disagreed on the same quantity.
+#
+# w_retiro is recomputed here rather than imported so that both ratios visibly share
+# the numerator the slide prints. It equals muestra_stats_esp$w_retiro by construction:
+# amount_withdrawn is NA for every non-user and strictly positive for every user, so
+# `!is.na()` selects exactly the subsample that target's na.rm = TRUE mean is taken
+# over. prev_job_av_earnings and balance_rcv have no NAs within it.
+compute_withdrawal_scale_en <- function(rpd_data) {
+    usuarios <- rpd_data |>
+        filter(!is.na(amount_withdrawn))
+
+    tibble(
+        n_usuarios    = nrow(usuarios),
+        w_retiro      = mean(usuarios$amount_withdrawn),
+        wbar_usuario  = mean(usuarios$prev_job_av_earnings),
+        saldo         = mean(usuarios$balance_rcv),
+        meses_salario = w_retiro / wbar_usuario,
+        share_saldo   = w_retiro / saldo
+    )
+}
+
 # What the additional unemployment costs at retirement ----------------------------
 # Reproduces the calculation in sections/results.qmd (the `pension-cost` chunk).
 # It lives in a target rather than in a chunk of the deck so that the slide's inline
