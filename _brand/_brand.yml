@@ -1,0 +1,71 @@
+# _brand.yml
+meta:
+  name: Esteban Degetau # ← replace with your full consulting entity name
+  link: https://www.estebandegetau.com/     # ← your personal/professional site domain
+
+
+logo:
+  # Since you don’t yet have a logo, you can leave these blank for now
+  # Once you have one: small, medium, large can be specified
+  # Example:
+  # medium:
+  #   light: assets/logo-medium-light.png
+  #   dark:  assets/logo-medium-dark.png
+  medium:
+    light: ""  # placeholder
+    dark:  ""   # placeholder
+
+color:
+  palette:
+    blue: "#00829a"           # BSE teal
+    orange: "#f18a21"         # BSE orange
+    purple: "#3d2058"         # BSE purple
+    light-blue: "#e5f3f4"     # subtle background accent
+    dark-grey: "#121212"      # deep text color in light mode
+    light-grey: "#e6e6e6"     # light background
+    white: "#FFFFFF"
+    black: "#202022"
+  background:
+    light: white
+    dark: black
+  foreground:
+    light: black
+    dark: light-grey
+  primary:
+    light: light-grey
+    dark: dark-grey
+  link:
+    light: blue
+    dark: light-blue
+  danger: orange
+  secondary: 
+    light: dark-grey
+    dark: light-grey
+  tertiary: purple
+
+typography:
+  fonts:
+    - family: Urbanist       # modern sans serif, good for web readability
+      source: google
+      weight: [400, 600, 700]
+      style: [normal, italic]   # pull italic faces too, so *emphasis* renders slanted
+    - family: Libertinus Sans  # optional serif if you ever use PDFs / print
+      source: google
+      weight: [400, 700]
+      style: [normal, italic]
+  base: 
+    family: Urbanist
+  headings:
+    family: Urbanist
+    weight: 600
+  link:
+    color:
+      light: blue
+      dark: blue
+
+defaults:
+  bootstrap:
+    code-font-family: "Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+    body-font-family: "Urbanist, sans-serif"
+    heading-font-family: "Urbanist, sans-serif"
+
