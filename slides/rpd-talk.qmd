@@ -221,21 +221,21 @@ own retirement wealth.
 In the best of worlds, UI could even allow displaced workers to find better jobs that they otherwise could have [@acemoglu2000].
 
 
+## Results preview
 
-
-<!-- ::: {.block}
+::: {.block}
 ### The answer
 Take-up causes **`r f1(rp("duration_36"))` additional weeks** out of formal employment
-over three years, with **no** offsetting gain in wages, job stability or earnings. The
-bill arrives at retirement: **`r f1(cst("multiple"))`× the sum withdrawn**,
+over three years, with **no offsetting gain** in wages, job stability or earnings. The
+cost at retirement: **`r f1(cst("multiple"))`× the sum withdrawn**,
 `r round(cst("share2") * 100)`% of it from the additional weeks out of formal employment.
-::: -->
+:::
 
 
 
 <!-- Whether that is moral hazard or liquidity decides its welfare content [@chetty2008]. -->
 
-## Four literatures meet here; none of them answers this
+## FRelevant literature
 
 **Pooled UI lengthens spells, universally** [@katz1990; @schmieder2012]; whether that buys a better job
 is contested [@nekoei2017; @acemoglu2000]. But the money is someone else's: insurance and
