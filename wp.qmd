@@ -12,7 +12,7 @@ format:
     # TeX Gyre Heros comes from TeX Live and is visible to both Typst and R,
     # which is what lets figure text match the captions. Check with
     # `quarto typst fonts` before changing any of these names.
-    # mainfont: "Libertinus Serif"
+    mainfont: "Libertinus Serif"
     # sansfont: "TeX Gyre Heros"
     # mathfont: "New Computer Modern Math"
     fontsize: 11pt
