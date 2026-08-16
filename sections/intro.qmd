@@ -14,6 +14,8 @@ tar_config_set(store = here("_targets"))
 .f1  <- function(x) formatC(x, format = "f", digits = 1)
 ```
 
+## Introduction
+
 Job loss can cause severe income disruptions, yet in the absence of public intervention, workers must self-insure by borrowing, drawing down savings, or relying on informal support networks. Economists have long argued that such self-insurance is inefficient: when credit markets are incomplete and workers are risk-averse, precautionary strategies often fall short, and the welfare losses from income volatility can be large. Unemployment insurance (UI) programs address this market failure by pooling risk across individuals and time, thereby enabling workers to smooth consumption during periods of joblessness [@baily1978; @gruber1997]. Beyond their insurance function, UI programs may also improve job match quality by reducing the urgency to accept the first available job, leading to higher earnings and long-run productivity [@acemoglu1999; @acemoglu2000].
 
 These benefits, however, must be balanced against potential moral hazard; generous benefits may reduce the urgency to search for work, prolonging unemployment. @chetty2008 showed that this behavioral response in fact decomposes into two mechanisms with very different welfare content: a moral hazard component, in which the benefit distorts the incentive to search, and a liquidity component, in which it relaxes a constraint that had been forcing the worker to accept the first available offer. Only the first is an efficiency cost, and the two are difficult to separate because in most programs they move together.
