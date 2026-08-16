@@ -12,8 +12,6 @@ project:
 # (lscape macros, gt_packages.sty, fontfamily: libertinus) went with the move to
 # Typst; gt_packages.sty is still needed by the thesis, which renders via LaTeX.
 
-keywords: [unemployment insurance, income substitution, Mexico, RPD, labor economics]
-
 bibliography: references.bib
 license: "CC BY-NC"
 
